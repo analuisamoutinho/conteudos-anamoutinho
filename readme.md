@@ -17,10 +17,9 @@ As variáveis já existentes são mantidas. Apenas adicionar:
 |---|---|---|
 | `PUBLIC_URL` | `https://criativos-saas.up.railway.app` | URL pública do Railway (já existe como `PUBLIC_URL`) |
 
-> **Nota:** `INSTAGRAM_ACCESS_TOKEN`, `INSTAGRAM_ACCOUNT_ID_MARCA` e `INSTAGRAM_ACCOUNT_ID_PESSOAL` já estão configurados. O servidor usa:
-> - `INSTAGRAM_ACCOUNT_ID_MARCA` → perfil `case` (Case Aceleradora)
-> - `INSTAGRAM_ACCOUNT_ID_PESSOAL` → perfil `ana` (Ana Moutinho)
-> - `INSTAGRAM_ACCESS_TOKEN` → token compartilhado para ambos os perfis
+> **Nota:** `INSTAGRAM_ACCESS_TOKEN` e `INSTAGRAM_ACCOUNT_ID_PESSOAL` já estão configurados. O servidor usa:
+> - `INSTAGRAM_ACCOUNT_ID_PESSOAL` → perfil `pessoal` (Ana Moutinho)
+> - `INSTAGRAM_ACCESS_TOKEN` → token do perfil
 
 ---
 

@@ -244,55 +244,16 @@ const TIPOS_RR = {
   bastidores: { id: 'bastidores', emoji: '🎬', label: 'Bastidores', instrucao: 'Mostra o processo real, não o resultado polido.' },
 };
 
-const METODOLOGIA_BRANDSDECODED = {
-  nome: 'BrandsDecoded — Padrão Premium de Copy Corporativa',
-  filosofia: `
-FILOSOFIA BASE (BrandsDecoded — Case Aceleradora):
-- Autoridade por profundidade, não por hype. Dados reais, exemplos concretos de negócios reais.
-- Hook de 14-18 palavras que nomeia um comportamento ou padrão real que o empresário vive no dia a dia.
-- Cada slide precisa ser tão bom que o leitor manda para o sócio ou para o grupo do WhatsApp da empresa.
-- Nunca inventar fatos. Nunca usar jargão técnico sem explicar em linguagem de negócio.
-- O público é o empresário que fatura 80k+/mês — dono de delivery, e-commerce, negócio local, franquia. Ele não conhece termos de SaaS, growth hacking ou métricas de startup. Ele conhece: faturamento, margem, equipe, cliente, operação, fluxo de caixa, fornecedor, concorrente, expansão.
-- NUNCA usar: SaaS, MRR, churn, growth hacking, onboarding, KPI, ROI, escalabilidade, user, B2B, lead qualificado, funil de vendas, jornada do cliente, upsell, cross-sell, framework, mindset, pivot, tração, runway. Substitua por: recorrência, perda de clientes, crescimento, integração de novos funcionários, resultado, retorno, crescimento com estrutura, cliente, empresa/negócio, venda extra, indicação, método, mentalidade, mudar de direção, crescimento inicial, caixa.
-`,
-  estrutura: `
-ESTRUTURA BRANDSDECODED:
-- Slide 1: hook como afirmação provocativa que nomeia fenômeno real que o empresário reconhece (14-18 palavras)
-- Slides 2-N: exemplos reais de negócios, números concretos, situações do dia a dia — profundidade sem jargão
-- Slide final: CTA direto com assinatura da marca
-`,
-  tonsProibidos: ['descubra', 'saiba como', 'conheça', 'transforme', 'incrível', 'revolucionário', 'disruptivo', 'mudando o jogo', 'next-level', 'fórmula', 'segredo', 'SaaS', 'growth hacking', 'MRR', 'churn', 'KPI', 'ROI', 'escalabilidade', 'onboarding', 'framework', 'mindset', 'tração', 'pivot', 'runway', 'lead qualificado'],
-  tonsPermitidos: ['direto', 'estratégico', 'autoridade', 'real', 'fundamentado', 'prático', 'empresarial', 'concreto'],
-  tiposConteudo: ['tendencia', 'case', 'educativo', 'comparacao', 'lista', 'prova_social', 'oferta'],
-};
-
-const TIPOS_BRANDSDECODED = {
-  tendencia: { id: 'tendencia', emoji: '📡', label: 'Análise de Tendência', categoria: 'Awareness', instrucao: 'Capa nomeia o fenômeno como declaração.' },
-  case: { id: 'case', emoji: '🏆', label: 'Case de Sucesso', categoria: 'Awareness', instrucao: 'Capa como fenômeno cultural. Resultados mensuráveis.' },
-  educativo: { id: 'educativo', emoji: '📚', label: 'Educativo / Framework', categoria: 'Autoridade', instrucao: 'Capa promete método com nome próprio.' },
-  comparacao: { id: 'comparacao', emoji: '⚖️', label: 'Comparação / Antes & Depois', categoria: 'Alcance', instrucao: 'Capa ativa contraste com dado ou afirmação.' },
-  lista: { id: 'lista', emoji: '📋', label: 'Lista Valiosa', categoria: 'Alcance', instrucao: 'Capa com número e promessa específica.' },
-  prova_social: { id: 'prova_social', emoji: '🌟', label: 'Prova Social', categoria: 'Conversão', instrucao: 'Capa foca no resultado concreto.' },
-  oferta: { id: 'oferta', emoji: '🎯', label: 'Oferta', categoria: 'Conversão', instrucao: 'Capa ativa desejo, não produto.' },
-};
-
-function getMetodologia(profile) {
-  const profiles = loadProfiles();
-  const p = profiles[profile];
-  const tipoBrand = p?.tipo || 'corporativa';
-  if (tipoBrand === 'pessoal') {
-    return { metodologia: METODOLOGIA_RR, tipos: TIPOS_RR, isRR: true };
-  }
-  return { metodologia: METODOLOGIA_BRANDSDECODED, tipos: TIPOS_BRANDSDECODED, isRR: false };
+function getMetodologia() {
+  return { metodologia: METODOLOGIA_RR, tipos: TIPOS_RR, isRR: true };
 }
 
-function buildSystemPromptCarrossel(profile, metodologia, isRR) {
-  const brand   = BRAND_IDENTITIES[profile] || BRAND_IDENTITIES.marca;
+function buildSystemPromptCarrossel(profile) {
+  const brand   = BRAND_IDENTITIES[profile] || BRAND_IDENTITIES.pessoal;
   const account = getAccount(profile);
   const manualNote = getManualText(profile);
 
-  if (isRR) {
-    return `Você é o gerador de conteúdo da ${account.name} — marca pessoal seguindo a Metodologia RR.
+  return `Você é o gerador de conteúdo da ${account.name} — marca pessoal seguindo a Metodologia RR.
 
 ${METODOLOGIA_RR.filosofia}
 ${METODOLOGIA_RR.estruturaViral}
@@ -305,40 +266,15 @@ REGRAS OBRIGATÓRIAS:
 - NUNCA usar: ${METODOLOGIA_RR.tonsProibidos.join(', ')}
 - Máximo 4 hashtags na legenda
 - Tom: ${METODOLOGIA_RR.tonsPermitidos.join(', ')}`;
-  }
-
-  return `Você é o gerador de carrosseis da Case Aceleradora — conteúdo premium para empresários reais no Instagram.
-
-${METODOLOGIA_BRANDSDECODED.filosofia}
-${METODOLOGIA_BRANDSDECODED.estrutura}
-${manualNote ? `\nDIRETRIZES DO PERFIL:\n${manualNote}` : ''}
-
-PÚBLICO QUE VOCÊ ESTÁ FALANDO: Empresários que faturam 80k a 500k/mês. Donos de delivery, e-commerce, negócio local, franquia, prestação de serviço. Eles entendem de operação, equipe, cliente, fornecedor e caixa. Não entendem de jargão técnico de startup ou SaaS.
-
-REGRAS OBRIGATÓRIAS:
-- Slide 1: hook de 14-18 palavras — deve soar como algo que o dono de negócio pensa no dia a dia
-- NUNCA usar travessão (—) nem hífen no meio de frases
-- NUNCA usar termos técnicos de startup/SaaS: ${METODOLOGIA_BRANDSDECODED.tonsProibidos.join(', ')}
-- Use exemplos de negócios reais (delivery, loja, serviço) em vez de exemplos abstratos
-- Máximo 4 hashtags
-- ASSINATURA FIXA no último slide: "Gostou desse conteúdo? Aproveite para seguir nosso perfil. E caso queira saber sobre o nosso acompanhamento, comente 'CASE' que nossa equipe te chama."
-- Retornar APENAS JSON valido, sem markdown. O array "slides" DEVE ter entre 7 e 10 objetos. Cada slide DEVE ter "textos" como array
-
-REGRA CRÍTICA SOBRE CONTEÚDO DOS SLIDES:
-- Cada slide DEVE ter um "heading" (título curto e direto) E um "body" com 2-3 frases que desenvolvem e explicam o heading com substância real.
-- NUNCA deixar "body" vazio ou com menos de 2 frases. O body é onde está o valor do conteúdo.
-- O body deve conter: situação real de negócio, número concreto, exemplo prático — algo que o dono de delivery ou e-commerce reconheça como verdade da própria vida.
-- Slides de conteúdo sem body são slides inúteis. Cada slide deve poder existir sozinho e fazer sentido completo.`;
 }
 
-function buildSystemPromptContentMachine(profile, tipo, metodologia, isRR) {
-  const brand   = BRAND_IDENTITIES[profile] || BRAND_IDENTITIES.marca;
+function buildSystemPromptContentMachine(profile, tipo) {
+  const brand   = BRAND_IDENTITIES[profile] || BRAND_IDENTITIES.pessoal;
   const account = getAccount(profile);
   const manualNote = getManualText(profile);
-  const tipoInfo = isRR ? (TIPOS_RR[tipo] || TIPOS_RR.carrossel) : (TIPOS_BRANDSDECODED[tipo] || TIPOS_BRANDSDECODED.educativo);
+  const tipoInfo = TIPOS_RR[tipo] || TIPOS_RR.carrossel;
 
-  if (isRR) {
-    return `Você é o gerador de conteúdo da ${account.name} — marca pessoal, Metodologia RR.
+  return `Você é o gerador de conteúdo da ${account.name} — marca pessoal, Metodologia RR.
 
 ${METODOLOGIA_RR.filosofia}
 ${METODOLOGIA_RR.estruturaViral}
@@ -352,27 +288,6 @@ REGRAS:
 - NUNCA usar: ${METODOLOGIA_RR.tonsProibidos.join(', ')}
 - Tom: ${METODOLOGIA_RR.tonsPermitidos.join(', ')}
 - Retornar APENAS JSON valido, sem markdown. O array "slides" DEVE ter entre 7 e 10 objetos. Cada slide DEVE ter "textos" como array`;
-  }
-
-  return `Você é o gerador oficial de conteúdo da Case Aceleradora para Instagram.
-
-${METODOLOGIA_BRANDSDECODED.filosofia}
-${METODOLOGIA_BRANDSDECODED.estrutura}
-${manualNote ? `\nDIRETRIZES DO PERFIL:\n${manualNote}` : ''}
-
-PÚBLICO: Empresários que faturam 80k a 500k/mês — donos de delivery, e-commerce, negócio local, franquia, prestação de serviço. Linguagem de quem entende de operação, equipe, cliente e caixa. Nunca linguagem de startup ou tech.
-
-TIPO ATUAL: ${tipoInfo.emoji} ${tipoInfo.label} (${tipoInfo.categoria})
-INSTRUÇÃO ESPECÍFICA: ${tipoInfo.instrucao}
-
-REGRAS:
-- Nunca inventar fatos
-- NUNCA usar travessão (—) nem hífen no meio de frases
-- NUNCA usar termos de startup/SaaS: ${METODOLOGIA_BRANDSDECODED.tonsProibidos.join(', ')}
-- Use sempre exemplos de negócios reais (delivery, loja física, e-commerce, prestação de serviço)
-- Máximo 4 hashtags
-- ASSINATURA FIXA: "Gostou desse conteúdo? Aproveite para seguir nosso perfil. E caso queira saber sobre o nosso acompanhamento, comente 'CASE' que nossa equipe te chama."
-- Retornar APENAS JSON valido, sem markdown. O array "slides" DEVE ter entre 7 e 10 objetos. Cada slide DEVE ter "textos" como array`;
 }
 
 // ═══════════════════════════════════════════════════════════════════════════
@@ -380,27 +295,6 @@ REGRAS:
 // ═══════════════════════════════════════════════════════════════════════════
 
 const DEFAULT_PROFILES = {
-  marca: {
-    profileId: 'marca', tipo: 'corporativa', nome: 'Case Aceleradora',
-    handle: '@caseaceleradora', niche: 'Aceleração de negócios reais: faturamento, operação, equipe e expansão — para empresários que já faturam e querem crescer com estrutura',
-    bio: 'Aceleramos negócios reais com estratégia, estrutura e execução. Delivery, e-commerce, negócio local — a Case acompanha quem já fatura e quer escalar de verdade.',
-    tom: 'Direto, confiante, com autoridade de quem já viu muitos negócios crescerem. Fala de igual para igual com o dono de negócio. Sem jargão técnico, sem papo de startup. Linguagem de quem entende de operação, equipe, caixa, cliente e resultado real.',
-    proibidos: ['Descubra', 'Transforme sua vida', 'Saiba como', 'Riqueza', 'Fórmula secreta', 'SaaS', 'MRR', 'Churn', 'Growth hacking', 'KPI', 'ROI', 'Escalabilidade', 'Onboarding', 'Framework', 'Mindset', 'Tração', 'Pivot', 'Runway', 'Lead qualificado', 'Funil de vendas', 'Jornada do cliente', 'Upsell', 'B2B', 'B2C', 'Stakeholder', 'Disruptivo', 'Inovação disruptiva', 'Next-level'],
-    pilares: [
-      'Gestão de equipe e liderança real (como contratar, treinar, cobrar e reter)',
-      'Operação e processos (como parar de depender só de você)',
-      'Faturamento e margem (o que está comendo seu lucro e como resolver)',
-      'Expansão e escala (como abrir nova unidade, novo canal ou novo produto sem quebrar)',
-      'Cases reais de clientes Case (resultado concreto, antes e depois)',
-      'Erros comuns de quem fatura entre 80k e 500k/mês (e como evitar)',
-    ],
-    publicoAlvo: 'Empresários que faturam entre 80k e 500k/mês — donos de delivery, restaurante, e-commerce, negócio local, franquia, loja física ou prestação de serviço. Pessoas que entendem de negócio real: dia a dia de operação, equipe, fornecedor, cliente difícil, fluxo de caixa. Não conhecem jargão de startup ou SaaS.',
-    cta: 'Comente "CASE" que nossa equipe te chama.',
-    referencias: ['Negócios reais brasileiros', 'Empreendedores de sucesso sem jargão', 'Linguagem de Exame/Pequenas Empresas Grandes Negócios', 'Exemplos práticos de delivery, e-commerce e franquia'],
-    tiposConteudo: ['tendencia', 'case', 'educativo', 'comparacao', 'lista', 'prova_social', 'oferta'],
-    observacoes: 'A Case Aceleradora fala com donos de negócio que já faturam e querem crescer com estrutura. O público não é de tech, não é de startup. É o dono de delivery que abre às 10h e fecha à meia-noite, o dono de e-commerce que vende 500 pedidos por mês, o prestador de serviço que tem 10 funcionários e não sabe como crescer sem perder o controle. Todo conteúdo precisa soar como conselho de quem já viu isso funcionar — não como teoria de consultor. Use exemplos de negócios reais: "a padaria que triplicou o ticket médio", "o delivery que parou de perder funcionários", "a loja que abriu a segunda unidade sem se endividar". Evite qualquer termo técnico sem explicação imediata em linguagem do dia a dia de empresa.',
-    pdfUploadedAt: null, updatedAt: null,
-  },
   pessoal: {
     profileId: 'pessoal', tipo: 'pessoal', nome: 'Ana Moutinho',
     handle: '@analuisa.moutinho',
@@ -437,19 +331,6 @@ ATENÇÃO CRÍTICA: Este "sobre mim" descreve uma direção e um conjunto de val
     observacoes: 'Ana está no processo de construir a vida que quer — não chegou lá. Esse é o ponto central. O conteúdo deve soar como diário aberto de alguém que está tentando, errando e aprendendo em tempo real — não como lição de quem já resolveu. Temas recorrentes: ordem na vida, planejamento, rotinas, sistemas, leitura, corrida de rua, autoaperfeiçoamento. Conflitos internos REAIS que aparecem no conteúdo: perfeccionismo vs ação, muitos interesses simultâneos, dificuldade de constância, cansaço, recomeço. A IA deve usar linguagem de quem ainda está aprendendo: "estou tentando", "não sei ainda", "errei nisso", "percebi que", "ainda não consigo", "voltei a fazer". NUNCA posicionar a Ana como referência acabada. Ela é referência pelo processo honesto, não pela chegada. Estética: elegância, minimalismo, sofisticação, tons profundos. Sem pasteis.',
     pdfUploadedAt: null, updatedAt: null,
   },
-  virttus: {
-    profileId: 'virttus', tipo: 'corporativa', nome: 'Virttus',
-    handle: '@virttus', niche: 'Tech B2B, transformação digital, precision software',
-    bio: 'Tecnologia de precisão para empresas que não aceitam mediano.',
-    tom: 'Técnico, forward-looking, preciso. B2B premium. Sem buzzwords vazios.',
-    proibidos: ['Incrível', 'Revolucionário', 'Disruptivo', 'Mudando o jogo', 'Next-level'],
-    pilares: ['Tecnologia e inovação', 'Casos de uso B2B', 'Data & Analytics', 'Transformação digital'],
-    publicoAlvo: 'CTOs, gerentes de TI e diretores de operações em médias e grandes empresas',
-    cta: 'Quer saber como aplicar isso? Nos chame no direct.',
-    referencias: ['Bloomberg Businessweek', 'Wired', 'MIT Tech Review'],
-    tiposConteudo: ['tendencia', 'case', 'educativo', 'comparacao', 'lista', 'oferta'],
-    observacoes: '', pdfUploadedAt: null, updatedAt: null,
-  },
 };
 
 function loadProfiles() {
@@ -483,7 +364,7 @@ function getProfileManualContext(profileId) {
   const p = profiles[profileId];
   if (!p) return '';
   return [
-    `TIPO DE MARCA: ${p.tipo === 'pessoal' ? 'Marca Pessoal (Metodologia RR)' : 'Marca Corporativa (BrandsDecoded)'}`,
+    `TIPO DE MARCA: Marca Pessoal (Metodologia RR)`,
     p.niche        ? `NICHO: ${p.niche}`                      : '',
     p.publicoAlvo  ? `PÚBLICO-ALVO: ${p.publicoAlvo}`        : '',
     p.tom          ? `TOM DE VOZ: ${p.tom}`                   : '',
@@ -496,13 +377,12 @@ function getProfileManualContext(profileId) {
 }
 
 app.get('/api/tipos-conteudo', (req, res) => {
-  const { profile } = req.query;
-  const { isRR, tipos } = getMetodologia(profile || 'marca');
+  const { tipos } = getMetodologia();
   res.json({
-    metodologia: isRR ? 'rr' : 'brandsdecoded',
+    metodologia: 'rr',
     tipos: Object.values(tipos).map(t => ({
       id: t.id, emoji: t.emoji, label: t.label,
-      categoria: t.categoria || (isRR ? 'Marca Pessoal' : 'Corporativo'),
+      categoria: t.categoria || 'Marca Pessoal',
       desc: t.instrucao?.split('.')[0] || '',
     })),
   });
@@ -534,7 +414,7 @@ app.post('/api/profiles', (req, res) => {
     const profiles = loadProfiles();
     const id = req.body.profileId || `profile_${Date.now()}`;
     if (profiles[id]) return res.status(409).json({ error: 'ID já existe' });
-    profiles[id] = { ...DEFAULT_PROFILES.marca, ...req.body, profileId: id, updatedAt: new Date().toISOString() };
+    profiles[id] = { ...DEFAULT_PROFILES.pessoal, ...req.body, profileId: id, updatedAt: new Date().toISOString() };
     saveProfiles(profiles);
     res.json({ success: true, profile: profiles[id] });
   } catch(e) { res.status(500).json({ error: e.message }); }
@@ -616,15 +496,13 @@ async function loadGeneratedContent(profile) {
 
 // ── Accounts ──────────────────────────────────────────────────────────────
 const ACCOUNTS = {
-  marca:   { id: process.env.INSTAGRAM_ACCOUNT_ID_MARCA,   token: process.env.INSTAGRAM_TOKEN_MARCA   || process.env.INSTAGRAM_ACCESS_TOKEN, name: 'Case Aceleradora', handle: '@caseaceleradora'   },
   pessoal: { id: process.env.INSTAGRAM_ACCOUNT_ID_PESSOAL, token: process.env.INSTAGRAM_TOKEN_PESSOAL || process.env.INSTAGRAM_ACCESS_TOKEN, name: 'Ana Moutinho',     handle: '@analuisa.moutinho' },
-  virttus: { id: process.env.INSTAGRAM_ACCOUNT_ID_VIRTTUS, token: process.env.INSTAGRAM_TOKEN_VIRTTUS || process.env.INSTAGRAM_ACCESS_TOKEN, name: 'Virttus',          handle: '@virttus'           },
 };
-function getAccount(profile) { return ACCOUNTS[profile] || ACCOUNTS.marca; }
+function getAccount(profile) { return ACCOUNTS[profile] || ACCOUNTS.pessoal; }
 
 function getManualText(profile) {
   const profileContext = getProfileManualContext(profile);
-  const pdfPath = path.join(MANUALS_DIR, `${profile || 'marca'}.pdf`);
+  const pdfPath = path.join(MANUALS_DIR, `${profile || 'pessoal'}.pdf`);
   const pdfNote = fs.existsSync(pdfPath)
     ? '[Manual PDF do cliente carregado — aplicar diretrizes visuais e de identidade do documento]'
     : '';
@@ -635,80 +513,6 @@ function getManualText(profile) {
 // IDENTIDADES VISUAIS
 // ═══════════════════════════════════════════════════════════════════════════
 const BRAND_IDENTITIES = {
-  marca: {
-    accent:'#B8864B',accentAlt:'#4A2E1F',bgDark:'#1E120D',bgLight:'#F4E6D4',bgBrand:'#F4E6D4',
-    bgMid:'#E9D2B6',bgNude:'#D9B794',bronze:'#B8864B',marrom:'#4A2E1F',
-    textOnDark:'#F4E6D4',textOnLight:'#1E120D',handle:'@caseaceleradora',name:'CASE',
-    moods:['EDITORIAL_LIGHT','TYPE_LIGHT','EDITORIAL_LIGHT','TYPE_LIGHT','SPLIT_LIGHT','EDITORIAL_LIGHT','TYPE_LIGHT','BRAND_PUNCH','CTA_LIGHT'],
-    aestheticDNA:`IDENTIDADE VISUAL: CASE Aceleradora — "Guia de Identidade Visual baseado no Quadro da Marca do Milhão."
-
-CONCEITO CENTRAL: expansão com propósito. Sofisticada, estratégica, guiada por direção clara, liderança e construção de impérios duradouros. Cada elemento comunica conquista, visão e legado.
-
-PALETA CROMÁTICA OBRIGATÓRIA:
-— Fundo primário dominante: areia claro #F4E6D4 (ocupa 60-70% da composição)
-— Fundo secundário: bege atlas #E9D2B6 (usado em blocos, divisórias e segundos planos)
-— Acento nobre: bronze dourado #B8864B — usado com moderação máxima, apenas em detalhes, linhas finas, bordas e elementos gráficos pontuais. Nunca como fundo.
-— Texto principal e elementos de autoridade: marrom profundo #4A2E1F
-— Texto secundário e sombras: preto café #1E120D com 60-80% de opacidade
-— Cor de contraste para destaques: bege nude #D9B794
-— PROIBIDO: preto puro, azul, verde, roxo, neon, cinza frio, branco puro como fundo principal
-
-TIPOGRAFIA — REGRAS ABSOLUTAS:
-— Títulos: fonte geométrica sans-serif, peso 800-900, caixa alta (ALL CAPS) ou small caps elegante
-— Subtítulos: mesmo typeface, peso 500-600, caixa baixa
-— Corpo de texto: fonte complementar humanista, peso 400, generosamente espaçado
-— Letter-spacing para títulos: levemente aberto (+0.05em a +0.1em) — sensação monumental
-— Sem serifas, sem scripts, sem fontes decorativas
-
-ELEMENTOS GRÁFICOS CARACTERÍSTICOS (usar com moderação e elegância):
-— Rosa-dos-ventos ou bússola como símbolo central — representando direção e estratégia
-— Fragmentos de mapa-mundi ou mapas cartográficos em manchas suaves e transparentes no fundo
-— Grid cartográfico com linhas finíssimas em bronze #B8864B a 15-25% de opacidade
-— Bordas finas em bronze — retângulos, enquadramentos, separadores
-— Sombras suaves e difusas que criam profundidade sem dramatismo
-— Micro-textura de papel de algodão ou linho no fundo
-
-DIREÇÃO DE COMPOSIÇÃO:
-— Composição simétrica e centralizada como regra principal
-— Amplo espaço respiro (breathing room) em torno dos elementos
-— Hierarquia visual absolutamente clara: título > subtítulo > elemento gráfico > corpo
-— Luz suave direcional de cima, criando sutis gradientes de claro para ligeiramente mais escuro
-— Fundo com textura sutil de papel ou pergaminho — nunca completamente liso
-
-SENSAÇÃO E ATMOSFERA:
-— Premium, institucional, atemporal, monumental
-— Como a capa de um livro de estratégia de um empresário visionário
-— Como o material de comunicação de uma empresa de private equity sofisticada
-— Transmite: direção clara, conquista calculada, estratégia refinada, expansão com propósito, legado
-
-TOM VISUAL: estratégico · sofisticado · monumental · direcional · premium · institucional · cartográfico
-
-PROIBIDO ABSOLUTAMENTE: fundos escuros dominantes, neon, cores saturadas ou vibrantes, elementos cartoon ou ilustrativo amador, estética motivacional raso, foguetes, emojis gráficos, gradientes coloridos, confete, estrelas decorativas.
-
-════ DIREÇÃO FOTOGRÁFICA / VISUAL DE FUNDO ════
-Quando a imagem gerada for um BACKGROUND FOTOGRÁFICO ou visual de fundo, seguir obrigatoriamente:
-
-PALETA VISUAL DA FOTOGRAFIA:
-— Tom geral: quente, dourado, âmbar — como luz de fim de tarde entrando por janelas altas
-— Superfícies: madeira clara, couro natural, papel envelhecido, linho, pedra clara, mármore bege
-— Iluminação: natural, difusa, lateral — sombras suaves, nenhuma luz dramática fria ou azulada
-— Cores proibidas na fotografia: azul, roxo, verde, cinza frio, preto como dominante
-
-OBJETOS E AMBIENTES PERMITIDOS:
-— Mesas de trabalho com materiais premium (couro, papel kraft, caneta dourada, cadernos abertos)
-— Espaços arquitetônicos com luz natural: escritórios com janelas grandes, varandas, salas de reunião com madeira
-— Detalhes de negócio: contratos, gráficos impressos, calculadoras analógicas, relógios
-— Elementos cartográficos físicos: atlas aberto, bússola de latão, mapas em papel envelhecido
-— Café em xícara branca/nude, reuniões focadas (sem rostos dominantes), aperto de mão elegante
-
-ESTILO FOTOGRÁFICO:
-— Editorial de negócios high-end — como revista Forbes ou Harvard Business Review
-— Profundidade de campo suave (fundo levemente desfocado) com objeto principal nítido
-— Grão sutil de filme — nunca digital hiper-saturado
-— NUNCA: stock photo genérico, suits escuros com fundo cinza, estúdio artificial, iluminação de flash
-
-ATMOSFERA: como a sala de um empresário visionário — conquista silenciosa, estratégia e legado`,
-  },
   pessoal: {
     accent:'#8B7355',accentAlt:'#C4A882',accentFem:'#C17B6F',bgDark:'#3D3530',bgLight:'#FAF8F5',
     bgMid:'#EDEAE4',bgBrand:'#F5F2EE',textOnDark:'#F5F2EE',textOnLight:'#2C2420',
@@ -769,64 +573,13 @@ IDENTIDADE CENTRAL: Construindo uma vida mais ordenada, virtuosa e significativa
 5. PROIBIDO: desbloqueie, seja sua melhor versao, sucesso, qualquer tom de guru ou coach.
 6. CONFLITOS REAIS QUE CONECTAM: perfeccionismo vs acao, excesso de interesses, dificuldade de constancia, querer excelencia sem paralisar.`,
   },
-  virttus: {
-    accent:'#00D4AA',accentAlt:'#7B2FFF',bgDark:'#050B18',bgLight:'#F0F4FF',bgBrand:'#0A1628',
-    textOnDark:'#FFFFFF',textOnLight:'#050B18',handle:'@virttus',name:'Virttus',
-    moods:['HERO_DARK','TYPE_DARK','EDITORIAL_LIGHT','HERO_DARK','TABLE_LIGHT','TYPE_DARK','EDITORIAL_LIGHT','BRAND_PUNCH','CTA_LIGHT'],
-    aestheticDNA:`IDENTIDADE VISUAL: Virttus — tecnologia premium com foco em desenvolvimento humano, performance e liderança consciente.
-
-CONCEITO: A linguagem visual de uma empresa de tecnologia que transforma potencial humano em resultado real. Sofisticada, clara e confiável — como as melhores marcas SaaS do mercado.
-
-PALETA CROMÁTICA OBRIGATÓRIA:
-— Fundo primário dominante: branco-azulado sofisticado #F0F4FF ou branco #FFFFFF (ocupa 65-75% da composição — SIM, fundos claros dominam os slides de conteúdo)
-— Fundo alternativo profundo: azul noturno #001B3A para slides de capa ou de impacto máximo
-— Acento primário vivo: azul-roxo elétrico #2563EB ou roxo Virttus #7C3AED — para títulos em fundos claros, bordas e destaques
-— Acento secundário: ciano-turquesa #00D4AA — apenas em elementos de destaque pontual, ícones, CTAs
-— Gradiente assinatura da marca: roxo #7C3AED → azul #2563EB (horizontal ou diagonal em 45°) — usado em barras, bordas, títulos de destaque e elementos gráficos
-— Texto sobre fundo claro: azul profundo #001B3A (peso 700+) e cinza médio #647488 (peso 400)
-— Texto sobre fundo escuro: branco #FFFFFF
-— NUNCA: marrom, bege, laranja, dourado, verde natural
-
-TIPOGRAFIA — REGRAS ABSOLUTAS:
-— Títulos principais: sans-serif geométrica clean (Inter, SORA, Space Grotesk), peso 700-900, caixa alta ou mista
-— O NOME "Virttus" quando aparecer: logo ou texto em azul-roxo #2563EB, bold, com ícone/símbolo da marca ao lado
-— Subtítulos e labels: peso 500-600, espaçamento levemente aberto, hierarquia clara
-— Corpo e listas: peso 400, muito legível, espaçamento 1.6x
-— Métricas e números de destaque: peso 800, tamanho grande, cor de acento
-
-ELEMENTOS GRÁFICOS CARACTERÍSTICOS (usar com inteligência, não acumular):
-— Ícone/logo da Virttus: forma em "V" geométrica estilizada ou símbolo próprio em roxo/azul gradiente
-— Cards com cantos arredondados (border-radius generoso) em fundo branco com sombra suave — SaaS premium
-— Ícones de linha fina (outline icons) para ilustrar bullets e features — clean, moderno
-— Gradiente roxo→azul em barras horizontais, separadores ou acentos de destaque
-— Curvas/ondas suaves em azul claro a 15% de opacidade como elemento de fundo
-— Glow suave roxo ou ciano em elementos gráficos centrais (não exagerar)
-— Mockups de dispositivos (smartphone, tablet) em slides de aplicação prática
-
-DIREÇÃO DE COMPOSIÇÃO:
-— Layout limpo, muito respiro visual, grid rigoroso — como Notion, Linear ou Figma redesigned
-— Fundo claro e sofisticado com elementos que respiram — nunca saturado ou cheio
-— Hierarquia rigorosa: identidade da marca → título da seção → conteúdo → apoio
-— Elementos de profundidade: sombras suaves de card (box-shadow elegante), não sombras duras
-— Sensação premium de produto SaaS B2B de excelência
-
-SENSAÇÃO E ATMOSFERA:
-— Como a página de um produto SaaS premiado por design
-— Confiança sem frieza. Tecnologia com humanidade.
-— Transmite: liderança, performance, evolução, clareza e sofisticação limpa
-
-TOM VISUAL: clean · claro · premium · SaaS · gradiente roxo-azul · confiável · humano · estratégico
-
-PROIBIDO ABSOLUTAMENTE: fundos escuros dominantes (exceto slide de capa), clipart, ícones genéricos pixelados, elementos cartoon, cores quentes (marrom/laranja/dourado/bege), gradientes arco-íris kitsch, robôs humanoides clichê, estoque fotográfico genérico.`,
-  
-  },
 };
 
 // ── Manual upload ─────────────────────────────────────────────────────────
 app.post('/api/manual/upload', upload.single('pdf'), (req, res) => {
   const { profile } = req.body;
   if (!req.file) return res.status(400).json({ error: 'Nenhum ficheiro enviado' });
-  const dest = path.join(MANUALS_DIR, `${profile || 'marca'}.pdf`);
+  const dest = path.join(MANUALS_DIR, `${profile || 'pessoal'}.pdf`);
   fs.renameSync(req.file.path, dest);
   const profiles = loadProfiles();
   if (profiles[profile]) {
@@ -1249,38 +1002,22 @@ function normalizeDays(parsed) {
 app.post('/api/calendar/generate', async (req, res) => {
   try {
     const { month, year, profile, postsPerDay = 1 } = req.body;
-    const { isRR, tipos } = getMetodologia(profile);
+    const { tipos } = getMetodologia();
     const manualNote  = getManualText(profile);
     const account     = getAccount(profile);
     const daysInMonth = new Date(year, month, 0).getDate();
     const tiposDisponiveis = Object.values(tipos).map(t => t.id).join(' | ');
-    const tiposLabels = Object.values(tipos).map(t => t.id + ' (' + t.label + ')').join(', ');
-
-    // Busca tendências em tempo real para perfis BrandsDecoded
-    let trendTopics = [];
-    if (!isRR) {
-      trendTopics = await getTrendsForCalendar(profile);
-    }
-    const trendBlock = trendTopics.length
-      ? '\nTENDÊNCIAS EM ALTA AGORA (use como tópicos do tipo "tendencia" distribuídos ao longo do mês):\n' + trendTopics.map((t, i) => (i + 1) + '. ' + t.gancho + ' [termo: ' + t.termo + ']').join('\n') + '\n'
-      : '';
-
-    const proporcaoBD = !isRR
-      ? '\nPROPORÇÃO RECOMENDADA BrandsDecoded (distribuir ao longo do mês):\n- 35% educativo (conteúdo de autoridade, ensina algo prático)\n- 20% tendencia (use os tópicos de tendência listados acima quando disponíveis)\n- 15% case (resultado real de cliente ou negócio)\n- 15% lista (conteúdo de alcance, shareável)\n- 10% comparacao (antes/depois, certo/errado)\n- 5% prova_social ou oferta\n'
-      : '';
 
     const BLOCK = 10;
     const allDays = [];
     for (let blockStart = 1; blockStart <= daysInMonth; blockStart += BLOCK) {
       const blockEnd = Math.min(blockStart + BLOCK - 1, daysInMonth);
       const daysInBlock = blockEnd - blockStart + 1;
-      const brandContext = isRR
-        ? 'PERFIL: ' + account.name + ' (' + account.handle + ') — MARCA PESSOAL, Metodologia RR.'
-        : 'PERFIL: ' + account.name + ' (' + account.handle + ') — MARCA CORPORATIVA, BrandsDecoded.\nTIPOS: ' + tiposLabels;
+      const brandContext = 'PERFIL: ' + account.name + ' (' + account.handle + ') — MARCA PESSOAL, Metodologia RR.';
       const examplePosts = postsPerDay === 1
-        ? (isRR ? '[{"time":"09:00","type":"lofi","topic":"Por que a maioria das pessoas sabota o próprio crescimento"}]' : '[{"time":"09:00","type":"educativo","topic":"Por que 90% das empresas param de crescer quando o dono para de aparecer"}]')
-        : (isRR ? '[{"time":"09:00","type":"carrossel","topic":"A mentira que o Instagram vende sobre consistência"},{"time":"18:00","type":"frase","topic":"Você não precisa de motivação, precisa de estrutura"}]' : '[{"time":"09:00","type":"educativo","topic":"O erro que faz donos de negócio trabalharem mais e faturarem menos"},{"time":"18:00","type":"tendencia","topic":"O que está mudando no comportamento do consumidor brasileiro em 2026"}]');
-      const blockPrompt = 'Você é estrategista de conteúdo para Instagram. Crie o calendário editorial para ' + account.name + ' — ' + month + '/' + year + '.\n\n' + brandContext + '\n' + (manualNote ? 'DIRETRIZES DO PERFIL:\n' + manualNote + '\n\n' : '') + trendBlock + proporcaoBD + 'TIPOS DISPONÍVEIS: ' + tiposDisponiveis + '\n\nREGRAS DO TOPIC: Topics devem ser específicos, com ângulo concreto e linguagem de dono de negócio real (sem jargão técnico).\nHORÁRIOS: use 09:00 para manhã e 18:00 para tarde/noite.\n\nRESPONDA APENAS COM JSON VÁLIDO, SEM MARKDOWN.\n\nFormato EXATO:\n{\n  "days": [\n    {"day": ' + blockStart + ', "posts": ' + examplePosts + '}\n  ]\n}\n\nGere TODOS os dias de ' + blockStart + ' a ' + blockEnd + ' (total: ' + daysInBlock + ' dias, ' + postsPerDay + ' post(s) por dia).';
+        ? '[{"time":"09:00","type":"lofi","topic":"Por que a maioria das pessoas sabota o próprio crescimento"}]'
+        : '[{"time":"09:00","type":"carrossel","topic":"A mentira que o Instagram vende sobre consistência"},{"time":"18:00","type":"frase","topic":"Você não precisa de motivação, precisa de estrutura"}]';
+      const blockPrompt = 'Você é estrategista de conteúdo para Instagram. Crie o calendário editorial para ' + account.name + ' — ' + month + '/' + year + '.\n\n' + brandContext + '\n' + (manualNote ? 'DIRETRIZES DO PERFIL:\n' + manualNote + '\n\n' : '') + 'TIPOS DISPONÍVEIS: ' + tiposDisponiveis + '\n\nREGRAS DO TOPIC: Topics devem ser específicos e pessoais.\nHORÁRIOS: use 09:00 para manhã e 18:00 para tarde/noite.\n\nRESPONDA APENAS COM JSON VÁLIDO, SEM MARKDOWN.\n\nFormato EXATO:\n{\n  "days": [\n    {"day": ' + blockStart + ', "posts": ' + examplePosts + '}\n  ]\n}\n\nGere TODOS os dias de ' + blockStart + ' a ' + blockEnd + ' (total: ' + daysInBlock + ' dias, ' + postsPerDay + ' post(s) por dia).';
       const blockRes = await fetch('https://api.anthropic.com/v1/messages', {
         method: 'POST',
         headers: { 'x-api-key': process.env.ANTHROPIC_API_KEY, 'anthropic-version': '2023-06-01', 'Content-Type': 'application/json' },
@@ -1302,7 +1039,7 @@ app.post('/api/calendar/generate', async (req, res) => {
         day: dayNum,
         posts: posts.map(post => {
           const topic = (post.topic || post.tema || '').trim();
-          const type  = post.type || post.tipo || (isRR ? 'carrossel' : 'educativo');
+          const type  = post.type || post.tipo || 'carrossel';
           const time  = post.time || post.horario || '09:00';
           const match = generated.find(g => g.calendarDay === dayNum && g.calendarMonth === month && g.calendarYear === year);
           return { time, type, topic, date: year + '-' + String(month).padStart(2,'0') + '-' + String(dayNum).padStart(2,'0'), contentId: match?.id || null, status: match?.status || 'pendente', scheduledAt: match?.scheduledAt || null };
@@ -1325,7 +1062,7 @@ app.post('/api/calendar/generate-week', async (req, res) => {
     const { weekStart, profile, postsPerDay = 1 } = req.body;
     // weekStart = "2026-06-09" (segunda-feira da semana)
     const startDate = new Date(weekStart + 'T12:00:00Z');
-    const { isRR, tipos } = getMetodologia(profile);
+    const { tipos } = getMetodologia();
     const manualNote = getManualText(profile);
     const account    = getAccount(profile);
     const tiposDisponiveis = Object.values(tipos).map(t => t.id).join(' | ');
@@ -1336,20 +1073,8 @@ app.post('/api/calendar/generate-week', async (req, res) => {
     }
     const daysText = weekDays.map(d => d.dayOfWeek + ' ' + d.date).join(', ');
 
-    // Busca tendências para perfis BrandsDecoded
-    let weekTrendTopics = [];
-    if (!isRR) {
-      weekTrendTopics = await getTrendsForCalendar(profile);
-    }
-    const weekTrendBlock = weekTrendTopics.length
-      ? '\nTENDÊNCIAS EM ALTA AGORA (use 1-2 como tópico do tipo "tendencia" na semana):\n' + weekTrendTopics.map((t, i) => (i + 1) + '. ' + t.gancho + ' [termo: ' + t.termo + ']').join('\n') + '\n'
-      : '';
-    const weekProporcaoBD = !isRR
-      ? '\nPROPORÇÃO SEMANAL BrandsDecoded: priorize educativo (autoridade) + 1 tendencia (usando os tópicos acima se disponíveis) + 1 lista ou case. Evite mais de 1 oferta por semana.\n'
-      : '';
-
-    const examplePost = isRR ? '{"time":"09:00","type":"lofi","topic":"Tema específico aqui"}' : '{"time":"09:00","type":"educativo","topic":"Tema específico aqui"}';
-    const prompt = 'Você é estrategista de conteúdo para ' + account.name + ' (' + account.handle + ').\n\n' + (manualNote ? 'DIRETRIZES:\n' + manualNote + '\n\n' : '') + weekTrendBlock + weekProporcaoBD + 'TIPOS DISPONÍVEIS: ' + tiposDisponiveis + '\n\nCrie um plano editorial para a semana: ' + daysText + '\n' + postsPerDay + ' post(s) por dia. Topics devem ser específicos com linguagem de dono de negócio real.\n\nRESPONDA APENAS JSON VÁLIDO:\n{"days":[{"date":"2026-06-09","dayOfWeek":"Segunda","posts":[' + examplePost + ']}]}';
+    const examplePost = '{"time":"09:00","type":"lofi","topic":"Tema específico aqui"}';
+    const prompt = 'Você é estrategista de conteúdo para ' + account.name + ' (' + account.handle + ').\n\n' + (manualNote ? 'DIRETRIZES:\n' + manualNote + '\n\n' : '') + 'TIPOS DISPONÍVEIS: ' + tiposDisponiveis + '\n\nCrie um plano editorial para a semana: ' + daysText + '\n' + postsPerDay + ' post(s) por dia. Topics devem ser específicos e pessoais.\n\nRESPONDA APENAS JSON VÁLIDO:\n{"days":[{"date":"2026-06-09","dayOfWeek":"Segunda","posts":[' + examplePost + ']}]}';
     const r = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
       headers: { 'x-api-key': process.env.ANTHROPIC_API_KEY, 'anthropic-version': '2023-06-01', 'Content-Type': 'application/json' },
@@ -1401,10 +1126,9 @@ app.get('/api/calendar/saved', async (req, res) => {
 app.post('/api/carousel/generate-and-save', async (req, res) => {
   try {
     const { topic, blocks, profile, calendarDay, calendarMonth, calendarYear, caption, hashtags, contentMachineType } = req.body;
-    const { isRR, metodologia } = getMetodologia(profile);
     const account = getAccount(profile);
     const mode    = blocks ? 'blocks' : 'topic';
-    const systemPrompt = buildSystemPromptCarrossel(profile, metodologia, isRR);
+    const systemPrompt = buildSystemPromptCarrossel(profile);
     let prompt;
     if (mode === 'blocks') {
       prompt = `Perfil: ${account.name} (${account.handle})
@@ -1415,15 +1139,14 @@ ${blocks}
 
 JSON: {"title":"título do carrossel","slideCount":N,"slides":[{"slideNumber":1,"funcao":"CAPA","heading":"título curto e impactante","body":"2-3 frases que desenvolvem o conceito com substância real. Inclui dado, explicação ou consequência concreta.","imagePrompt":"visual scene in english"}],"caption":"legenda completa com emojis e CTA","hashtags":"máximo 4 hashtags específicas"}`;
     } else {
-      const slideCount = isRR ? '7-8' : '10';
       prompt = `Perfil: ${account.name} (${account.handle})
 Tema: "${topic}"
-Total: ${slideCount} slides.
-${isRR ? 'ESTRUTURA RR: Slide 1 (gancho que nomeia dor/desejo real) → slides de profundidade → conclusão com tese → CTA íntimo.' : 'ESTRUTURA BRANDSDECODED: Slide 1 (hook 14-18 palavras) → desenvolvimento estratégico → CTA com assinatura.'}
+Total: 7-8 slides.
+ESTRUTURA RR: Slide 1 (gancho que nomeia dor/desejo real) → slides de profundidade → conclusão com tese → CTA íntimo.
 
 REGRA CRÍTICA: cada slide DEVE ter body com 2-3 frases de conteúdo real — dado concreto, explicação do conceito, exemplo prático ou consequência. NUNCA body vazio ou com menos de 2 frases.
 
-JSON: {"title":"título do carrossel","slideCount":${isRR?8:10},"slides":[{"slideNumber":1,"funcao":"CAPA","heading":"gancho de 14-18 palavras","body":"2-3 frases que desenvolvem o gancho com substância. Dado concreto, padrão de mercado real ou consequência.","imagePrompt":"visual scene in english"},{"slideNumber":2,"funcao":"DESENVOLVIMENTO","heading":"título do conceito","body":"2-3 frases explicando o conceito com dado ou exemplo concreto. O leitor deve aprender algo real neste slide.","imagePrompt":"visual scene in english"}],"caption":"legenda completa com emojis e CTA","hashtags":"máximo 4 hashtags específicas ao nicho"}`;
+JSON: {"title":"título do carrossel","slideCount":8,"slides":[{"slideNumber":1,"funcao":"CAPA","heading":"gancho de 14-18 palavras","body":"2-3 frases que desenvolvem o gancho com substância. Dado concreto, padrão de mercado real ou consequência.","imagePrompt":"visual scene in english"},{"slideNumber":2,"funcao":"DESENVOLVIMENTO","heading":"título do conceito","body":"2-3 frases explicando o conceito com dado ou exemplo concreto. O leitor deve aprender algo real neste slide.","imagePrompt":"visual scene in english"}],"caption":"legenda completa com emojis e CTA","hashtags":"máximo 4 hashtags específicas ao nicho"}`;
     }
     const r = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
@@ -1436,7 +1159,7 @@ JSON: {"title":"título do carrossel","slideCount":${isRR?8:10},"slides":[{"slid
     function sanitizeCopy(text) { if (!text) return text; return text.replace(/\s*—\s*/g, ' ').replace(/\s*–\s*/g, ' ').replace(/^\s*[–—]\s*/gm, '').trim(); }
     if (carouselData.slides) { carouselData.slides = carouselData.slides.map(s => ({ ...s, heading: sanitizeCopy(s.heading), body: sanitizeCopy(s.body) })); }
     if (carouselData.hashtags) { const tags = carouselData.hashtags.match(/#[\wÀ-ɏ]+/g) || []; carouselData.hashtags = tags.slice(0, 4).join(' '); }
-    const item = saveGeneratedContent({ id: 'cnt_' + Date.now(), createdAt: new Date().toISOString(), status: 'pendente', type: 'carrossel', mode, profile, topic: topic || ('Carrossel ' + carouselData.slideCount + ' slides'), caption: caption || carouselData.caption, hashtags: hashtags || carouselData.hashtags, contentMachineType: contentMachineType || null, carouselData, calendarDay: calendarDay || null, calendarMonth: calendarMonth || null, calendarYear: calendarYear || null, imageUrls: [], metodologia: isRR ? 'rr' : 'brandsdecoded' });
+    const item = saveGeneratedContent({ id: 'cnt_' + Date.now(), createdAt: new Date().toISOString(), status: 'pendente', type: 'carrossel', mode, profile, topic: topic || ('Carrossel ' + carouselData.slideCount + ' slides'), caption: caption || carouselData.caption, hashtags: hashtags || carouselData.hashtags, contentMachineType: contentMachineType || null, carouselData, calendarDay: calendarDay || null, calendarMonth: calendarMonth || null, calendarYear: calendarYear || null, imageUrls: [], metodologia: 'rr' });
     res.json({ success: true, contentId: item.id, ...carouselData });
   } catch(err) { res.status(500).json({ error: err.message }); }
 });
@@ -1475,13 +1198,13 @@ app.post('/api/content-machine/generate', async (req, res) => {
   try {
     const { tipo, tema, profile } = req.body;
     if (!tipo || !tema) return res.status(400).json({ error: 'Faltam campos: tipo e tema.' });
-    const { isRR, tipos, metodologia } = getMetodologia(profile);
+    const { tipos } = getMetodologia();
     const account = getAccount(profile);
-    const brand   = BRAND_IDENTITIES[profile] || BRAND_IDENTITIES.marca;
+    const brand   = BRAND_IDENTITIES[profile] || BRAND_IDENTITIES.pessoal;
     if (!tipos[tipo]) return res.status(400).json({ error: 'Tipo "' + tipo + '" não disponível. Disponíveis: ' + Object.keys(tipos).join(', ') });
     const tipoInfo   = tipos[tipo];
     const manualNote = getManualText(profile);
-    const isVideo    = isRR && TIPOS_VIDEO_RR_SERVER.includes(tipo);
+    const isVideo    = TIPOS_VIDEO_RR_SERVER.includes(tipo);
     if (isVideo) {
       const { systemPrompt, userPrompt } = buildPromptRoteiro(tipo, tema, account, tipoInfo, manualNote, brand);
       const response = await fetch('https://api.openai.com/v1/chat/completions', { method: 'POST', headers: { Authorization: 'Bearer ' + process.env.OPENAI_API_KEY, 'Content-Type': 'application/json' }, body: JSON.stringify({ model: 'gpt-4o', temperature: 1.0, max_tokens: 3000, messages: [{ role: 'system', content: systemPrompt }, { role: 'user', content: userPrompt }] }) });
@@ -1491,18 +1214,17 @@ app.post('/api/content-machine/generate', async (req, res) => {
       const item = saveGeneratedContent({ id: 'cnt_' + Date.now(), createdAt: new Date().toISOString(), status: 'pendente', type: 'reels', contentMachineType: tipo, contentMachineTypeLabel: tipoInfo.label, profile, topic: tema, imageUrls: [], metodologia: 'rr', isRoteiro: true, roteiroData: parsed });
       return res.json({ success: true, contentId: item.id, isRoteiro: true, ...parsed });
     }
-    const systemPrompt = buildSystemPromptContentMachine(profile, tipo, metodologia, isRR);
-    const ctaFixo = account.handle === '@analuisa.moutinho' ? 'salva pra reler quando esquecer disso.' : 'Gostou? Comente CASE que nossa equipe te chama.';
-    const tipoInfo2 = isRR ? tipoInfo : tipoInfo;
-    const instrucaoEstrutura = isRR ? 'INSTRUÇÃO: ' + tipoInfo.instrucao + '\nESTRUTURA RR: Slide 1 (gancho dor/desejo) → profundidade → conclusão → CTA íntimo.' : 'INSTRUÇÃO: ' + tipoInfo.instrucao + '\nESTRUTURA BD: Slide 1 (hook 14-18 palavras) → frameworks/dados → CTA assinatura.';
-    const userPrompt = 'Tipo: ' + tipoInfo.label + '\nPerfil: ' + account.name + ' (' + account.handle + ')\nTema: "' + tema + '"\n\n' + instrucaoEstrutura + '\n\nJSON:\n{"tipo":"' + tipo + '","tipo_label":"' + tipoInfo.label + '","tema":"' + tema + '","profile":"' + profile + '","metodologia":"' + (isRR?'rr':'brandsdecoded') + '","isRoteiro":false,"slides":[{"slide":1,"funcao":"CAPA","textos":[{"posicao":1,"tipo":"hook","texto":"..."},{"posicao":2,"tipo":"sub-hook","texto":"..."}]},{"slide":2,"funcao":"DESENVOLVIMENTO","textos":[{"posicao":3,"tipo":"titulo","texto":"..."},{"posicao":4,"tipo":"paragrafo","texto":"..."}]},{"slide":8,"funcao":"CTA","textos":[{"posicao":15,"tipo":"cta","texto":"' + ctaFixo + '"}]}]}';
+    const systemPrompt = buildSystemPromptContentMachine(profile, tipo);
+    const ctaFixo = 'salva pra reler quando esquecer disso.';
+    const instrucaoEstrutura = 'INSTRUÇÃO: ' + tipoInfo.instrucao + '\nESTRUTURA RR: Slide 1 (gancho dor/desejo) → profundidade → conclusão → CTA íntimo.';
+    const userPrompt = 'Tipo: ' + tipoInfo.label + '\nPerfil: ' + account.name + ' (' + account.handle + ')\nTema: "' + tema + '"\n\n' + instrucaoEstrutura + '\n\nJSON:\n{"tipo":"' + tipo + '","tipo_label":"' + tipoInfo.label + '","tema":"' + tema + '","profile":"' + profile + '","metodologia":"rr","isRoteiro":false,"slides":[{"slide":1,"funcao":"CAPA","textos":[{"posicao":1,"tipo":"hook","texto":"..."},{"posicao":2,"tipo":"sub-hook","texto":"..."}]},{"slide":2,"funcao":"DESENVOLVIMENTO","textos":[{"posicao":3,"tipo":"titulo","texto":"..."},{"posicao":4,"tipo":"paragrafo","texto":"..."}]},{"slide":8,"funcao":"CTA","textos":[{"posicao":15,"tipo":"cta","texto":"' + ctaFixo + '"}]}]}';
     const response = await fetch('https://api.openai.com/v1/chat/completions', { method: 'POST', headers: { Authorization: 'Bearer ' + process.env.OPENAI_API_KEY, 'Content-Type': 'application/json' }, body: JSON.stringify({ model: 'gpt-4o', temperature: 1.0, max_tokens: 4500, messages: [{ role: 'system', content: systemPrompt }, { role: 'user', content: userPrompt }] }) });
     const data = await response.json();
     if (data.error) return res.status(500).json({ error: data.error.message });
     const parsed = extractJSON(data.choices[0].message.content.trim());
     const slidesNorm = normalizeSlidesFromGPT(parsed, tema);
     if (slidesNorm.length === 0) return res.status(500).json({ error: 'A IA não retornou slides válidos. Tente novamente com um tema mais específico.' });
-    const item = saveGeneratedContent({ id: 'cnt_' + Date.now(), createdAt: new Date().toISOString(), status: 'pendente', type: 'carrossel', contentMachineType: tipo, contentMachineTypeLabel: tipoInfo.label, profile, topic: tema, imageUrls: [], metodologia: isRR ? 'rr' : 'brandsdecoded', isRoteiro: false, carouselData: { title: tema, slideCount: slidesNorm.length, slides: slidesNorm, caption: '', hashtags: '' } });
+    const item = saveGeneratedContent({ id: 'cnt_' + Date.now(), createdAt: new Date().toISOString(), status: 'pendente', type: 'carrossel', contentMachineType: tipo, contentMachineTypeLabel: tipoInfo.label, profile, topic: tema, imageUrls: [], metodologia: 'rr', isRoteiro: false, carouselData: { title: tema, slideCount: slidesNorm.length, slides: slidesNorm, caption: '', hashtags: '' } });
     res.json({ success: true, contentId: item.id, isRoteiro: false, ...parsed, slidesNormalizados: slidesNorm });
   } catch(err) { console.error('Content Machine error:', err); res.status(500).json({ error: err.message }); }
 });
@@ -1511,7 +1233,7 @@ app.post('/api/content-machine/generate', async (req, res) => {
 // TENDÊNCIAS
 // ═══════════════════════════════════════════════════════════════════════════
 
-const NICHE_CONFIG = { marca: 'empreendedorismo, gestão de negócios, faturamento, operação, equipe, expansão, delivery, e-commerce, negócio local, franquia, pequenas e médias empresas, liderança empresarial, fluxo de caixa, precificação, atendimento ao cliente', pessoal: 'marca pessoal, carreira, comportamento humano, produtividade, mulheres empreendedoras, estilo de vida', virttus: 'tecnologia, inteligência artificial, transformação digital, software B2B, dados, cibersegurança' };
+const NICHE_CONFIG = { pessoal: 'marca pessoal, desenvolvimento humano, virtudes, vida ordenada, rotina, leitura, corrida, construção de longo prazo' };
 const trendsCache = {};
 const TRENDS_TTL  = 60 * 60 * 1000;
 
@@ -1540,11 +1262,11 @@ async function getGoogleTrends() {
 
 app.get('/api/trends', async (req, res) => {
   try {
-    const { profile = 'marca', refresh } = req.query;
+    const { profile = 'pessoal', refresh } = req.query;
     const now = Date.now();
     if (refresh !== 'true' && trendsCache[profile] && (now - trendsCache[profile].ts) < TRENDS_TTL) return res.json({ ...trendsCache[profile].data, cached: true });
     const account    = getAccount(profile);
-    const nicho      = NICHE_CONFIG[profile] || NICHE_CONFIG.marca;
+    const nicho      = NICHE_CONFIG[profile] || NICHE_CONFIG.pessoal;
     const manualNote = getManualText(profile);
     const googleTrends = await getGoogleTrends();
     if (!googleTrends.length) return res.json({ trends: [], updatedAt: new Date().toISOString(), warning: 'Nenhuma fonte de tendências disponível neste momento.' });
@@ -1559,26 +1281,6 @@ app.get('/api/trends', async (req, res) => {
     res.json(result);
   } catch(err) { console.error('[Trends]', err); res.status(500).json({ error: err.message }); }
 });
-
-// Busca e filtra tendências para uso no calendário (sem cache, chamada interna)
-async function getTrendsForCalendar(profile) {
-  try {
-    const account  = getAccount(profile);
-    const nicho    = NICHE_CONFIG[profile] || NICHE_CONFIG.marca;
-    const manualNote = getManualText(profile);
-    const googleTrends = await getGoogleTrends();
-    if (!googleTrends.length) return [];
-    const termosList = googleTrends.map((t, i) => (i + 1) + '. ' + t.termo + (t.volume ? ' (' + t.volume + ')' : '')).join('\n');
-    const prompt = 'Você é estrategista de conteúdo para ' + account.name + '.\nNicho: ' + nicho + '.\n' + (manualNote ? 'Contexto:\n' + manualNote + '\n' : '') + 'Termos em alta agora no Brasil:\n\n' + termosList + '\n\nSelecione os 4 termos mais relevantes para o nicho e gere ganchos prontos. JSON APENAS:\n{"trends":[{"termo":"...","gancho":"headline de 12-16 palavras pronta para usar como tópico no calendário","tipo":"tendencia"}]}';
-    const aiRes = await fetch('https://api.anthropic.com/v1/messages', { method: 'POST', headers: { 'x-api-key': process.env.ANTHROPIC_API_KEY, 'anthropic-version': '2023-06-01', 'Content-Type': 'application/json' }, body: JSON.stringify({ model: 'claude-haiku-4-5-20251001', max_tokens: 1200, messages: [{ role: 'user', content: prompt }] }) });
-    const aiData = await aiRes.json();
-    if (aiData.content?.[0]) {
-      const parsed = extractJSON(aiData.content[0].text.trim());
-      return (parsed.trends || []).slice(0, 4);
-    }
-  } catch(e) { console.warn('[TrendsForCalendar]', e.message); }
-  return [];
-}
 
 // ═══════════════════════════════════════════════════════════════════════════
 // CANVA TEMPLATES
@@ -1650,7 +1352,7 @@ app.post('/api/image/carousel-slide', async (req, res) => {
     const { heading, body, slideNumber, totalSlides, funcao, topic, profile, contentId, imagePromptHint, designStyleHint, quality: rawQuality, referenceImageB64, engine } = req.body;
     if (engine === 'none') return res.json({ success: true, b64: null, url: null, designMeta: {}, quality: 'none' });
     const quality = resolveQuality(rawQuality);
-    const brand = BRAND_IDENTITIES[profile] || BRAND_IDENTITIES.marca;
+    const brand = BRAND_IDENTITIES[profile] || BRAND_IDENTITIES.pessoal;
     const account = getAccount(profile);
     const sceneHint = imagePromptHint || topic || '';
     const promptPhoto = buildCarouselPrompt({
@@ -1908,7 +1610,7 @@ app.post('/api/canva/generate-slides', async (req, res) => {
     const notes = tmpl.notes || '';
     const results = [];
 
-    const brand = BRAND_IDENTITIES[profile] || BRAND_IDENTITIES.marca;
+    const brand = BRAND_IDENTITIES[profile] || BRAND_IDENTITIES.pessoal;
 
     for (let i = 0; i < slides.length; i++) {
       const slide = slides[i];
