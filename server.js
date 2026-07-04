@@ -9,9 +9,9 @@ const app  = express();
 const PORT = process.env.PORT || 3000;
 app.use(cors());
 app.use(express.json({ limit: '50mb' }));
-const upload = multer({ dest: 'uploads/' });
 
 const DATA_DIR       = fs.existsSync('/tmp') ? '/tmp' : '.';
+const UPLOADS_DIR    = path.join(DATA_DIR, 'uploads');
 const SCHEDULED_FILE = path.join(DATA_DIR, 'scheduled_posts.json');
 const GENERATED_FILE = path.join(DATA_DIR, 'generated_content.json');
 const CALENDAR_FILE  = path.join(DATA_DIR, 'calendar_data.json');
@@ -20,10 +20,12 @@ const IMAGES_DIR     = path.join(DATA_DIR, 'carousel_images');
 const PROFILES_FILE  = path.join(DATA_DIR, 'profiles_manual.json');
 const USER_SETTINGS_FILE  = path.join(DATA_DIR, 'user_settings.json');
 
-try { fs.mkdirSync('uploads/',        { recursive: true }); } catch(e) {}
-try { fs.mkdirSync(MANUALS_DIR,       { recursive: true }); } catch(e) {}
-try { fs.mkdirSync(IMAGES_DIR,        { recursive: true }); } catch(e) {}
-try { fs.mkdirSync('uploads/photos/', { recursive: true }); } catch(e) {}
+const upload = multer({ dest: UPLOADS_DIR + '/' });
+
+try { fs.mkdirSync(UPLOADS_DIR,                          { recursive: true }); } catch(e) {}
+try { fs.mkdirSync(MANUALS_DIR,                          { recursive: true }); } catch(e) {}
+try { fs.mkdirSync(IMAGES_DIR,                           { recursive: true }); } catch(e) {}
+try { fs.mkdirSync(path.join(UPLOADS_DIR, 'photos'),     { recursive: true }); } catch(e) {}
 
 // ── Image crop: 2:3 → 4:5 for Instagram feed ─────────────────────────────
 // GPT-Image-1 only generates 1024×1536 (2:3). Instagram feed is 4:5 (1080×1350).
@@ -728,7 +730,7 @@ async function savePhotoMeta(meta) {
 }
 
 const photoUpload = multer({
-  dest: 'uploads/photos/',
+  dest: path.join(UPLOADS_DIR, 'photos') + '/',
   fileFilter: (req, file, cb) => { if (file.mimetype.startsWith('image/')) cb(null, true); else cb(new Error('Apenas imagens')); },
   limits: { fileSize: 20 * 1024 * 1024 },
 });
@@ -1492,16 +1494,31 @@ app.post('/api/image/carousel-slide', async (req, res) => {
   } catch (err) { console.error('[image/carousel-slide]', err); res.status(500).json({ error: err.message }); }
 });
 // Salva imagem base64 em disco e devolve URL pública
-app.post('/api/image/save-b64', (req, res) => {
+app.post('/api/image/save-b64', async (req, res) => {
   try {
     const { b64, contentId, slideIndex } = req.body;
     if (!b64) return res.status(400).json({ error: 'b64 obrigatório' });
-    const uploadsDir = path.join(__dirname, 'public', 'uploads');
-    if (!fs.existsSync(uploadsDir)) fs.mkdirSync(uploadsDir, { recursive: true });
     const filename = `${contentId || 'img'}_slide${slideIndex ?? 0}_${Date.now()}.png`;
-    const filepath = path.join(uploadsDir, filename);
-    fs.writeFileSync(filepath, Buffer.from(b64, 'base64'));
-    const publicUrl = (process.env.PUBLIC_URL || '').replace(/\/$/, '') + '/uploads/' + filename;
+    const buffer = Buffer.from(b64, 'base64');
+
+    // Preferimos Supabase Storage — funciona em qualquer plataforma (Railway, Vercel, etc),
+    // já que serverless (Vercel) não tem disco persistente/servível fora de /tmp.
+    if (supabase) {
+      const { error } = await supabase.storage
+        .from('photos')
+        .upload('generated/' + filename, buffer, { contentType: 'image/png', upsert: true });
+      if (!error) {
+        const { data } = supabase.storage.from('photos').getPublicUrl('generated/' + filename);
+        if (data?.publicUrl) return res.json({ success: true, url: data.publicUrl, filename });
+      }
+      console.warn('[image/save-b64] Supabase upload falhou, a usar fallback local.');
+    }
+
+    // Fallback local (só funciona em hosts com disco persistente, ex: Railway)
+    const uploadsDir = path.join(UPLOADS_DIR, 'public');
+    if (!fs.existsSync(uploadsDir)) fs.mkdirSync(uploadsDir, { recursive: true });
+    fs.writeFileSync(path.join(uploadsDir, filename), buffer);
+    const publicUrl = (process.env.PUBLIC_URL || '').replace(/\/$/, '') + '/uploads-generated/' + filename;
     res.json({ success: true, url: publicUrl, filename });
   } catch (err) { res.status(500).json({ error: err.message }); }
 });
@@ -1632,7 +1649,7 @@ app.delete('/api/instagram/scheduled/:id', (req, res) => {
   res.json({ success: true });
 });
 
-setInterval(async () => {
+async function processScheduledPosts() {
   const posts = readJSON(SCHEDULED_FILE);
   const now   = new Date();
   let changed = false;
@@ -1655,7 +1672,25 @@ setInterval(async () => {
     } catch(err) { post.status = 'error'; post.error = err.message; changed = true; }
   }
   if (changed) writeJSON(SCHEDULED_FILE, posts);
-}, 60000);
+  return posts;
+}
+
+// Na Vercel (serverless) não há processo em background: o setInterval nunca corre.
+// Em vez disso, um Cron Job da Vercel chama /api/cron/process-scheduled periodicamente.
+if (!process.env.VERCEL) {
+  setInterval(processScheduledPosts, 60000);
+}
+
+app.get('/api/cron/process-scheduled', async (req, res) => {
+  try {
+    if (process.env.CRON_SECRET) {
+      const auth = req.get('authorization') || '';
+      if (auth !== `Bearer ${process.env.CRON_SECRET}`) return res.status(401).json({ error: 'unauthorized' });
+    }
+    const posts = await processScheduledPosts();
+    res.json({ success: true, checked: posts.length });
+  } catch(err) { res.status(500).json({ error: err.message }); }
+});
 
 // ═══════════════════════════════════════════════════════════════════════════
 // CANVA TEMPLATE SLIDE GENERATOR
@@ -1758,10 +1793,18 @@ app.post('/api/canva/generate-slides', async (req, res) => {
   }
 });
 
-app.use(express.static('public'));
+app.use('/uploads-generated', express.static(path.join(UPLOADS_DIR, 'public')));
+app.use(express.static(path.join(__dirname, 'public')));
 app.use('/api', (req, res) => { res.status(404).json({ error: `Rota não encontrada: ${req.method} ${req.originalUrl}` }); });
 app.get('*', (req, res) => { res.sendFile(path.join(__dirname, 'public', 'index.html')); });
-app.listen(PORT, () => {
-  console.log(`🚀 Máquina de Conteúdo na porta ${PORT} | quality default: ${DEFAULT_QUALITY} | valid: ${VALID_QUALITIES.join(', ')}`);
-  checkSupabaseTables();
-});
+
+// Na Vercel, o Express corre como função serverless (sem app.listen nem setInterval em background).
+// Em qualquer outro host (Railway, local, etc.) o servidor sobe normalmente.
+if (!process.env.VERCEL) {
+  app.listen(PORT, () => {
+    console.log(`🚀 Máquina de Conteúdo na porta ${PORT} | quality default: ${DEFAULT_QUALITY} | valid: ${VALID_QUALITIES.join(', ')}`);
+    checkSupabaseTables();
+  });
+}
+
+module.exports = app;

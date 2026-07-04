@@ -9,31 +9,36 @@
 
 ---
 
-## Variáveis de ambiente no Railway
+## Variáveis de ambiente
 
-As variáveis já existentes são mantidas. Apenas adicionar:
-
-| Variável | Valor | Descrição |
-|---|---|---|
-| `PUBLIC_URL` | `https://criativos-saas.up.railway.app` | URL pública do Railway (já existe como `PUBLIC_URL`) |
-
-> **Nota:** `INSTAGRAM_ACCESS_TOKEN` e `INSTAGRAM_ACCOUNT_ID_PESSOAL` já estão configurados. O servidor usa:
-> - `INSTAGRAM_ACCOUNT_ID_PESSOAL` → perfil `pessoal` (Ana Moutinho)
-> - `INSTAGRAM_ACCESS_TOKEN` → token do perfil
+| Variável | Descrição |
+|---|---|
+| `ANTHROPIC_API_KEY` | Chave da API da Anthropic (Claude) — geração de texto/copy |
+| `OPENAI_API_KEY` | Chave da API da OpenAI — geração de imagem (GPT Image-1) e roteiros |
+| `INSTAGRAM_ACCOUNT_ID_PESSOAL` | ID da conta Instagram (perfil pessoal, Ana Moutinho) |
+| `INSTAGRAM_ACCESS_TOKEN` (ou `INSTAGRAM_TOKEN_PESSOAL`) | Token de acesso à Graph API do Instagram |
+| `SUPABASE_URL` / `SUPABASE_SERVICE_KEY` | Recomendado — sem isso os dados (biblioteca, calendário, fotos) somem a cada novo deploy |
+| `PUBLIC_URL` | URL pública onde a app está hospedada |
+| `GOOGLE_CLIENT_ID` / `GOOGLE_CLIENT_SECRET` | Opcional — integração com Google Fotos |
+| `CRON_SECRET` | Opcional — protege o endpoint `/api/cron/process-scheduled` |
 
 ---
 
-## Deploy
+## Deploy na Vercel
 
-1. Copie `server.js`, `index.html` e `package.json` para o repo `criativos-saas`
-2. Faça commit e push → Railway faz auto-deploy
-3. Teste o health check: `GET /api/health`
+Este projeto está pronto para deploy na Vercel (ver `vercel.json`).
 
-```bash
-git add server.js public/index.html package.json
-git commit -m "feat: calendário editorial, publicação e agendamento IG, batch de imagens"
-git push origin main
-```
+1. Importe o repositório em [vercel.com/new](https://vercel.com/new)
+2. Configure as variáveis de ambiente acima em Project Settings → Environment Variables
+3. Deploy — a Vercel detecta `vercel.json` e sobe `server.js` como função serverless, servindo `public/index.html` como frontend
+4. **Agendamento de posts:** como funções serverless não mantêm processos em background, o agendamento roda via **Vercel Cron** (`/api/cron/process-scheduled`, configurado em `vercel.json` a cada 5 min). No plano **Hobby** da Vercel, cron jobs só rodam 1x/dia — para agendamento com granularidade de minutos é necessário o plano **Pro**.
+5. **Duração de função:** geração de imagem (GPT Image-1) pode levar dezenas de segundos. `vercel.json` já define `maxDuration: 60`, mas isso só é respeitado em planos pagos (no Hobby o limite é 10s) — se notar timeouts na geração de imagem, considere o plano Pro.
+
+## Deploy no Railway (alternativa)
+
+1. Conecte o repositório no Railway — ele detecta `railway.json`/`package.json` automaticamente
+2. Configure as mesmas variáveis de ambiente acima
+3. Deploy automático a cada push (`node server.js`, sem limite de duração de request nem necessidade de cron externo — o `setInterval` interno cuida do agendamento)
 
 ---
 
