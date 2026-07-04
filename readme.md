@@ -9,36 +9,24 @@
 
 ---
 
-## Variáveis de ambiente
+## Variáveis de ambiente (Railway)
 
-| Variável | Descrição |
-|---|---|
-| `ANTHROPIC_API_KEY` | Chave da API da Anthropic (Claude) — geração de texto/copy |
-| `OPENAI_API_KEY` | Chave da API da OpenAI — geração de imagem (GPT Image-1) e roteiros |
-| `INSTAGRAM_ACCOUNT_ID_PESSOAL` | ID da conta Instagram (perfil pessoal, Ana Moutinho) |
-| `INSTAGRAM_ACCESS_TOKEN` (ou `INSTAGRAM_TOKEN_PESSOAL`) | Token de acesso à Graph API do Instagram |
-| `SUPABASE_URL` / `SUPABASE_SERVICE_KEY` | Recomendado — sem isso os dados (biblioteca, calendário, fotos) somem a cada novo deploy |
-| `PUBLIC_URL` | URL pública onde a app está hospedada |
-| `GOOGLE_CLIENT_ID` / `GOOGLE_CLIENT_SECRET` | Opcional — integração com Google Fotos |
-| `CRON_SECRET` | Opcional — protege o endpoint `/api/cron/process-scheduled` |
+| Variável | Obrigatória? | Descrição |
+|---|---|---|
+| `ANTHROPIC_API_KEY` | Sim | Chave da API da Anthropic (Claude) — geração de texto/copy |
+| `OPENAI_API_KEY` | Sim | Chave da API da OpenAI — geração de imagem (GPT Image-1) e roteiros |
+| `INSTAGRAM_ACCOUNT_ID_PESSOAL` | Sim (para publicar) | ID da conta Instagram Business (perfil pessoal, Ana Moutinho) |
+| `INSTAGRAM_ACCESS_TOKEN` | Sim (para publicar) | Token de acesso de longa duração à Graph API do Instagram |
+| `PUBLIC_URL` | Sim | URL pública gerada pelo Railway (ex: `https://xxxx.up.railway.app`) |
+| `SUPABASE_URL` | Recomendado | URL do projeto Supabase — sem isso os dados (biblioteca, calendário, fotos) somem a cada novo deploy |
+| `SUPABASE_SERVICE_KEY` | Recomendado | Service Role Key do Supabase |
+| `GOOGLE_CLIENT_ID` / `GOOGLE_CLIENT_SECRET` | Opcional | Integração com Google Fotos |
 
----
+## Deploy no Railway
 
-## Deploy na Vercel
-
-Este projeto está pronto para deploy na Vercel (ver `vercel.json`).
-
-1. Importe o repositório em [vercel.com/new](https://vercel.com/new)
-2. Configure as variáveis de ambiente acima em Project Settings → Environment Variables
-3. Deploy — a Vercel detecta `vercel.json` e sobe `server.js` como função serverless, servindo `public/index.html` como frontend
-4. **Agendamento de posts:** como funções serverless não mantêm processos em background, o agendamento roda via **Vercel Cron** (`/api/cron/process-scheduled`, configurado em `vercel.json` a cada 5 min). No plano **Hobby** da Vercel, cron jobs só rodam 1x/dia — para agendamento com granularidade de minutos é necessário o plano **Pro**.
-5. **Duração de função:** geração de imagem (GPT Image-1) pode levar dezenas de segundos. `vercel.json` já define `maxDuration: 60`, mas isso só é respeitado em planos pagos (no Hobby o limite é 10s) — se notar timeouts na geração de imagem, considere o plano Pro.
-
-## Deploy no Railway (alternativa)
-
-1. Conecte o repositório no Railway — ele detecta `railway.json`/`package.json` automaticamente
-2. Configure as mesmas variáveis de ambiente acima
-3. Deploy automático a cada push (`node server.js`, sem limite de duração de request nem necessidade de cron externo — o `setInterval` interno cuida do agendamento)
+1. Conecte o repositório no Railway — ele detecta `railway.json`/`package.json` automaticamente e roda `node server.js`
+2. Configure as variáveis de ambiente acima em Project Settings → Variables
+3. Deploy automático a cada push
 
 ---
 

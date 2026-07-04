@@ -1675,22 +1675,7 @@ async function processScheduledPosts() {
   return posts;
 }
 
-// Na Vercel (serverless) não há processo em background: o setInterval nunca corre.
-// Em vez disso, um Cron Job da Vercel chama /api/cron/process-scheduled periodicamente.
-if (!process.env.VERCEL) {
-  setInterval(processScheduledPosts, 60000);
-}
-
-app.get('/api/cron/process-scheduled', async (req, res) => {
-  try {
-    if (process.env.CRON_SECRET) {
-      const auth = req.get('authorization') || '';
-      if (auth !== `Bearer ${process.env.CRON_SECRET}`) return res.status(401).json({ error: 'unauthorized' });
-    }
-    const posts = await processScheduledPosts();
-    res.json({ success: true, checked: posts.length });
-  } catch(err) { res.status(500).json({ error: err.message }); }
-});
+setInterval(processScheduledPosts, 60000);
 
 // ═══════════════════════════════════════════════════════════════════════════
 // CANVA TEMPLATE SLIDE GENERATOR
@@ -1798,13 +1783,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/api', (req, res) => { res.status(404).json({ error: `Rota não encontrada: ${req.method} ${req.originalUrl}` }); });
 app.get('*', (req, res) => { res.sendFile(path.join(__dirname, 'public', 'index.html')); });
 
-// Na Vercel, o Express corre como função serverless (sem app.listen nem setInterval em background).
-// Em qualquer outro host (Railway, local, etc.) o servidor sobe normalmente.
-if (!process.env.VERCEL) {
-  app.listen(PORT, () => {
-    console.log(`🚀 Máquina de Conteúdo na porta ${PORT} | quality default: ${DEFAULT_QUALITY} | valid: ${VALID_QUALITIES.join(', ')}`);
-    checkSupabaseTables();
-  });
-}
-
-module.exports = app;
+app.listen(PORT, () => {
+  console.log(`🚀 Máquina de Conteúdo na porta ${PORT} | quality default: ${DEFAULT_QUALITY} | valid: ${VALID_QUALITIES.join(', ')}`);
+  checkSupabaseTables();
+});
