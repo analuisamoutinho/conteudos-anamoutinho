@@ -205,21 +205,72 @@ function writeJSON(file, data) {
 // ═══════════════════════════════════════════════════════════════════════════
 
 const METODOLOGIA_RR = {
-  nome: 'Metodologia RR — Sistema de Conteúdo Viral',
+  nome: 'Metodologia RR — Bolha RR (Robert Rezende), 7 Pilares',
   filosofia: `
 FILOSOFIA BASE (Metodologia RR):
 - Conteúdo não é venda, é transformação. Produza com intenção genuína, não para vender.
 - Sirva antes de cobrar. Gere tanto valor que quando cobrar pareça barato.
 - Autenticidade supera produção. Pessoas conectam com pessoas, não com personagens polidos.
-- Profundidade acima de brevidade. Um conteúdo de 5min que conecta vale mais que 10 de 7 segundos.
-- Você não é um profissional de 10 segundos — não se comporte como um.
+- Profundidade acima de brevidade. Um conteúdo que conecta de verdade vale mais que dez rasos.
+- Perfil morno não engaja e não vende. Ter ponto de vista claro é o que atrai comunidade, não o que vende.
+`,
+  posicionamento: `
+PILAR 1 — POSICIONAMENTO & BANDEIRA:
+- Toda peça de conteúdo deve deixar claro o que a Ana defende e o que ela não tolera. Não é polêmica gratuita — é ponto de vista.
+- Use o "inimigo comum" do perfil (um comportamento, crença ou hábito — nunca uma pessoa) como pano de fundo quando fizer sentido: é isso que une quem lê.
+- Seja incopiável: fale de vivência real, opinião e visão de mundo — nunca do genérico que qualquer IA produziria.
+`,
+  storytelling: `
+PILAR 2 — STORYTELLING (a arte de não ser ignorado):
+- Fale na terceira pessoa sobre o público sempre que possível: em vez de "eu faço isso", prefira "quem vive isso sente exatamente...". A pessoa precisa se ver no conteúdo, não só ouvir sobre a vida da Ana.
+- Construa personagens recorrentes do universo da Ana quando fizer sentido (o crítico interno, a versão performática, a "eu de antes") — arquétipos que a audiência reconhece com o tempo.
+- Pense em "novela diária": cada peça pode ser um capítulo — uma continuação, uma dúvida em aberto, um desdobramento — que dá vontade de acompanhar o próximo.
+- O atrito e o contraste engajam mais que o consenso morno: nomear uma tensão real (perfeccionismo vs ação, pressa vs alicerce) gera mais identificação que afirmação genérica positiva.
+- Observe o cotidiano como fonte: pequenas cenas reais valem mais que frases de efeito descoladas da vida.
+`,
+  audienciaComunidade: `
+PILAR 3 — AUDIÊNCIA VS. COMUNIDADE:
+- Audiência é número (consome e some). Comunidade é relação (se identifica, defende, volta, compra de novo).
+- Para construir comunidade, o conteúdo precisa oferecer: identidade compartilhada (linguagem própria, sensação de pertencimento), prova de transformação (não só o resultado, mas a lógica e o princípio por trás dele) e espaço de conversa real (pergunta aberta, convite ao diálogo — não só afirmação fechada).
+`,
+  ramificacoes: `
+PILAR 4 — RAMIFICAÇÕES DE CONTEÚDO (a função estratégica de cada peça):
+Toda peça de conteúdo cumpre uma destas funções — escolha a mais adequada ao tema antes de escrever:
+- INIMIGO COMUM: nomeia o comportamento/crença que a Ana não tolera. Gera identidade e engajamento.
+- DESEJO DO PÚBLICO: mostra a vida, o processo, os bastidores do que o público deseja construir. Atrai e retém.
+- DOR DO PÚBLICO: nomeia um erro comum ou dificuldade real. Conscientiza e aproxima.
+- PROVA DE TRANSFORMAÇÃO: um resultado real (da Ana ou de quem ela influenciou) com o princípio replicável explicado — nunca só o print do resultado.
+- ENTRETENIMENTO/OBSERVAÇÃO: cenas do cotidiano, situações reais, leveza. Alimenta o algoritmo e atrai gente nova.
+- FERRAMENTA/MICRO-TRANSFORMAÇÃO: um checklist, um passo a passo pequeno e aplicável — gera valor imediato.
+Regra de ouro: não fale do "produto" (a vida ideal, o alicerce) — fale da vida de quem ainda está construindo isso, como o público vive.
+`,
+  escadaCompromisso: `
+PILAR 5 — ESCADA DE COMPROMISSO (vender sem vender):
+Venda chata é oferta antes da confiança. Venda elegante é a oferta formalizar uma decisão que já estava madura.
+Ao escrever um CTA, escolha o tipo mais adequado — nunca force a oferta:
+- CTA DE PERMISSÃO: "se quiser, conto/mando mais sobre isso" — convite, não imposição.
+- CTA DE TRIAGEM: "se você sente A, comenta A; se sente B, comenta B" — entende antes de oferecer.
+- CTA DE FILTRO: "isso aqui não é pra todo mundo, e tudo bem" — eleva o valor percebido sem parecer carente.
+Na maior parte do conteúdo pessoal da Ana, o CTA certo é de permissão ou reflexão íntima ("me conta se você também sente isso", "salva pra reler") — sem pressão de venda.
+`,
+  concordes: `
+PILAR 6 — ARRANCAR CONCORDES:
+- Uma sequência de afirmações que o leitor confirma mentalmente ("é verdade, isso acontece comigo") constrói confiança rápido.
+- Use isso especialmente no gancho e nos primeiros slides/segundos: nomeie 2-4 situações específicas e reconhecíveis antes de desenvolver a ideia central.
+`,
+  produtoEMentalidade: `
+PILAR 7 — PRODUTO NASCE DA AUDIÊNCIA / MENTALIDADE RR:
+- O conteúdo vem antes do produto: primeiro entende o que o público pede, o produto (se houver) nasce disso.
+- Repetição é poder: não tenha medo de retomar os mesmos temas centrais (ordem, virtude, corrida, leitura, alicerce) de ângulos diferentes.
+- Ação antes da perfeição: o conteúdo pode ser imperfeito — autenticidade importa mais que produção polida.
 `,
   estruturaViral: `
-ESTRUTURA DE CONTEÚDOM VIRAL (3 pilares obrigatórios):
-1. GANCHO (primeiros 3 segundos / primeiro slide): toca na DOR ou DESEJO real.
-2. HISTÓRIA (desenvolvimento): conecta com o gancho e manteia interesse.
-3. CONCLUSÃO / TESE: sem conclusão, o conteúdo é tirado de contexto.
-4. TEMA ESPECÍFICO: cite seu público pelo nome, profissão, situação.
+ESTRUTURA DE CONTEÚDO (aplicando os pilares acima):
+1. GANCHO (primeiros 3 segundos / primeiro slide): toca na DOR ou DESEJO real, idealmente puxando 1-2 concordes específicos.
+2. DESENVOLVIMENTO: conecta com o gancho, mantém a tensão/interesse, cumpre a função escolhida no Pilar 4 (Ramificações).
+3. CONCLUSÃO / TESE: sem conclusão, o conteúdo é tirado de contexto — feche com uma ideia clara, não solta.
+4. CTA (quando houver): escolha entre permissão, triagem ou filtro (Pilar 5). Nunca insistente.
+5. TEMA ESPECÍFICO: fale na 3ª pessoa sobre quem vive aquilo, cite a situação concreta, não o genérico.
 `,
   formatos: `
 FORMATOS DISPONÍVEIS PARA MARCA PESSOAL (Metodologia RR):
@@ -248,19 +299,34 @@ function getMetodologia() {
   return { metodologia: METODOLOGIA_RR, tipos: TIPOS_RR, isRR: true };
 }
 
+function build7PilaresRR() {
+  return [
+    METODOLOGIA_RR.posicionamento,
+    METODOLOGIA_RR.storytelling,
+    METODOLOGIA_RR.audienciaComunidade,
+    METODOLOGIA_RR.ramificacoes,
+    METODOLOGIA_RR.escadaCompromisso,
+    METODOLOGIA_RR.concordes,
+    METODOLOGIA_RR.produtoEMentalidade,
+  ].join('\n');
+}
+
 function buildSystemPromptCarrossel(profile) {
   const brand   = BRAND_IDENTITIES[profile] || BRAND_IDENTITIES.pessoal;
   const account = getAccount(profile);
   const manualNote = getManualText(profile);
 
-  return `Você é o gerador de conteúdo da ${account.name} — marca pessoal seguindo a Metodologia RR.
+  return `Você é o gerador de conteúdo da ${account.name} — marca pessoal seguindo a Metodologia RR (Bolha RR, 7 pilares).
 
 ${METODOLOGIA_RR.filosofia}
+${build7PilaresRR()}
 ${METODOLOGIA_RR.estruturaViral}
 ${brand.copyDNA || ''}
 ${manualNote ? `\nDIRETRIZES DO PERFIL:\n${manualNote}` : ''}
 
 REGRAS OBRIGATÓRIAS:
+- Antes de escrever, escolha internamente qual das 6 funções do Pilar 4 (Ramificações) esta peça cumpre, e construa o conteúdo em torno dela.
+- O CTA final (se houver) deve seguir o Pilar 5 (permissão, triagem ou filtro) — nunca insistente ou de venda direta.
 - Retornar APENAS JSON valido, sem markdown. O array "slides" DEVE ter entre 7 e 10 objetos. Cada slide DEVE ter "textos" como array
 - NUNCA usar travessão (—) nem hífen no meio de frases
 - NUNCA usar: ${METODOLOGIA_RR.tonsProibidos.join(', ')}
@@ -274,10 +340,10 @@ function buildSystemPromptContentMachine(profile, tipo) {
   const manualNote = getManualText(profile);
   const tipoInfo = TIPOS_RR[tipo] || TIPOS_RR.carrossel;
 
-  return `Você é o gerador de conteúdo da ${account.name} — marca pessoal, Metodologia RR.
+  return `Você é o gerador de conteúdo da ${account.name} — marca pessoal, Metodologia RR (Bolha RR, 7 pilares).
 
 ${METODOLOGIA_RR.filosofia}
-${METODOLOGIA_RR.estruturaViral}
+${build7PilaresRR()}
 ${brand.copyDNA || ''}
 ${manualNote ? `\nDIRETRIZES DO PERFIL:\n${manualNote}` : ''}
 
@@ -285,6 +351,8 @@ FORMATO ATUAL: ${tipoInfo.emoji} ${tipoInfo.label}
 INSTRUÇÃO ESPECÍFICA: ${tipoInfo.instrucao}
 
 REGRAS:
+- Antes de escrever, escolha internamente qual das 6 funções do Pilar 4 (Ramificações) esta peça cumpre.
+- O CTA (se houver) segue o Pilar 5 (permissão, triagem ou filtro) — nunca insistente.
 - NUNCA usar: ${METODOLOGIA_RR.tonsProibidos.join(', ')}
 - Tom: ${METODOLOGIA_RR.tonsPermitidos.join(', ')}
 - Retornar APENAS JSON valido, sem markdown. O array "slides" DEVE ter entre 7 e 10 objetos. Cada slide DEVE ter "textos" como array`;
@@ -314,6 +382,8 @@ Construção com profundidade — de rotina, de casa interior, de fé, de saúde
 MENSAGEM CENTRAL: A vida que você deseja precisa de alicerce, não apenas de desejo.
 
 ATENÇÃO CRÍTICA: Este "sobre mim" descreve uma direção e um conjunto de valores — não uma chegada. A Ana ainda está construindo tudo isso. O conteúdo deve soar como o diário de quem tem clareza sobre o que quer mas ainda está aprendendo a viver à altura disso, não como o depoimento de quem já resolveu.`,
+    manifesto: 'Defendo: rotina com propósito, profundidade acima de pressa, virtude como construção diária, honestidade sobre o processo real. Não tolero: performance vazia, vida "perfeita" de vitrine, autoajuda genérica, pressa que substitui alicerce.',
+    inimigoComum: 'A cultura da pressa vazia e da vida performática nas redes: a ideia de que se precisa parecer que já chegou, de que produtividade sem propósito é virtude, e de que autoajuda genérica resolve o que só se resolve com constância e verdade.',
     tom: 'Reflexivo, íntimo, honesto sobre as próprias contradições. Fala como alguém que está no meio do processo — não como quem chegou do outro lado. Levemente provocativo, mas sem didatismo. Nunca guru, nunca coach, nunca superior. A voz é de companheira de caminhada: "eu também estou tentando entender isso". Usa primeira pessoa real: duvida, erra, recomeça, ri de si mesma às vezes.',
     proibidos: ['Desbloqueie', 'Seja sua melhor versão', 'Transforme sua vida', 'Coach', 'Mentoria', 'Sucesso', 'Fórmula', 'Método infalível', 'Próximo nível', 'Descubra', 'Segredo', 'Aprendi que', 'A verdade é que', 'O segredo é simples', 'Você precisa', 'Faça assim', 'É simples assim'],
     pilares: [
@@ -368,6 +438,8 @@ function getProfileManualContext(profileId) {
     p.niche        ? `NICHO: ${p.niche}`                      : '',
     p.publicoAlvo  ? `PÚBLICO-ALVO: ${p.publicoAlvo}`        : '',
     p.tom          ? `TOM DE VOZ: ${p.tom}`                   : '',
+    p.manifesto    ? `MANIFESTO (Pilar 1 — o que ela defende e não tolera): ${p.manifesto}` : '',
+    p.inimigoComum ? `INIMIGO COMUM (Pilar 1 — comportamento/crença que une a comunidade contra): ${p.inimigoComum}` : '',
     p.pilares?.length    ? `PILARES DE CONTEÚDOM: ${p.pilares.join(', ')}` : '',
     p.proibidos?.length  ? `TERMOS PROIBIDOS: ${p.proibidos.join(', ')}` : '',
     p.cta          ? `CTA PADRÃO DO PERFIL: ${p.cta}`         : '',
@@ -1017,7 +1089,7 @@ app.post('/api/calendar/generate', async (req, res) => {
       const examplePosts = postsPerDay === 1
         ? '[{"time":"09:00","type":"lofi","topic":"Por que a maioria das pessoas sabota o próprio crescimento"}]'
         : '[{"time":"09:00","type":"carrossel","topic":"A mentira que o Instagram vende sobre consistência"},{"time":"18:00","type":"frase","topic":"Você não precisa de motivação, precisa de estrutura"}]';
-      const blockPrompt = 'Você é estrategista de conteúdo para Instagram. Crie o calendário editorial para ' + account.name + ' — ' + month + '/' + year + '.\n\n' + brandContext + '\n' + (manualNote ? 'DIRETRIZES DO PERFIL:\n' + manualNote + '\n\n' : '') + 'TIPOS DISPONÍVEIS: ' + tiposDisponiveis + '\n\nREGRAS DO TOPIC: Topics devem ser específicos e pessoais.\nHORÁRIOS: use 09:00 para manhã e 18:00 para tarde/noite.\n\nRESPONDA APENAS COM JSON VÁLIDO, SEM MARKDOWN.\n\nFormato EXATO:\n{\n  "days": [\n    {"day": ' + blockStart + ', "posts": ' + examplePosts + '}\n  ]\n}\n\nGere TODOS os dias de ' + blockStart + ' a ' + blockEnd + ' (total: ' + daysInBlock + ' dias, ' + postsPerDay + ' post(s) por dia).';
+      const blockPrompt = 'Você é estrategista de conteúdo para Instagram, seguindo a Metodologia RR (Bolha RR, 7 pilares).\n\n' + build7PilaresRR() + '\nCrie o calendário editorial para ' + account.name + ' — ' + month + '/' + year + '.\n\n' + brandContext + '\n' + (manualNote ? 'DIRETRIZES DO PERFIL:\n' + manualNote + '\n\n' : '') + 'TIPOS DISPONÍVEIS: ' + tiposDisponiveis + '\n\nREGRAS DO TOPIC: Topics devem ser específicos e pessoais. Distribua os topics entre as 6 funções do Pilar 4 (Ramificações) ao longo do período — não repita a mesma função em dias seguidos.\nHORÁRIOS: use 09:00 para manhã e 18:00 para tarde/noite.\n\nRESPONDA APENAS COM JSON VÁLIDO, SEM MARKDOWN.\n\nFormato EXATO:\n{\n  "days": [\n    {"day": ' + blockStart + ', "posts": ' + examplePosts + '}\n  ]\n}\n\nGere TODOS os dias de ' + blockStart + ' a ' + blockEnd + ' (total: ' + daysInBlock + ' dias, ' + postsPerDay + ' post(s) por dia).';
       const blockRes = await fetch('https://api.anthropic.com/v1/messages', {
         method: 'POST',
         headers: { 'x-api-key': process.env.ANTHROPIC_API_KEY, 'anthropic-version': '2023-06-01', 'Content-Type': 'application/json' },
@@ -1074,7 +1146,7 @@ app.post('/api/calendar/generate-week', async (req, res) => {
     const daysText = weekDays.map(d => d.dayOfWeek + ' ' + d.date).join(', ');
 
     const examplePost = '{"time":"09:00","type":"lofi","topic":"Tema específico aqui"}';
-    const prompt = 'Você é estrategista de conteúdo para ' + account.name + ' (' + account.handle + ').\n\n' + (manualNote ? 'DIRETRIZES:\n' + manualNote + '\n\n' : '') + 'TIPOS DISPONÍVEIS: ' + tiposDisponiveis + '\n\nCrie um plano editorial para a semana: ' + daysText + '\n' + postsPerDay + ' post(s) por dia. Topics devem ser específicos e pessoais.\n\nRESPONDA APENAS JSON VÁLIDO:\n{"days":[{"date":"2026-06-09","dayOfWeek":"Segunda","posts":[' + examplePost + ']}]}';
+    const prompt = 'Você é estrategista de conteúdo para ' + account.name + ' (' + account.handle + '), seguindo a Metodologia RR (Bolha RR, 7 pilares).\n\n' + build7PilaresRR() + '\n' + (manualNote ? 'DIRETRIZES:\n' + manualNote + '\n\n' : '') + 'TIPOS DISPONÍVEIS: ' + tiposDisponiveis + '\n\nCrie um plano editorial para a semana: ' + daysText + '\n' + postsPerDay + ' post(s) por dia. Topics devem ser específicos e pessoais. Distribua entre as 6 funções do Pilar 4 (Ramificações) ao longo da semana.\n\nRESPONDA APENAS JSON VÁLIDO:\n{"days":[{"date":"2026-06-09","dayOfWeek":"Segunda","posts":[' + examplePost + ']}]}';
     const r = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
       headers: { 'x-api-key': process.env.ANTHROPIC_API_KEY, 'anthropic-version': '2023-06-01', 'Content-Type': 'application/json' },
@@ -1142,7 +1214,7 @@ JSON: {"title":"título do carrossel","slideCount":N,"slides":[{"slideNumber":1,
       prompt = `Perfil: ${account.name} (${account.handle})
 Tema: "${topic}"
 Total: 7-8 slides.
-ESTRUTURA RR: Slide 1 (gancho que nomeia dor/desejo real) → slides de profundidade → conclusão com tese → CTA íntimo.
+ESTRUTURA RR: Slide 1 (gancho que nomeia dor/desejo real, com 1-2 concordes) → slides de profundidade cumprindo uma função do Pilar 4 (Ramificações) → conclusão com tese → CTA seguindo o Pilar 5 (permissão, triagem ou filtro).
 
 REGRA CRÍTICA: cada slide DEVE ter body com 2-3 frases de conteúdo real — dado concreto, explicação do conceito, exemplo prático ou consequência. NUNCA body vazio ou com menos de 2 frases.
 
@@ -1187,10 +1259,9 @@ function normalizeSlidesFromGPT(parsed, fallbackTema) {
 const TIPOS_VIDEO_RR_SERVER = ['lofi', 'video_curto', 'video_medio'];
 
 function buildPromptRoteiro(tipo, tema, account, tipoInfo, manualNote, brand) {
-  const ctaFixo = account.handle === '@analuisa.moutinho' ? 'salva pra reler quando esquecer disso. e me diz nos comentários se isso fez sentido pra você.' : 'salva esse conteúdo e me conta nos comentários o que mais fez sentido pra você.';
-  const estruturas = { lofi: 'ESTRUTURA LO-FI: GANCHO (0-3s) → DESENVOLVIMENTO → CONCLUSÃO/TESE → CTA: "' + ctaFixo + '"', video_curto: 'ESTRUTURA VÍDEO CURTO (até 13s): UMA ÚNICA SACADA. Máximo 2-3 frases.', video_medio: 'ESTRUTURA VÍDEO MÉDIO (até 60s): GANCHO (0-5s) → DESENVOLVIMENTO (5-50s) → CONCLUSÃO + CTA (50-60s)' };
-  const systemPrompt = 'Você é roteirista de conteúdo para Instagram da ' + account.name + ' — marca pessoal, Metodologia RR.\n\nNUNCA usar: motivacional genérico, guru, coach, desbloqueie, seja sua melhor versão.\n' + (brand.copyDNA || '') + '\n' + (manualNote ? '\nDIRETRIZES DO PERFIL:\n' + manualNote + '\n' : '') + '\nTIPO: ' + tipoInfo.emoji + ' ' + tipoInfo.label + '\n' + (estruturas[tipo] || '') + '\n\nRetornar APENAS JSON valido, sem markdown.';
-  const userPrompt = 'Perfil: ' + account.name + ' (' + account.handle + ')\nTema: "' + tema + '"\nTipo: ' + tipoInfo.label + '\n\nJSON:\n{"tipo":"' + tipo + '","tipo_label":"' + tipoInfo.label + '","tema":"' + tema + '","isRoteiro":true,"duracao_estimada":"ex: 45-55 segundos","gancho":"primeira frase exata a ser dita na câmera","blocos":[{"id":1,"label":"GANCHO","tempo":"0-5s","texto":"...","nota_direcao":"..."},{"id":2,"label":"DESENVOLVIMENTO","tempo":"5-40s","texto":"...","nota_direcao":"..."},{"id":3,"label":"CONCLUSÃO","tempo":"40-55s","texto":"...","nota_direcao":"..."},{"id":4,"label":"CTA","tempo":"55-60s","texto":"' + ctaFixo + '","nota_direcao":"falar com intimidade"}],"dicas_gravacao":["dica específica"],"legenda_sugerida":"legenda com emojis, máximo 4 hashtags"}';
+  const estruturas = { lofi: 'ESTRUTURA LO-FI: GANCHO (0-3s, com 1-2 concordes) → DESENVOLVIMENTO (cumpre uma função do Pilar 4) → CONCLUSÃO/TESE → CTA (Pilar 5: permissão, triagem ou filtro)', video_curto: 'ESTRUTURA VÍDEO CURTO (até 13s): UMA ÚNICA SACADA. Máximo 2-3 frases.', video_medio: 'ESTRUTURA VÍDEO MÉDIO (até 60s): GANCHO (0-5s, com concordes) → DESENVOLVIMENTO (5-50s) → CONCLUSÃO + CTA (50-60s, Pilar 5)' };
+  const systemPrompt = 'Você é roteirista de conteúdo para Instagram da ' + account.name + ' — marca pessoal, Metodologia RR (Bolha RR, 7 pilares).\n\n' + METODOLOGIA_RR.filosofia + '\n' + build7PilaresRR() + '\nNUNCA usar: ' + METODOLOGIA_RR.tonsProibidos.join(', ') + '.\n' + (brand.copyDNA || '') + '\n' + (manualNote ? '\nDIRETRIZES DO PERFIL:\n' + manualNote + '\n' : '') + '\nTIPO: ' + tipoInfo.emoji + ' ' + tipoInfo.label + '\n' + (estruturas[tipo] || '') + '\n\nRetornar APENAS JSON valido, sem markdown.';
+  const userPrompt = 'Perfil: ' + account.name + ' (' + account.handle + ')\nTema: "' + tema + '"\nTipo: ' + tipoInfo.label + '\n\nEscolha qual função do Pilar 4 (Ramificações) este roteiro cumpre e escreva o CTA seguindo o Pilar 5 (permissão, triagem ou filtro — nunca insistente).\n\nJSON:\n{"tipo":"' + tipo + '","tipo_label":"' + tipoInfo.label + '","tema":"' + tema + '","isRoteiro":true,"duracao_estimada":"ex: 45-55 segundos","gancho":"primeira frase exata a ser dita na câmera","blocos":[{"id":1,"label":"GANCHO","tempo":"0-5s","texto":"...","nota_direcao":"..."},{"id":2,"label":"DESENVOLVIMENTO","tempo":"5-40s","texto":"...","nota_direcao":"..."},{"id":3,"label":"CONCLUSÃO","tempo":"40-55s","texto":"...","nota_direcao":"..."},{"id":4,"label":"CTA","tempo":"55-60s","texto":"...","nota_direcao":"falar com intimidade"}],"dicas_gravacao":["dica específica"],"legenda_sugerida":"legenda com emojis, máximo 4 hashtags"}';
   return { systemPrompt, userPrompt };
 }
 
@@ -1215,9 +1286,8 @@ app.post('/api/content-machine/generate', async (req, res) => {
       return res.json({ success: true, contentId: item.id, isRoteiro: true, ...parsed });
     }
     const systemPrompt = buildSystemPromptContentMachine(profile, tipo);
-    const ctaFixo = 'salva pra reler quando esquecer disso.';
-    const instrucaoEstrutura = 'INSTRUÇÃO: ' + tipoInfo.instrucao + '\nESTRUTURA RR: Slide 1 (gancho dor/desejo) → profundidade → conclusão → CTA íntimo.';
-    const userPrompt = 'Tipo: ' + tipoInfo.label + '\nPerfil: ' + account.name + ' (' + account.handle + ')\nTema: "' + tema + '"\n\n' + instrucaoEstrutura + '\n\nJSON:\n{"tipo":"' + tipo + '","tipo_label":"' + tipoInfo.label + '","tema":"' + tema + '","profile":"' + profile + '","metodologia":"rr","isRoteiro":false,"slides":[{"slide":1,"funcao":"CAPA","textos":[{"posicao":1,"tipo":"hook","texto":"..."},{"posicao":2,"tipo":"sub-hook","texto":"..."}]},{"slide":2,"funcao":"DESENVOLVIMENTO","textos":[{"posicao":3,"tipo":"titulo","texto":"..."},{"posicao":4,"tipo":"paragrafo","texto":"..."}]},{"slide":8,"funcao":"CTA","textos":[{"posicao":15,"tipo":"cta","texto":"' + ctaFixo + '"}]}]}';
+    const instrucaoEstrutura = 'INSTRUÇÃO: ' + tipoInfo.instrucao + '\nESTRUTURA RR: Slide 1 (gancho dor/desejo, com concordes) → desenvolvimento cumprindo uma função do Pilar 4 → conclusão → CTA seguindo o Pilar 5 (permissão, triagem ou filtro).';
+    const userPrompt = 'Tipo: ' + tipoInfo.label + '\nPerfil: ' + account.name + ' (' + account.handle + ')\nTema: "' + tema + '"\n\n' + instrucaoEstrutura + '\n\nJSON:\n{"tipo":"' + tipo + '","tipo_label":"' + tipoInfo.label + '","tema":"' + tema + '","profile":"' + profile + '","metodologia":"rr","isRoteiro":false,"slides":[{"slide":1,"funcao":"CAPA","textos":[{"posicao":1,"tipo":"hook","texto":"..."},{"posicao":2,"tipo":"sub-hook","texto":"..."}]},{"slide":2,"funcao":"DESENVOLVIMENTO","textos":[{"posicao":3,"tipo":"titulo","texto":"..."},{"posicao":4,"tipo":"paragrafo","texto":"..."}]},{"slide":8,"funcao":"CTA","textos":[{"posicao":15,"tipo":"cta","texto":"..."}]}]}';
     const response = await fetch('https://api.openai.com/v1/chat/completions', { method: 'POST', headers: { Authorization: 'Bearer ' + process.env.OPENAI_API_KEY, 'Content-Type': 'application/json' }, body: JSON.stringify({ model: 'gpt-4o', temperature: 1.0, max_tokens: 4500, messages: [{ role: 'system', content: systemPrompt }, { role: 'user', content: userPrompt }] }) });
     const data = await response.json();
     if (data.error) return res.status(500).json({ error: data.error.message });
