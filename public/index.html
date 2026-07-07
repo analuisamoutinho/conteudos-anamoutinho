@@ -6,7 +6,7 @@
 <title>Máquina de Conteúdo</title>
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,400&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,400&family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400&display=swap" rel="stylesheet" />
 <style>
 :root {
   --purple:    #160728;
@@ -297,6 +297,13 @@ body{font-family:var(--font-body);background:var(--pale);color:var(--dark);min-h
 .photo-suggestions{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap;}
 .photo-suggestion-item{width:64px;height:64px;border-radius:8px;object-fit:cover;border:2px solid transparent;cursor:pointer;transition:border-color .2s;}
 .photo-suggestion-item:hover,.photo-suggestion-item.selected{border-color:var(--magenta);}
+.feed-rhythm-row{display:flex;gap:6px;flex-wrap:wrap;}
+.fr-btn{flex:1;min-width:96px;background:var(--white);border:1.5px solid var(--light);border-radius:10px;padding:9px 8px;text-align:center;cursor:pointer;transition:all .15s;font-family:var(--font-body);font-size:.76rem;font-weight:600;color:var(--mid);}
+.fr-btn:hover{border-color:var(--magenta);}
+.fr-btn.active{border-color:var(--magenta);background:rgba(228,0,124,.06);color:var(--dark);box-shadow:0 0 0 2px rgba(228,0,124,.12);}
+.respiro-thumb{position:relative;width:52px;height:52px;border-radius:8px;overflow:hidden;border:1px solid var(--light);}
+.respiro-thumb img{width:100%;height:100%;object-fit:cover;}
+.respiro-thumb button{position:absolute;top:2px;right:2px;width:16px;height:16px;border-radius:50%;border:none;background:rgba(0,0,0,.6);color:#fff;font-size:.6rem;line-height:1;cursor:pointer;padding:0;}
 .ds-btn{background:var(--white);border:1.5px solid var(--light);border-radius:10px;padding:10px 12px;text-align:left;cursor:pointer;transition:all .15s;font-family:var(--font-body);}
 .ds-btn:hover{border-color:var(--magenta);box-shadow:0 2px 10px rgba(228,0,124,.1);}
 .ds-btn.active{border-color:var(--magenta);background:rgba(228,0,124,.05);box-shadow:0 0 0 2px rgba(228,0,124,.15);}
@@ -686,6 +693,36 @@ body{font-family:var(--font-body);background:var(--pale);color:var(--dark);min-h
               </label>
             </div>
           </div>
+          <div class="form-group">
+            <label class="form-label">🎞️ Ritmo do feed <span style="font-size:.68rem;color:var(--mid);font-weight:400;">(mantém a grade organizada)</span></label>
+            <div class="feed-rhythm-row" id="feedRhythmRow">
+              <button type="button" class="fr-btn active" data-cover="auto" onclick="selectCoverMode('auto')">🔁 Auto (alterna)</button>
+              <button type="button" class="fr-btn" data-cover="self" onclick="selectCoverMode('self')">👤 Foto minha</button>
+              <button type="button" class="fr-btn" data-cover="respiro" onclick="selectCoverMode('respiro')">🌿 Respiro</button>
+            </div>
+            <div id="feedRhythmHint" style="font-size:.7rem;color:var(--mid);margin-top:6px;"></div>
+          </div>
+          <div class="form-group" id="respiroMoodGroup">
+            <label class="form-label">🌿 Mood do respiro</label>
+            <div class="feed-rhythm-row" id="respiroMoodRow">
+              <button type="button" class="fr-btn active" data-mood="natural" onclick="selectRespiroMood('natural')">🍃 Natural</button>
+              <button type="button" class="fr-btn" data-mood="digital" onclick="selectRespiroMood('digital')">💻 Digital</button>
+              <button type="button" class="fr-btn" data-mood="woman" onclick="selectRespiroMood('woman')">👩 Woman</button>
+            </div>
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-top:8px;gap:8px;">
+              <div style="font-size:.7rem;color:var(--mid);" id="respiroPoolCount">Banco de respiro: —</div>
+              <button type="button" class="btn btn-xs btn-outline" onclick="toggleRespiroManager()">＋ Adicionar fotos</button>
+            </div>
+            <div id="respiroManager" style="display:none;margin-top:10px;padding:12px;background:var(--pale);border-radius:var(--radius);border:1px solid var(--light);">
+              <div style="font-size:.72rem;color:var(--mid);margin-bottom:8px;">Cola URLs de fotos (uma por linha) — dupephotos, Pinterest, ou as tuas próprias. Ficam no mood <b id="respiroManagerMood">natural</b>.</div>
+              <textarea class="textarea" id="respiroUrls" rows="3" placeholder="https://...\nhttps://..." style="font-size:.78rem;"></textarea>
+              <div style="display:flex;gap:8px;margin-top:8px;">
+                <button type="button" class="btn btn-primary btn-sm" onclick="addRespiroUrls()">💾 Guardar no banco</button>
+                <button type="button" class="btn btn-secondary btn-sm" onclick="toggleRespiroManager()">Fechar</button>
+              </div>
+              <div id="respiroGallery" style="display:flex;flex-wrap:wrap;gap:6px;margin-top:10px;"></div>
+            </div>
+          </div>
           <div class="form-group" id="carouselTemplatePickerGroup" style="display:none;">
             <label class="form-label">Templates sugeridos <span style="font-size:.68rem;color:var(--mid);font-weight:400;">(opcional)</span></label>
             <div id="carouselTemplatePicker"></div>
@@ -1044,6 +1081,50 @@ function getCarouselDesignStyleHint(){
   return getActiveDesignStyle()?.promptStyle||'';
 }
 
+/* ── RITMO DO FEED (capa foto ↔ respiro) + BANCO DE RESPIRO ── */
+let currentCoverMode='auto';          // auto | self | respiro
+let currentRespiroMood='natural';     // natural | digital | woman
+let respiroPool=[];                   // itens {id,mood,url}
+const RESPIRO_MOOD_PROMPT={
+  natural:'atmospheric natural-inspiration photo, soft daylight, plants, linen, stillness, no face, editorial film grain',
+  digital:'quiet digital-life still, laptop/desk/coffee/notebook detail, warm minimal workspace, no face, editorial tone',
+  woman:'editorial feminine lifestyle photo, elegant woman from behind or cropped, movement and light, no direct face, intimate and refined'
+};
+function selectCoverMode(m){currentCoverMode=m;document.querySelectorAll('#feedRhythmRow .fr-btn').forEach(b=>b.classList.toggle('active',b.dataset.cover===m));const g=document.getElementById('respiroMoodGroup');if(g)g.style.opacity=(m==='self')?'0.5':'1';updateFeedRhythmHint();}
+function selectRespiroMood(m){currentRespiroMood=m;document.querySelectorAll('#respiroMoodRow .fr-btn').forEach(b=>b.classList.toggle('active',b.dataset.mood===m));const mm=document.getElementById('respiroManagerMood');if(mm)mm.textContent=m;renderRespiroGallery();updateRespiroCount();}
+// contador persistente para alternância automática do feed
+function getFeedCounter(){return parseInt(localStorage.getItem('feedCoverCounter')||'0',10);}
+function bumpFeedCounter(){localStorage.setItem('feedCoverCounter',String(getFeedCounter()+1));}
+// decide se ESTE carrossel terá capa com foto dela (true) ou de respiro (false)
+function coverIsSelfForThisCarousel(){
+  if(currentCoverMode==='self')return true;
+  if(currentCoverMode==='respiro')return false;
+  return getFeedCounter()%2===0; // auto: alterna começando por foto dela
+}
+function updateFeedRhythmHint(){
+  const el=document.getElementById('feedRhythmHint');if(!el)return;
+  if(currentCoverMode==='self')el.textContent='Todas as capas com a tua foto.';
+  else if(currentCoverMode==='respiro')el.textContent='Todas as capas de respiro (sem rosto).';
+  else{const next=coverIsSelfForThisCarousel()?'👤 foto tua':'🌿 respiro';el.textContent=`Próxima capa: ${next} — depois inverte automaticamente.`;}
+}
+function toggleRespiroManager(){const m=document.getElementById('respiroManager');if(!m)return;m.style.display=m.style.display==='none'?'block':'none';if(m.style.display==='block')renderRespiroGallery();}
+async function loadRespiroPool(){try{const r=await fetch('/api/respiro/pool');const d=await r.json();respiroPool=d.items||[];updateRespiroCount();renderRespiroGallery();}catch(e){console.warn('[respiro]',e.message);}}
+function updateRespiroCount(){const el=document.getElementById('respiroPoolCount');if(!el)return;const n=respiroPool.filter(x=>x.mood===currentRespiroMood).length;const total=respiroPool.length;el.innerHTML=`Banco de respiro: <b>${n}</b> em <b>${currentRespiroMood}</b> · ${total} no total`;}
+function renderRespiroGallery(){const g=document.getElementById('respiroGallery');if(!g)return;const items=respiroPool.filter(x=>x.mood===currentRespiroMood);g.innerHTML=items.map(it=>`<div class="respiro-thumb"><img src="/api/image/proxy?url=${encodeURIComponent(it.url)}" loading="lazy"/><button title="Remover" onclick="deleteRespiroItem('${it.id}')">×</button></div>`).join('')||'<div style="font-size:.7rem;color:var(--mid);">Nenhuma foto neste mood ainda. As sementes editoriais entram como fallback.</div>';}
+async function addRespiroUrls(){
+  const ta=document.getElementById('respiroUrls');const raw=(ta.value||'').split(/[\n,]/).map(s=>s.trim()).filter(s=>/^https?:\/\//i.test(s));
+  if(!raw.length)return toast('Cola pelo menos uma URL http(s).','info');
+  try{const r=await fetch('/api/respiro/pool',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({urls:raw,mood:currentRespiroMood})});const d=await r.json();if(d.error)throw new Error(d.error);ta.value='';toast(`✅ ${d.added.length} foto(s) no banco de respiro (${currentRespiroMood})`,'success');await loadRespiroPool();}catch(e){toast('Erro: '+e.message,'error');}
+}
+async function deleteRespiroItem(id){try{await fetch('/api/respiro/pool/'+id,{method:'DELETE'});respiroPool=respiroPool.filter(x=>x.id!==id);updateRespiroCount();renderRespiroGallery();}catch(e){}}
+// escolhe uma URL de respiro (proxied) do mood atual — rotaciona por slide
+function pickRespiroUrl(seed){
+  const items=respiroPool.filter(x=>x.mood===currentRespiroMood);
+  if(!items.length)return null;
+  const it=items[Math.abs(seed)%items.length];
+  return `/api/image/proxy?url=${encodeURIComponent(it.url)}`;
+}
+
 /* ── DRAG SCROLL ── */
 function initSlidesDragScroll(){const el=document.getElementById('slidesPreview');if(!el)return;let isDown=false,startX=0,scrollLeft=0;el.addEventListener('mousedown',e=>{if(e.target.closest('.slide-card'))return;isDown=true;startX=e.pageX-el.offsetLeft;scrollLeft=el.scrollLeft;});el.addEventListener('mouseleave',()=>{isDown=false;});el.addEventListener('mouseup',()=>{isDown=false;});el.addEventListener('mousemove',e=>{if(!isDown)return;e.preventDefault();const x=e.pageX-el.offsetLeft;el.scrollLeft=scrollLeft-(x-startX)*1.4;});}
 
@@ -1297,16 +1378,24 @@ const SlideRenderer={
     return`${normal?normal+' ':''}<span style="color:${accentColor};display:inline;">${accented}</span>`;
   },
   _buildSlideHTML(photoUrl,designMeta){
-    const{heading,body,accent,bgDark,handle,slideNumber,totalSlides,funcao,overlayCSS,photoSource}=designMeta;
+    const{heading,body,accent,bgDark,handle,slideNumber,totalSlides,funcao,overlayCSS,photoSource,editorial}=designMeta;
     const headingLen=(heading||'').length;
-    const headingSize=headingLen>90?'58px':headingLen>65?'68px':headingLen>40?'80px':'90px';
     const textShadow='text-shadow:0 2px 16px rgba(0,0,0,0.95),0 1px 5px rgba(0,0,0,0.98);';
     const bodyShadow='text-shadow:0 1px 12px rgba(0,0,0,0.90),0 1px 4px rgba(0,0,0,0.95);';
     const headingHTML=this._applyAccentWords(heading||'',accent);
-    // Overlay leve no topo + gradiente escuro pesado na metade inferior — foto respira no topo, texto lê-se na base
-    const topOverlay=overlayCSS||'rgba(0,0,0,0.22)';
-    const gradient=`linear-gradient(to top, rgba(0,0,0,0.92) 0%, rgba(0,0,0,0.78) 30%, rgba(0,0,0,0.40) 55%, rgba(0,0,0,0.00) 100%)`;
     const showFuncao=funcao&&funcao!=='CAPA'&&funcao!=='ASSINATURA'&&funcao!=='CTA'&&funcao!=='CONTEUDO';
+    // Estilo editorial (respiro): serifada Fraunces, gradiente mais suave — a foto respira.
+    // Estilo statement (capa-foto): sans bold, gradiente firme para leitura.
+    const headFamily=editorial?"'Fraunces',Georgia,serif":"'Plus Jakarta Sans',sans-serif";
+    const headWeight=editorial?500:800;
+    const headSpacing=editorial?'-.01em':'-.02em';
+    const headingSize=editorial
+      ?(headingLen>90?'56px':headingLen>65?'66px':headingLen>40?'76px':'86px')
+      :(headingLen>90?'58px':headingLen>65?'68px':headingLen>40?'80px':'90px');
+    const topOverlay=overlayCSS||(editorial?'rgba(0,0,0,0.14)':'rgba(0,0,0,0.22)');
+    const gradient=editorial
+      ?`linear-gradient(to top, rgba(0,0,0,0.86) 0%, rgba(0,0,0,0.62) 34%, rgba(0,0,0,0.22) 62%, rgba(0,0,0,0.00) 100%)`
+      :`linear-gradient(to top, rgba(0,0,0,0.92) 0%, rgba(0,0,0,0.78) 30%, rgba(0,0,0,0.40) 55%, rgba(0,0,0,0.00) 100%)`;
     return`<div class="sr-slide-wrapper" style="background:${bgDark};">
 <img class="sr-bg" src="${photoUrl}" crossorigin="anonymous" />
 <div style="position:absolute;inset:0;z-index:1;background:${topOverlay};"></div>
@@ -1315,10 +1404,10 @@ const SlideRenderer={
 <div style="position:absolute;inset:0;z-index:2;display:flex;flex-direction:column;justify-content:flex-end;padding:140px 76px;">
 <div style="font-size:22px;font-weight:700;letter-spacing:.06em;text-transform:lowercase;color:${accent};margin-bottom:24px;opacity:.95;${textShadow}">${handle}</div>
 ${showFuncao?`<div style="font-size:18px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,0.65);margin-bottom:16px;${textShadow}">${funcao}</div>`:''}
-<div style="font-family:'Plus Jakarta Sans',sans-serif;font-size:${headingSize};font-weight:800;line-height:1.06;letter-spacing:-.02em;margin-bottom:${body?'24px':'0'};color:#FFFFFF;${textShadow}">${headingHTML}</div>
+<div style="font-family:${headFamily};font-size:${headingSize};font-weight:${headWeight};line-height:${editorial?'1.12':'1.06'};letter-spacing:${headSpacing};margin-bottom:${body?'24px':'0'};color:#FFFFFF;${textShadow}">${headingHTML}</div>
 ${body?`<div style="font-size:30px;font-weight:400;line-height:1.60;letter-spacing:-.01em;max-width:880px;color:rgba(255,255,255,0.90);${bodyShadow}">${body}</div>`:''}
 </div>
-<div style="position:absolute;bottom:0;left:0;right:0;height:6px;z-index:3;background:${accent};"></div>
+<div style="position:absolute;bottom:0;left:0;right:0;height:${editorial?'4px':'6px'};z-index:3;background:${accent};"></div>
 </div>`;
   },
   async renderSlide(photoUrl,designMeta){
@@ -1354,6 +1443,9 @@ async function generateCarouselImages(autoPublishConfig=null){
   const slides=currentCarouselData.slides,topic=currentCarouselData.title||'',contentId=currentCarouselContentId;
   const btn=document.getElementById('btnGenImages'),progressBar=document.getElementById('imageProgress'),progressFill=document.getElementById('imageProgressFill'),statusEl=document.getElementById('imageGenStatus');
   btn.disabled=true;progressBar.style.display='block';currentCarouselImages=[];
+  // Ritmo do feed: decide o tom da capa deste carrossel (fixado para toda a geração)
+  const carouselCoverIsSelf=(currentProfile==='pessoal')?coverIsSelfForThisCarousel():true;
+  if(currentProfile==='pessoal'){const tag=carouselCoverIsSelf?'👤 capa com a tua foto':`🌿 capa de respiro (${currentRespiroMood})`;toast('🎞️ Feed: '+tag,'info');}
  
   // Verificar Google Fotos (só para perfil pessoal)
   let gphotosAccessToken=null;
@@ -1380,15 +1472,41 @@ async function generateCarouselImages(autoPublishConfig=null){
     // Label indicando tipo de foto para este slide
     const fu=(funcao||'').toUpperCase();
     const isFirst=i===0,isLast=i===slides.length-1;
-    const isSelf=isFirst||isLast||fu.includes('CAPA')||fu.includes('CTA')||fu.includes('ASSINATURA')||fu.includes('FRASE')||fu.includes('QUOTE');
-    const fotoLabel=currentProfile==='pessoal'?(isSelf?'👤 Foto sua':'🌿 Respiro'):'';
+    const isCover=isFirst||fu.includes('CAPA');
+    // Ritmo do feed: a CAPA segue a alternância escolhida (foto dela ↔ respiro).
+    // Fechamento (CTA/assinatura) acompanha o mesmo tom da capa para o post ficar coeso.
+    let isSelf;
+    if(isCover)isSelf=carouselCoverIsSelf;
+    else if(isLast||fu.includes('CTA')||fu.includes('ASSINATURA'))isSelf=carouselCoverIsSelf;
+    else isSelf=false; // miolo é sempre respiro (atmosférico, sem rosto)
+    if(fu.includes('FRASE')||fu.includes('QUOTE'))isSelf=carouselCoverIsSelf;
+    const fotoLabel=currentProfile==='pessoal'?(isSelf?'👤 Foto sua':`🌿 Respiro (${currentRespiroMood})`):'';
     statusEl.innerHTML=`<span style="font-weight:600;color:var(--magenta);">Slide ${i+1}/${slides.length}</span>`+(fotoLabel?` <span style="font-size:.75rem;color:var(--mid);">${fotoLabel}</span>`:'');
- 
+    // Dica de estilo por slide: respiro carrega o mood; capa-foto mantém o hint padrão
+    const slideStyleHint=isSelf?getCarouselDesignStyleHint():[getCarouselDesignStyleHint(),RESPIRO_MOOD_PROMPT[currentRespiroMood]].filter(Boolean).join('. ');
+
     try{
       let finalUrl=null;
 
-      // ── Tenta Google Fotos primeiro (perfil pessoal com conta conectada) ──
-      if(gphotosAccessToken){
+      // ── RESPIRO: usa o banco de fotos reais (proxied, sem tainting) ──────────
+      // Prioritário para slides de respiro quando há foto no mood atual.
+      if(!isSelf && currentProfile==='pessoal'){
+        const respiroUrl=pickRespiroUrl(i*7+(currentCarouselContentId?currentCarouselContentId.length:0));
+        if(respiroUrl){
+          try{
+            const brand=BRAND_ACCENT[currentProfile]||BRAND_ACCENT.pessoal;
+            const designMeta={heading:s.heading||'',body:s.body||'',accent:brand.accent,bgDark:brand.bg,handle:brand.handle,slideNumber:i+1,totalSlides:slides.length,funcao,editorial:true};
+            const pngB64=await SlideRenderer.renderSlide(respiroUrl,designMeta);
+            if(pngB64){
+              try{const sv=await fetch('/api/image/save-b64',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({b64:pngB64,contentId:contentId||`tmp_${Date.now()}`,slideIndex:i})});const svd=await sv.json();if(svd.url)finalUrl=svd.url;}catch(e){}
+              finalUrl=finalUrl||`data:image/png;base64,${pngB64}`;
+            }
+          }catch(rErr){console.warn('[respiro slide '+i+']',rErr.message);}
+        }
+      }
+
+      // ── Tenta Google Fotos (perfil pessoal com conta conectada) ──
+      if(gphotosAccessToken && !finalUrl){
         try{
           const gpR=await fetch('/api/gphotos/suggest',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({tema:topic||s.heading||'',slideIndex:i,totalSlides:slides.length,userId:'default',limit:1})});
           const gpD=await gpR.json();
@@ -1397,7 +1515,7 @@ async function generateCarouselImages(autoPublishConfig=null){
             // Proxy via servidor para evitar CORS no canvas
             const proxiedUrl=`/api/gphotos/proxy-image?url=${encodeURIComponent(gPhotoUrl)}&userId=default`;
             const brand=BRAND_ACCENT[currentProfile]||BRAND_ACCENT.pessoal;
-            const designMeta={heading:s.heading||'',body:s.body||'',accent:brand.accent,bgDark:brand.bg,handle:brand.handle,slideNumber:i+1,totalSlides:slides.length,funcao};
+            const designMeta={heading:s.heading||'',body:s.body||'',accent:brand.accent,bgDark:brand.bg,handle:brand.handle,slideNumber:i+1,totalSlides:slides.length,funcao,editorial:!isSelf};
 
             if(engine==='gpt'){
               // Para engine GPT: passa a foto real como base64 para o endpoint de geração
@@ -1406,7 +1524,7 @@ async function generateCarouselImages(autoPublishConfig=null){
                 const blob=await proxyRes.blob();
                 const reader=new FileReader();
                 const photoB64=await new Promise(resolve=>{reader.onload=e=>resolve(e.target.result.split(',')[1]);reader.readAsDataURL(blob);});
-                const slideRes=await fetch('/api/image/carousel-slide',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({heading:s.heading||'',body:s.body||'',slideNumber:i+1,totalSlides:slides.length,funcao,topic,profile:currentProfile,contentId,imagePromptHint:s.imagePrompt||'',designStyleHint:getCarouselDesignStyleHint(),quality:getSelectedQuality(),engine,referenceImageB64:photoB64})});
+                const slideRes=await fetch('/api/image/carousel-slide',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({heading:s.heading||'',body:s.body||'',slideNumber:i+1,totalSlides:slides.length,funcao,topic,profile:currentProfile,contentId,imagePromptHint:s.imagePrompt||'',designStyleHint:slideStyleHint,quality:getSelectedQuality(),engine,referenceImageB64:photoB64})});
                 const slideData=await slideRes.json();
                 if(!slideData.error){
                   // GPT já bake o texto na imagem — usar diretamente sem SlideRenderer
@@ -1430,7 +1548,7 @@ async function generateCarouselImages(autoPublishConfig=null){
       }
 
       if(engine==='gpt'&&!finalUrl){
-        const slideRes=await fetch('/api/image/carousel-slide',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({heading:s.heading||'',body:s.body||'',slideNumber:i+1,totalSlides:slides.length,funcao,topic,profile:currentProfile,contentId,imagePromptHint:s.imagePrompt||'',designStyleHint:getCarouselDesignStyleHint(),quality:getSelectedQuality(),engine})});
+        const slideRes=await fetch('/api/image/carousel-slide',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({heading:s.heading||'',body:s.body||'',slideNumber:i+1,totalSlides:slides.length,funcao,topic,profile:currentProfile,contentId,imagePromptHint:s.imagePrompt||'',designStyleHint:slideStyleHint,quality:getSelectedQuality(),engine})});
         const slideData=await slideRes.json();
         if(slideData.error)throw new Error(slideData.error);
         // GPT já bake o texto na imagem via prompt — usar diretamente sem SlideRenderer
@@ -1453,6 +1571,8 @@ async function generateCarouselImages(autoPublishConfig=null){
   }
  
   progressFill.style.width='100%';
+  // Avança o ritmo do feed só no modo auto (para o próximo carrossel inverter a capa)
+  if(currentCoverMode==='auto'&&currentProfile==='pessoal'){bumpFeedCounter();updateFeedRhythmHint();}
   const ok=currentCarouselImages.filter(Boolean).length;
   statusEl.innerHTML=`<span style="color:#10B981;font-weight:600;">✅ ${ok}/${slides.length} slides compostos!</span>${gphotosAccessToken?' <span style="font-size:.72rem;color:var(--mid);">📸 Com suas fotos reais</span>':''}`;
   btn.disabled=false;btn.textContent='🔄 Regenerar imagens';
@@ -2187,6 +2307,8 @@ async function suggestPhotos(){const topic=document.getElementById('photoSearchT
 /* ── INIT ── */
 initCalendarMonths();
 initDesignStyles();
+loadRespiroPool();
+updateFeedRhythmHint();
 loadCanvaTemplates().then(renderCarouselTemplatePicker);
 loadDashboard();
 loadUserSettings();

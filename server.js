@@ -1047,6 +1047,78 @@ app.get('/api/gphotos/proxy-image', async (req, res) => {
   } catch(e) { res.status(500).json({ error: e.message }); }
 });
 
+// ═══════════════════════════════════════════════════════════════════════════
+// BANCO DE RESPIRO — fotos atmosféricas para capas/slides "respiro"
+// Mantém o feed organizado alternando capa-foto ↔ capa-respiro.
+// Moods espelham as pastas de inspiração da Ana: natural / digital / woman.
+// ═══════════════════════════════════════════════════════════════════════════
+const RESPIRO_POOL_FILE = '/tmp/respiro_pool.json';
+const RESPIRO_MOODS = ['natural', 'digital', 'woman'];
+// Sementes editoriais (Unsplash) para funcionar out-of-the-box antes da Ana
+// colar as fotos dela (dupephotos / Pinterest / banco próprio). Servidas via proxy.
+const DEFAULT_RESPIRO_POOL = [
+  { id: 'seed_nat_1', mood: 'natural', url: 'https://images.unsplash.com/photo-1509316785289-025f5b846b35?w=1200&q=80', source: 'seed' },
+  { id: 'seed_nat_2', mood: 'natural', url: 'https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?w=1200&q=80', source: 'seed' },
+  { id: 'seed_nat_3', mood: 'natural', url: 'https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=1200&q=80', source: 'seed' },
+  { id: 'seed_dig_1', mood: 'digital', url: 'https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?w=1200&q=80', source: 'seed' },
+  { id: 'seed_dig_2', mood: 'digital', url: 'https://images.unsplash.com/photo-1499750310107-5fef28a66643?w=1200&q=80', source: 'seed' },
+  { id: 'seed_dig_3', mood: 'digital', url: 'https://images.unsplash.com/photo-1434030216411-0b793f4b4173?w=1200&q=80', source: 'seed' },
+  { id: 'seed_wom_1', mood: 'woman', url: 'https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?w=1200&q=80', source: 'seed' },
+  { id: 'seed_wom_2', mood: 'woman', url: 'https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=1200&q=80', source: 'seed' },
+  { id: 'seed_wom_3', mood: 'woman', url: 'https://images.unsplash.com/photo-1506863530036-1efeddceb993?w=1200&q=80', source: 'seed' }
+];
+function loadRespiro() {
+  try {
+    if (!fs.existsSync(RESPIRO_POOL_FILE)) { fs.writeFileSync(RESPIRO_POOL_FILE, JSON.stringify(DEFAULT_RESPIRO_POOL, null, 2)); return DEFAULT_RESPIRO_POOL.slice(); }
+    const data = JSON.parse(fs.readFileSync(RESPIRO_POOL_FILE, 'utf8'));
+    return Array.isArray(data) ? data : DEFAULT_RESPIRO_POOL.slice();
+  } catch(e) { return DEFAULT_RESPIRO_POOL.slice(); }
+}
+function saveRespiro(list) { try { fs.writeFileSync(RESPIRO_POOL_FILE, JSON.stringify(list, null, 2)); } catch(e) {} }
+
+app.get('/api/respiro/pool', (req, res) => {
+  let list = loadRespiro();
+  if (req.query.mood && RESPIRO_MOODS.includes(req.query.mood)) list = list.filter(x => x.mood === req.query.mood);
+  res.json({ moods: RESPIRO_MOODS, items: list });
+});
+app.post('/api/respiro/pool', (req, res) => {
+  const { url, urls, mood } = req.body || {};
+  const m = RESPIRO_MOODS.includes(mood) ? mood : 'natural';
+  const incoming = (Array.isArray(urls) ? urls : [url]).map(u => (u || '').trim()).filter(u => /^https?:\/\//i.test(u));
+  if (!incoming.length) return res.status(400).json({ error: 'Informe pelo menos uma URL http(s) válida.' });
+  const list = loadRespiro();
+  const added = incoming.map((u, i) => ({ id: 'resp_' + Date.now() + '_' + i, mood: m, url: u, source: 'ana' }));
+  list.push(...added);
+  saveRespiro(list);
+  res.json({ success: true, added });
+});
+app.delete('/api/respiro/pool/:id', (req, res) => { saveRespiro(loadRespiro().filter(x => x.id !== req.params.id)); res.json({ success: true }); });
+
+// Proxy genérico de imagem — evita tainting do canvas ao usar fotos externas
+// (dupephotos, Unsplash, Pinterest CDN etc.) no html2canvas.
+app.get('/api/image/proxy', async (req, res) => {
+  const target = req.query.url;
+  if (!target || !/^https?:\/\//i.test(target)) return res.status(400).json({ error: 'url http(s) obrigatória' });
+  // Guarda mínima anti-SSRF: bloqueia loopback / redes privadas
+  try {
+    const host = new URL(target).hostname;
+    if (/^(localhost|127\.|0\.0\.0\.0|10\.|192\.168\.|169\.254\.|::1)/i.test(host) || /^172\.(1[6-9]|2\d|3[01])\./.test(host)) {
+      return res.status(403).json({ error: 'Host não permitido' });
+    }
+  } catch(e) { return res.status(400).json({ error: 'url inválida' }); }
+  try {
+    const imgRes = await fetch(target, { headers: { 'User-Agent': 'Mozilla/5.0 (compatible; MaquinaConteudo/2.0)' } });
+    if (!imgRes.ok) return res.status(imgRes.status).json({ error: 'Falha ao buscar imagem' });
+    const contentType = imgRes.headers.get('content-type') || 'image/jpeg';
+    if (!/^image\//i.test(contentType)) return res.status(415).json({ error: 'Conteúdo não é imagem' });
+    const buffer = Buffer.from(await imgRes.arrayBuffer());
+    res.set('Content-Type', contentType);
+    res.set('Access-Control-Allow-Origin', '*');
+    res.set('Cache-Control', 'public, max-age=3600');
+    res.send(buffer);
+  } catch(e) { res.status(500).json({ error: e.message }); }
+});
+
 
 // ═══════════════════════════════════════════════════════════════════════════
 // CALENDÁRIO
@@ -1360,6 +1432,12 @@ app.get('/api/trends', async (req, res) => {
 
 const CANVA_TEMPLATES_FILE = '/tmp/canva_templates.json';
 const DEFAULT_CANVA_TEMPLATES = [
+  // ── Padrão editorial do feed (referências enviadas pela Ana) ──────────────
+  // Estes 3 definem o estilo visual base dos carrosséis. Alternam no feed:
+  // capa com foto dela ↔ capa de respiro, mantendo a grade organizada.
+  { id: 'tmpl_feed_capa_foto', createdAt: '2026-07-07T00:00:00.000Z', name: 'Carrossel Editorial — Capa Foto [Ana]', contentTypes: ['carrossel'], aesthetic: 'Editorial minimalista intimista. Capa com foto da Ana + título grande serifado. Fundo creme, grão de filme, tipografia editorial. Referência principal do feed.', slideCount: 8, canvaUrl: 'https://canva.link/0eyxqdfis30492u', feedRole: 'capa_foto', respiroMood: 'woman', profile: 'pessoal' },
+  { id: 'tmpl_feed_respiro', createdAt: '2026-07-07T00:00:00.000Z', name: 'Carrossel Editorial — Capa Respiro', contentTypes: ['carrossel'], aesthetic: 'Editorial minimalista. Capa de respiro (foto natural/atmosférica sem rosto) + frase. Serve de contraponto visual à capa com foto, deixando o feed arejado e organizado.', slideCount: 8, canvaUrl: 'https://canva.link/cm0nq0nyvw2z5p2', feedRole: 'capa_respiro', respiroMood: 'natural', profile: 'pessoal' },
+  { id: 'tmpl_feed_frase', createdAt: '2026-07-07T00:00:00.000Z', name: 'Carrossel Editorial — Frase / Digital', contentTypes: ['carrossel', 'frase'], aesthetic: 'Editorial tipográfico. Frase de impacto sobre textura digital sutil. Fecha o ritmo do feed entre as capas de foto e de respiro.', slideCount: 8, canvaUrl: 'https://canva.link/t16hb3ucbj65q8c', feedRole: 'frase', respiroMood: 'digital', profile: 'pessoal' },
   { id: 'tmpl_default_001', createdAt: '2026-06-14T00:00:00.000Z', name: 'Posts Estáticos - Chamada em Destaque [Handwriting]', contentTypes: ['frase'], aesthetic: 'Handwriting, chamada de atenção em destaque, estilo manuscrito', slideCount: 1, canvaUrl: 'https://www.canva.com/design/DAHL5Modgyc/vEEcxRj9jnHi4dFKqSm_pA/edit', profile: 'all' },
   { id: 'tmpl_default_002', createdAt: '2026-06-14T00:00:00.000Z', name: 'Posts Estáticos [Sublime]', contentTypes: ['frase'], aesthetic: 'Elegante, minimalista, identidade visual sóbria', slideCount: 1, canvaUrl: 'https://www.canva.com/design/DAHL5R5kU2Y/xIyRwYXAdmFCqKaYiw3dYA/edit', profile: 'all' },
   { id: 'tmpl_default_003', createdAt: '2026-06-14T00:00:00.000Z', name: 'Post Carrossel - Recomendações', contentTypes: ['carrossel', 'lista'], aesthetic: 'Carrossel de indicações e recomendações', slideCount: 178, canvaUrl: 'https://www.canva.com/design/DAHL5TqhKyI/etk6efSME5DhFwZ4hgdDuw/edit', profile: 'all' },
