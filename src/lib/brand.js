@@ -26,6 +26,17 @@ const BRAND_IDENTITIES = {
     accent:'#8B7355',accentAlt:'#C4A882',accentFem:'#C17B6F',bgDark:'#3D3530',bgLight:'#FAF8F5',
     bgMid:'#EDEAE4',bgBrand:'#F5F2EE',textOnDark:'#F5F2EE',textOnLight:'#2C2420',
     handle:'@analuisa.moutinho',name:'Ana Moutinho',
+    // Presença visual absorvida das fotos reais da Ana (selfies + provas desportivas)
+    // Injetada nos prompts de imagem quando a composição inclui figura humana.
+    personaVisual:`Se (e apenas se) o slide pedir uma figura humana, ela deve corresponder a esta pessoa:
+— Mulher jovem adulta (aparenta 25-32 anos), pele clara com subtom quente, compleição magra/mediana com pernas fortes de corredora
+— Cabelo castanho-escuro quase preto, MUITO comprido (abaixo do peito), liso com leves ondas nas pontas; solto com risca ao meio no dia a dia, ou em rabo de cavalo alto no desporto
+— Sobrancelhas escuras definidas, maquilhagem natural discreta, sorriso largo e genuíno quando de frente
+— Styling cotidiano: elegante-casual em tons quentes — malha terracota/caramelo de gola subida, vestidos e tops de linho cru com riscas finas, colares dourados finos em camadas, brincos pequenos de pérola
+— Styling desportivo: conjunto escuro (t-shirt técnica preta/marinho, calções justos pretos, meias pretas de cano médio, ténis de corrida brancos volumosos), auricular sem fios, rabo de cavalo alto
+— Contextos naturais dela: corrida de rua noturna sob candeeiros âmbar, ciclismo em estrada de terra, interiores acolhedores com rattan/vime e luz dourada, cafés com mesa de mármore, jardins
+— PREFERIR enquadramentos parciais ou anónimos (costas, perfil, silhueta, mãos, pernas em passada) em coerência com o estilo do template; rosto completo apenas se o template pedir
+— NUNCA: mulher genérica de banco de imagens, loira, cabelo curto, sorriso forçado corporativo`,
     moods:['DIARIO_EDITORIAL','TYPE_CREME','COLAGEM_REAL','FRASE_IMPACTO','HERO_LOFI','DIARIO_EDITORIAL','TYPE_CREME','VIRADA','CTA_INTIMO'],
     aestheticDNA:`IDENTIDADE: "Ana mais real" — diário visual inteligente de alguém construindo a própria vida com intenção, disciplina e profundidade. Não é influencer. É pensadora.
 

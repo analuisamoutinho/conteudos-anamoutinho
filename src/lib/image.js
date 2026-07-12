@@ -75,6 +75,7 @@ function buildCarouselPrompt({ quality, brand = {}, aestheticOverride, slideRole
     '',
     `════ ESTRUTURA E LAYOUT DESTE SLIDE ════`,
     layoutStructure,
+    brand.personaVisual ? `\n════ PRESENÇA VISUAL DA PESSOA (quando a composição incluir figura humana) ════\n${brand.personaVisual}` : '',
     sceneHint ? `\nCONTEXTO TEMÁTICO ADICIONAL: ${sceneHint}` : '',
     '',
     `════ REQUISITOS DE EXECUÇÃO ════`,
