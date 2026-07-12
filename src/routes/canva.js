@@ -52,7 +52,7 @@ router.post('/api/canva/generate-slides', async (req, res) => {
     if (!templateId) return res.status(400).json({ error: 'templateId obrigatório' });
     if (!slides || !slides.length) return res.status(400).json({ error: 'slides obrigatório' });
 
-    const quality = resolveQuality(rawQuality || 'medium');
+    const quality = resolveQuality(rawQuality);
     const templates = loadCT();
     const tmpl = templates.find(t => t.id === templateId);
     if (!tmpl) return res.status(404).json({ error: 'Template não encontrado' });

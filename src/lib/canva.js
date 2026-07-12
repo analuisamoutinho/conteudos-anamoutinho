@@ -11,22 +11,92 @@ const { CANVA_TEMPLATES_FILE } = require('../config');
 //                Quando presente, tem prioridade sobre `aesthetic`.
 // ═══════════════════════════════════════════════════════════════════════════
 
-// DNA visual base dos carrosséis de referência da Ana (Canva).
-// Placeholder derivado da identidade da marca — substituir pela descrição
-// absorvida dos designs reais assim que forem exportados/partilhados.
-const ANA_CARROSSEL_DNA = `ESTILO DO TEMPLATE (carrossel de referência da Ana Moutinho):
-— Fundo off-white creme dominante (#FAF8F5), textura de papel fine art sutil
-— Tipografia serifada editorial em marrom escuro quente (#2C2420), frases grandes com muito respiro
-— Detalhes finos em marrom café (#8B7355): linhas divisórias, molduras de borda fina, pequenos sublinhados
-— Acento pontual em terracota queimado (#C17B6F) apenas em micro-detalhes
-— Composição assimétrica elegante, muito espaço vazio intencional, sensação de página de livro
-— Fotografia (quando presente) com luz natural difusa e grain analógico leve
-— Zero elementos decorativos, zero ícones, zero estética de coach`;
+// DNA visual absorvido das coleções reais da Ana (BrandClub: Anúncios [E031]
+// + StudioMoulin), exportadas do Canva e analisadas slide a slide.
+// Base fotográfica comum a todos os estilos de carrossel:
+const FOTO_BASE_ANA = `BASE FOTOGRÁFICA (comum à identidade dos carrosséis da Ana):
+— Fotografia editorial lo-fi em full-bleed (a foto ocupa o slide inteiro, sem molduras)
+— Grain de filme analógico visível, luz natural difusa (manhã, janela, sombras longas de sol)
+— Paleta neutra quente: creme, areia, linho cru, madeira, couro caramelo, taupe, terracota suave
+— Cenas íntimas do cotidiano vistas de cima ou em close: chávena de café, cama de linho amarrotado, livro aberto, laptop na mesa de madeira, tapete de yoga com luz de janela, mãos, pés descalços, selfie de espelho sem mostrar o rosto inteiro
+— Pessoas sempre anónimas ou parciais (costas, mãos, silhueta, sombra projetada) — nunca sorriso posado de banco de imagens
+— Véu escuro quente e subtil sobre a foto (~30-40%) para dar legibilidade a texto claro por cima
+— Zona central do enquadramento relativamente calma e desimpedida (é onde entra o texto)
+— PROIBIDO: estúdio, flash duro, cores saturadas frias, azul/verde vivos, visual corporativo ou de coach`;
 
 const DEFAULT_CANVA_TEMPLATES = [
-  { id: 'tmpl_ana_carrossel_001', createdAt: '2026-07-12T00:00:00.000Z', name: 'Carrossel Ana — Referência 1', contentTypes: ['carrossel'], aesthetic: 'Carrossel editorial creme, serifada, minimalista intimista (referência 1)', visualDNA: ANA_CARROSSEL_DNA, slideCount: 10, canvaUrl: 'https://www.canva.com/design/DAHOYMschTo/7-wmTI9UhBd_fS6CmNPgjw/edit', profile: 'pessoal' },
-  { id: 'tmpl_ana_carrossel_002', createdAt: '2026-07-12T00:00:00.000Z', name: 'Carrossel Ana — Referência 2', contentTypes: ['carrossel'], aesthetic: 'Carrossel editorial creme, serifada, minimalista intimista (referência 2)', visualDNA: ANA_CARROSSEL_DNA, slideCount: 10, canvaUrl: 'https://www.canva.com/design/DAHOYBvMcGQ/gyafs_lB36VerRbIBEBbFw/edit', profile: 'pessoal' },
-  { id: 'tmpl_ana_carrossel_003', createdAt: '2026-07-12T00:00:00.000Z', name: 'Carrossel Ana — Referência 3', contentTypes: ['carrossel'], aesthetic: 'Carrossel editorial creme, serifada, minimalista intimista (referência 3)', visualDNA: ANA_CARROSSEL_DNA, slideCount: 10, canvaUrl: 'https://www.canva.com/design/DAHOYK2q-Y0/DmZTpOUXjL2OHsSYSLG-bQ/edit', profile: 'pessoal' },
+  {
+    id: 'tmpl_ana_carrossel_001', createdAt: '2026-07-12T00:00:00.000Z',
+    name: 'Carrossel Ana — Editorial Typewriter',
+    contentTypes: ['carrossel'],
+    aesthetic: 'Foto lo-fi quente em full-bleed + texto typewriter branco centrado, itálico nas palavras-chave — reflexivo e intimista',
+    visualDNA: `${FOTO_BASE_ANA}
+
+ESTILO DESTE TEMPLATE (Editorial Typewriter — para carrosséis reflexivos/filosóficos):
+— Cada slide é UMA fotografia diferente do mesmo universo (café, cama, areia, linho, laranjas ao sol) mantendo paleta e grain coerentes
+— Atmosfera contemplativa e silenciosa, como um diário fotográfico analógico
+— O texto (aplicado por cima via overlay) é monoespaçado tipo máquina de escrever, branco, centrado no terço superior/médio; a foto deve deixar essa zona respirar
+— Mood de referência: Kinfolk, fotografia documental europeia, luz de fim de tarde`,
+    slideCount: 8, canvaUrl: 'https://www.canva.com/design/DAHOYMschTo/7-wmTI9UhBd_fS6CmNPgjw/edit', profile: 'pessoal',
+  },
+  {
+    id: 'tmpl_ana_carrossel_002', createdAt: '2026-07-12T00:00:00.000Z',
+    name: 'Carrossel Ana — Cartões sobre Foto',
+    contentTypes: ['carrossel'],
+    aesthetic: 'Foto neutra clara + dois cartões sobrepostos (creme com título marrom / taupe translúcido com texto branco) — para dicas e listas',
+    visualDNA: `${FOTO_BASE_ANA}
+
+ESTILO DESTE TEMPLATE (Cartões sobre Foto — para carrosséis de dicas/passos/listas):
+— Fotografias claras e serenas em tons de branco, creme e taupe: quarto com roupa de cama branca, sofá de linho, mesa de madeira clara com laptop e copo de água ao sol
+— Luz suave de manhã com sombras delicadas; composição com objetos no terço superior e inferior, centro calmo
+— CAPA: foto com pessoa anónima (selfie de espelho tapando o rosto, corpo parcial) e espaço central para título grande
+— O texto entra por cima em dois cartões sobrepostos: um creme (#F5F1EA) com título marrom escuro em negrito, outro taupe acastanhado translúcido (#8A7A69) com texto branco — a foto deve suportar esses blocos no centro
+— Sensação: acolhedor, prático, elegante sem esforço`,
+    slideCount: 8, canvaUrl: 'https://www.canva.com/design/DAHOYBvMcGQ/gyafs_lB36VerRbIBEBbFw/edit', profile: 'pessoal',
+  },
+  {
+    id: 'tmpl_ana_carrossel_003', createdAt: '2026-07-12T00:00:00.000Z',
+    name: 'Carrossel Ana — Handwriting Leve',
+    contentTypes: ['carrossel', 'bastidores', 'dump'],
+    aesthetic: 'Foto lifestyle real + título manuscrito arredondado branco com contorno marrom, anotações com setinhas — tom leve e próximo',
+    visualDNA: `${FOTO_BASE_ANA}
+
+ESTILO DESTE TEMPLATE (Handwriting Leve — para carrosséis leves, bastidores, hábitos):
+— Fotografias lifestyle reais e espontâneas: pessoa no sofá com laptop, café gelado na mesa, caderno de planeamento com caneta, cama com pequeno-almoço — sempre com rosto tapado ou fora de quadro
+— Tons quentes com pontos de interesse (madeira, plantas, tricot cru, jeans) e grain analógico
+— O texto entra por cima em letra manuscrita arredondada branca com leve contorno/sombra marrom, com asteriscos e setinhas desenhadas à mão — a foto deve ter uma faixa central relativamente limpa
+— SLIDE FINAL (CTA): fundo LISO castanho-café escuro (#3F2E23), sem foto, apenas textura mínima
+— Sensação: amiga que partilha o que funciona, zero formalidade`,
+    slideCount: 8, canvaUrl: 'https://www.canva.com/design/DAHOYK2q-Y0/DmZTpOUXjL2OHsSYSLG-bQ/edit', profile: 'pessoal',
+  },
+  {
+    id: 'tmpl_ana_frase_004', createdAt: '2026-07-12T00:00:00.000Z',
+    name: 'Frase Ana — Serifada em Fundo Marrom',
+    contentTypes: ['frase'],
+    aesthetic: 'Fundo liso marrom quente + frase grande em serifada editorial branca com itálico — statement de impacto',
+    visualDNA: `ESTILO DESTE TEMPLATE (Frase Serifada — post estático de frase de impacto):
+— Fundo completamente LISO em marrom quente médio (#5E4F3F) ou castanho-café profundo (#43301F), com textura mínima de papel
+— SEM fotografia, SEM elementos gráficos — o protagonismo é 100% da tipografia
+— A frase (aplicada por overlay) é serifada editorial estilo Didot, branca, grande, centrada, com as palavras-chave em itálico bold
+— Handle pequeno em letras espaçadas abaixo da frase
+— Sensação: página de livro, statement calmo e definitivo`,
+    slideCount: 1, canvaUrl: null, profile: 'pessoal',
+  },
+  {
+    id: 'tmpl_ana_carrossel_005', createdAt: '2026-07-12T00:00:00.000Z',
+    name: 'Carrossel Ana — Tipografia Mista + Anotações',
+    contentTypes: ['carrossel', 'lofi'],
+    aesthetic: 'Foto urbana/desportiva neutra + título misto (sans bold + serifada itálica) com destaque amarelo-manteiga e anotações manuscritas — para temas de treino e disciplina',
+    visualDNA: `${FOTO_BASE_ANA}
+
+ESTILO DESTE TEMPLATE (Tipografia Mista — para carrosséis de corrida, treino, disciplina, rotina):
+— Fotografias com energia contida: ténis de corrida na rua, roupa desportiva em tons neutros (cinza, verde-oliva, cru), café gelado na bancada, toalha na cabeça pós-banho — corpo parcial, sem rosto
+— Paleta neutra urbana com UM acento pontual amarelo-manteiga suave (#EFE3A8)
+— Luz natural, grain analógico, enquadramentos de street photography casual
+— O texto entra por cima misturando sans-serif bold branca e serifada itálica, com uma palavra destacada em amarelo-manteiga e pequenas anotações manuscritas com setinhas — o centro da foto deve ficar respirável
+— Sensação: processo real de treino, sem pose de fitness influencer`,
+    slideCount: 8, canvaUrl: null, profile: 'pessoal',
+  },
   { id: 'tmpl_default_001', createdAt: '2026-06-14T00:00:00.000Z', name: 'Posts Estáticos - Chamada em Destaque [Handwriting]', contentTypes: ['frase'], aesthetic: 'Handwriting, chamada de atenção em destaque, estilo manuscrito', slideCount: 1, canvaUrl: 'https://www.canva.com/design/DAHL5Modgyc/vEEcxRj9jnHi4dFKqSm_pA/edit', profile: 'all' },
   { id: 'tmpl_default_002', createdAt: '2026-06-14T00:00:00.000Z', name: 'Posts Estáticos [Sublime]', contentTypes: ['frase'], aesthetic: 'Elegante, minimalista, identidade visual sóbria', slideCount: 1, canvaUrl: 'https://www.canva.com/design/DAHL5R5kU2Y/xIyRwYXAdmFCqKaYiw3dYA/edit', profile: 'all' },
   { id: 'tmpl_default_003', createdAt: '2026-06-14T00:00:00.000Z', name: 'Post Carrossel - Recomendações', contentTypes: ['carrossel', 'lista'], aesthetic: 'Carrossel de indicações e recomendações', slideCount: 178, canvaUrl: 'https://www.canva.com/design/DAHL5TqhKyI/etk6efSME5DhFwZ4hgdDuw/edit', profile: 'all' },
