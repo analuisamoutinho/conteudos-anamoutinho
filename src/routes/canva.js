@@ -1,7 +1,7 @@
 const express = require('express');
 const fetch   = (...args) => import('node-fetch').then(({ default: f }) => f(...args));
 const router  = express.Router();
-const { loadCT, saveCT } = require('../lib/canva');
+const { loadCT, saveCT, templateStyle } = require('../lib/canva');
 const { buildCarouselPrompt } = require('../lib/image');
 const { resolveQuality } = require('../lib/userSettings');
 const { BRAND_IDENTITIES } = require('../lib/brand');
@@ -57,7 +57,7 @@ router.post('/api/canva/generate-slides', async (req, res) => {
     const tmpl = templates.find(t => t.id === templateId);
     if (!tmpl) return res.status(404).json({ error: 'Template não encontrado' });
 
-    const aesthetic = tmpl.aesthetic || 'editorial clean, Instagram carousel';
+    const aesthetic = templateStyle(tmpl) || 'editorial clean, Instagram carousel';
     const templateName = tmpl.name || 'Template';
     const notes = tmpl.notes || '';
     const results = [];

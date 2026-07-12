@@ -11,6 +11,7 @@ const { extractJSON } = require('../lib/util');
 const { saveGeneratedContent } = require('../lib/content');
 const { buildCarouselPrompt, cropTo45 } = require('../lib/image');
 const { resolveQuality } = require('../lib/userSettings');
+const { loadCT, matchBestTemplate, templateStyle } = require('../lib/canva');
 
 // ═══════════════════════════════════════════════════════════════════════════
 // CAROUSEL GENERATE AND SAVE
@@ -61,16 +62,34 @@ JSON: {"title":"título do carrossel","slideCount":8,"slides":[{"slideNumber":1,
 // Aceita referenceImageB64 (base64 sem prefixo) para usar a foto real do Google Fotos como base
 router.post('/api/image/carousel-slide', async (req, res) => {
   try {
-    const { heading, body, slideNumber, totalSlides, funcao, topic, profile, contentId, imagePromptHint, designStyleHint, quality: rawQuality, referenceImageB64, engine } = req.body;
+    const { heading, body, slideNumber, totalSlides, funcao, topic, profile, contentId, imagePromptHint, designStyleHint, templateId, quality: rawQuality, referenceImageB64, engine } = req.body;
     if (engine === 'none') return res.json({ success: true, b64: null, url: null, designMeta: {}, quality: 'none' });
     const quality = resolveQuality(rawQuality);
     const brand = BRAND_IDENTITIES[profile] || BRAND_IDENTITIES.pessoal;
     const account = getAccount(profile);
     const sceneHint = imagePromptHint || topic || '';
+
+    // Template do banco: explícito (templateId) ou auto-match pelo conteúdo.
+    // O designStyleHint manual continua a ter prioridade máxima.
+    let matchedTemplate = null;
+    if (!designStyleHint) {
+      if (templateId) matchedTemplate = loadCT().find(t => t.id === templateId) || null;
+      if (!matchedTemplate) {
+        matchedTemplate = await matchBestTemplate({
+          tipo: 'carrossel',
+          tema: topic || heading || '',
+          slides: [{ heading }],
+          profile: profile || 'pessoal',
+          cacheKey: contentId || null,
+        }).catch(() => null);
+      }
+    }
+    const aestheticOverride = designStyleHint || (matchedTemplate ? templateStyle(matchedTemplate) : null);
+
     const promptPhoto = buildCarouselPrompt({
       quality,
       brand,
-      aestheticOverride: designStyleHint || null,
+      aestheticOverride,
       slideRole: funcao,
       heading, body,
       slideNumber: slideNumber || 1,
@@ -81,7 +100,7 @@ router.post('/api/image/carousel-slide', async (req, res) => {
     const moodIndex = Math.min((slideNumber || 1) - 1, moodList.length - 1);
     const mood = moodList[moodIndex] || 'HERO_DARK';
     const isDark = mood.includes('DARK') || mood.includes('LOFI') || mood.includes('WARM') || mood === 'FRASE_IMPACTO' || mood === 'VIRADA' || mood === 'CTA_INTIMO';
-    const designMeta = { heading: heading||'', body: body||'', accent: brand.accent||'#C8A020', bgDark: brand.bgDark||'#0A0A0A', bgLight: brand.bgLight||'#F5F4F0', handle: brand.handle||account.handle, isDark, mood, slideNumber, totalSlides, funcao: funcao||(slideNumber===1?'CAPA':slideNumber===totalSlides?'ASSINATURA':'CONTEUDO') };
+    const designMeta = { heading: heading||'', body: body||'', accent: brand.accent||'#C8A020', bgDark: brand.bgDark||'#0A0A0A', bgLight: brand.bgLight||'#F5F4F0', handle: brand.handle||account.handle, isDark, mood, slideNumber, totalSlides, funcao: funcao||(slideNumber===1?'CAPA':slideNumber===totalSlides?'ASSINATURA':'CONTEUDO'), templateId: matchedTemplate?.id || null, templateName: matchedTemplate?.name || null };
 
     let imageData;
 
