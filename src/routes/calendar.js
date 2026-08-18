@@ -21,8 +21,9 @@ router.post('/api/calendar/generate', async (req, res) => {
     const daysInMonth = new Date(year, month, 0).getDate();
     const tiposDisponiveis = getTiposCalendario().map(t => t.id).join(' | ');
 
-    const BLOCK = 10;
+    const BLOCK = 7;
     const allDays = [];
+    const failedRanges = [];
     for (let blockStart = 1; blockStart <= daysInMonth; blockStart += BLOCK) {
       const blockEnd = Math.min(blockStart + BLOCK - 1, daysInMonth);
       const daysInBlock = blockEnd - blockStart + 1;
@@ -31,10 +32,18 @@ router.post('/api/calendar/generate', async (req, res) => {
         ? '[{"time":"09:00","type":"carrossel","topic":"O sinal de que o problema não é o tráfego, é a oferta"}]'
         : '[{"time":"09:00","type":"carrossel","topic":"A mentira que o Instagram vende sobre consistência"},{"time":"18:00","type":"frase","topic":"Você não precisa de motivação, precisa de estrutura"}]';
       const blockPrompt = 'Você é estrategista de conteúdo para Instagram, seguindo a Metodologia RR (Bolha RR, 7 pilares).\n\n' + build7PilaresRR() + '\nCrie o calendário editorial para ' + account.name + ' — ' + month + '/' + year + '.\n\n' + brandContext + '\n' + (manualNote ? 'DIRETRIZES DO PERFIL:\n' + manualNote + '\n\n' : '') + 'TIPOS DISPONÍVEIS: ' + tiposDisponiveis + '\nUse APENAS estes tipos. Não agende vídeo (lofi, video_curto, video_medio) — a gravação não entra no calendário.\n\nREGRAS DO TOPIC: Topics devem ser específicos e pessoais. Distribua os topics entre as 6 funções do Pilar 4 (Ramificações) ao longo do período — não repita a mesma função em dias seguidos.\nHORÁRIOS: use 09:00 para manhã e 18:00 para tarde/noite.\n\nRESPONDA APENAS COM JSON VÁLIDO, SEM MARKDOWN.\n\nFormato EXATO:\n{\n  "days": [\n    {"day": ' + blockStart + ', "posts": ' + examplePosts + '}\n  ]\n}\n\nGere TODOS os dias de ' + blockStart + ' a ' + blockEnd + ' (total: ' + daysInBlock + ' dias, ' + postsPerDay + ' post(s) por dia).';
-      const rawText = await askOpenAI({ prompt: blockPrompt, model: MODEL_SMART, maxTokens: 4000, json: true });
       let blockDays = [];
-      try { const parsed = extractJSON(rawText); blockDays = normalizeDays(parsed); }
-      catch(parseErr) { for (let d = blockStart; d <= blockEnd; d++) blockDays.push({ day: d, posts: [] }); }
+      try {
+        const rawText = await askOpenAI({ prompt: blockPrompt, model: MODEL_SMART, maxTokens: 6000, json: true });
+        const parsed = extractJSON(rawText);
+        blockDays = normalizeDays(parsed);
+      } catch(blockErr) {
+        // Um bloco falhando (rede, rate limit, resposta vazia) não pode
+        // derrubar o mês inteiro — os outros blocos já gerados ficam.
+        console.error('[Calendar] Bloco ' + blockStart + '-' + blockEnd + ' falhou:', blockErr.message);
+        failedRanges.push(blockStart === blockEnd ? String(blockStart) : blockStart + '-' + blockEnd);
+        for (let d = blockStart; d <= blockEnd; d++) blockDays.push({ day: d, posts: [] });
+      }
       allDays.push(...blockDays);
     }
     const generated = readJSON(GENERATED_FILE).filter(g => g.profile === profile);
@@ -59,7 +68,10 @@ router.post('/api/calendar/generate', async (req, res) => {
     if (supabase) {
       await supabase.from('calendars').upsert({ id: profile + '_' + year + '_' + month, profile, month: parseInt(month), year: parseInt(year), data: JSON.stringify(calendarDays), updated_at: new Date().toISOString() }, { onConflict: 'id' });
     }
-    res.json({ calendar: calendarDays });
+    const warning = failedRanges.length
+      ? 'Não foi possível gerar os dias ' + failedRanges.join(', ') + ' — tenta atualizar só esses dias.'
+      : null;
+    res.json({ calendar: calendarDays, warning });
   } catch(err) { console.error('[Calendar] Erro:', err); res.status(500).json({ error: err.message }); }
 });
 
@@ -81,7 +93,7 @@ router.post('/api/calendar/generate-week', async (req, res) => {
 
     const examplePost = '{"time":"09:00","type":"carrossel","topic":"Tema específico aqui"}';
     const prompt = 'Você é estrategista de conteúdo para ' + account.name + ' (' + account.handle + '), seguindo a Metodologia RR (Bolha RR, 7 pilares).\n\n' + build7PilaresRR() + '\n' + (manualNote ? 'DIRETRIZES:\n' + manualNote + '\n\n' : '') + 'TIPOS DISPONÍVEIS: ' + tiposDisponiveis + '\nUse APENAS estes tipos. Não agende vídeo (lofi, video_curto, video_medio) — a gravação não entra no calendário.\n\nCrie um plano editorial para a semana: ' + daysText + '\n' + postsPerDay + ' post(s) por dia. Topics devem ser específicos e pessoais. Distribua entre as 6 funções do Pilar 4 (Ramificações) ao longo da semana.\n\nRESPONDA APENAS JSON VÁLIDO:\n{"days":[{"date":"2026-06-09","dayOfWeek":"Segunda","posts":[' + examplePost + ']}]}';
-    const text = await askOpenAI({ prompt, model: MODEL_SMART, maxTokens: 3000, json: true });
+    const text = await askOpenAI({ prompt, model: MODEL_SMART, maxTokens: 4000, json: true });
     const parsed = extractJSON(text);
     const days = (parsed.days || []).map(d => ({
       ...d,
