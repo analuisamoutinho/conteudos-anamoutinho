@@ -160,6 +160,16 @@ REGRAS:
 
 const TIPOS_VIDEO_RR_SERVER = ['lofi', 'video_curto', 'video_medio'];
 
+// Formatos que o calendário editorial pode agendar. Vídeo fica de fora: a
+// gravação depende de disponibilidade, então entra pela aba "Criar conteúdo"
+// quando der, não como compromisso no calendário.
+function getTiposCalendario() {
+  return Object.values(TIPOS_RR).filter(t => !TIPOS_VIDEO_RR_SERVER.includes(t.id));
+}
+function isTipoVideo(tipo) {
+  return TIPOS_VIDEO_RR_SERVER.includes(String(tipo || '').toLowerCase());
+}
+
 function buildPromptRoteiro(tipo, tema, account, tipoInfo, manualNote, brand) {
   const estruturas = { lofi: 'ESTRUTURA LO-FI: GANCHO (0-3s, com 1-2 concordes) → DESENVOLVIMENTO (cumpre uma função do Pilar 4) → CONCLUSÃO/TESE → CTA (Pilar 5: permissão, triagem ou filtro)', video_curto: 'ESTRUTURA VÍDEO CURTO (até 13s): UMA ÚNICA SACADA. Máximo 2-3 frases.', video_medio: 'ESTRUTURA VÍDEO MÉDIO (até 60s): GANCHO (0-5s, com concordes) → DESENVOLVIMENTO (5-50s) → CONCLUSÃO + CTA (50-60s, Pilar 5)' };
   const systemPrompt = 'Você é roteirista de conteúdo para Instagram da ' + account.name + ' — marca pessoal, Metodologia RR (Bolha RR, 7 pilares).\n\n' + METODOLOGIA_RR.filosofia + '\n' + build7PilaresRR() + '\nNUNCA usar: ' + METODOLOGIA_RR.tonsProibidos.join(', ') + '.\n' + (brand.copyDNA || '') + '\n' + (manualNote ? '\nDIRETRIZES DO PERFIL:\n' + manualNote + '\n' : '') + '\nTIPO: ' + tipoInfo.emoji + ' ' + tipoInfo.label + '\n' + (estruturas[tipo] || '') + '\n\nRetornar APENAS JSON valido, sem markdown.';
@@ -175,5 +185,7 @@ module.exports = {
   buildSystemPromptCarrossel,
   buildSystemPromptContentMachine,
   TIPOS_VIDEO_RR_SERVER,
+  getTiposCalendario,
+  isTipoVideo,
   buildPromptRoteiro,
 };
