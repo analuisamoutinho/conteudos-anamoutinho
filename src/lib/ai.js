@@ -37,4 +37,40 @@ async function askOpenAI({ prompt, system, model = MODEL_SMART, maxTokens = 2000
   return text;
 }
 
-module.exports = { askOpenAI, MODEL_FAST, MODEL_SMART };
+// ── Geração de imagem ─────────────────────────────────────────────────────
+// gpt-image-2 é o modelo atual; mantém-se o 1 como fallback automático para o
+// caso de a conta ainda não ter acesso ao 2 (a API responde model_not_found).
+const IMAGE_MODEL          = process.env.OPENAI_IMAGE_MODEL || 'gpt-image-2';
+const IMAGE_MODEL_FALLBACK = process.env.OPENAI_IMAGE_MODEL_FALLBACK || 'gpt-image-1';
+
+async function callImagesAPI(model, { prompt, size, quality }) {
+  const r = await fetch('https://api.openai.com/v1/images/generations', {
+    method: 'POST',
+    headers: { Authorization: 'Bearer ' + requireOpenAIKey(), 'Content-Type': 'application/json' },
+    body: JSON.stringify({ model, prompt, n: 1, size, quality, output_format: 'png' }),
+  });
+  const rawBody = await r.text();
+  let d;
+  try { d = JSON.parse(rawBody); }
+  catch { throw new Error('Resposta inválida da OpenAI (HTTP ' + r.status + '): ' + rawBody.slice(0, 200)); }
+  return d;
+}
+
+function isModelUnavailable(err) {
+  const msg = (err?.message || '') + ' ' + (err?.code || '') + ' ' + (err?.type || '');
+  return /model_not_found|does not exist|do not have access|unsupported.*model|invalid.*model/i.test(msg);
+}
+
+async function generateImage({ prompt, size = '1024x1536', quality = 'high' }) {
+  let d = await callImagesAPI(IMAGE_MODEL, { prompt, size, quality });
+  if (d.error && isModelUnavailable(d.error) && IMAGE_MODEL_FALLBACK !== IMAGE_MODEL) {
+    console.warn('[ai] ' + IMAGE_MODEL + ' indisponível (' + d.error.message + '), a usar ' + IMAGE_MODEL_FALLBACK);
+    d = await callImagesAPI(IMAGE_MODEL_FALLBACK, { prompt, size, quality });
+  }
+  if (d.error) throw new Error('OpenAI: ' + d.error.message);
+  const image = d.data && d.data[0];
+  if (!image) throw new Error('A OpenAI não devolveu imagem.');
+  return { b64: image.b64_json || null, url: image.url || null };
+}
+
+module.exports = { askOpenAI, generateImage, MODEL_FAST, MODEL_SMART, IMAGE_MODEL };

@@ -1,12 +1,10 @@
 const express = require('express');
-const fetch   = (...args) => import('node-fetch').then(({ default: f }) => f(...args));
 const router  = express.Router();
 const { loadCT, saveCT, templateStyle } = require('../lib/canva');
 const { buildCarouselPrompt } = require('../lib/image');
 const { resolveQuality } = require('../lib/userSettings');
 const { BRAND_IDENTITIES } = require('../lib/brand');
-const { askOpenAI, MODEL_FAST } = require('../lib/ai');
-const { requireOpenAIKey } = require('../lib/util');
+const { askOpenAI, generateImage, MODEL_FAST } = require('../lib/ai');
 
 router.get('/api/canva/templates', (req, res) => { let t = loadCT(); if (req.query.profile) t = t.filter(x => !x.profile || x.profile === req.query.profile || x.profile === 'all'); res.json(t); });
 router.post('/api/canva/templates', (req, res) => { const t = loadCT(); const n = { id: 'tmpl_' + Date.now(), createdAt: new Date().toISOString(), ...req.body }; t.unshift(n); saveCT(t); res.json({ success: true, template: n }); });
@@ -88,37 +86,17 @@ router.post('/api/canva/generate-slides', async (req, res) => {
       });
 
       try {
-        const r = await fetch('https://api.openai.com/v1/images/generations', {
-          method: 'POST',
-          headers: {
-            'Authorization': 'Bearer ' + requireOpenAIKey(),
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            model: 'gpt-image-1',
-            prompt: imagePrompt,
-            n: 1,
-            size: '1024x1536',
-            quality,
-            output_format: 'png',
-          }),
-        });
-
-        const data = await r.json();
-        if (data.error) {
-          results.push({ slideNumber, error: data.error.message, b64: null });
-          continue;
-        }
-
-        const imageData = data.data && data.data[0];
+        const img = await generateImage({ prompt: imagePrompt, size: '1024x1536', quality });
         results.push({
           slideNumber,
           funcao,
           heading,
           body,
-          b64: imageData?.b64_json || null,
-          url: imageData?.url || null,
+          b64: img.b64,
+          url: img.url,
           prompt: imagePrompt,
+          overlayStyle: tmpl.overlayStyle || 'editorial',
+          overlayTokens: tmpl.overlayTokens || null,
         });
       } catch (slideErr) {
         results.push({ slideNumber, error: slideErr.message, b64: null });
