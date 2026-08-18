@@ -32,8 +32,18 @@ async function askOpenAI({ prompt, system, model = MODEL_SMART, maxTokens = 2000
   catch { throw new Error('Resposta inválida da OpenAI (HTTP ' + r.status + '): ' + rawBody.slice(0, 200)); }
   if (d.error) throw new Error('OpenAI: ' + d.error.message);
   if (!r.ok) throw new Error('OpenAI devolveu HTTP ' + r.status);
-  const text = d.choices?.[0]?.message?.content?.trim();
-  if (!text) throw new Error('A OpenAI não devolveu conteúdo.');
+  const choice = d.choices?.[0];
+  const text = choice?.message?.content?.trim();
+  if (!text) {
+    // Resposta chegou bem, mas sem texto — dizer exatamente porquê em vez de
+    // um erro genérico. As duas causas reais: o modelo recusou, ou o
+    // max_tokens acabou antes de gerar conteúdo (comum em modelos de
+    // raciocínio, que gastam parte do orçamento a "pensar" antes de escrever).
+    if (choice?.message?.refusal) throw new Error('A OpenAI recusou o pedido: ' + choice.message.refusal);
+    if (choice?.finish_reason === 'length') throw new Error('A OpenAI cortou a resposta por falta de max_tokens (' + maxTokens + ') antes de gerar conteúdo — aumenta maxTokens nesta chamada ou usa um modelo sem custo de raciocínio.');
+    if (choice?.finish_reason === 'content_filter') throw new Error('A OpenAI bloqueou a resposta pelo filtro de conteúdo.');
+    throw new Error('A OpenAI não devolveu conteúdo (finish_reason: ' + (choice?.finish_reason || 'desconhecido') + ').');
+  }
   return text;
 }
 
