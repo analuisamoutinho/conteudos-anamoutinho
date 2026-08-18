@@ -38,6 +38,7 @@ ESTILO DESTE TEMPLATE (Editorial Typewriter — para carrosséis reflexivos/filo
 — O texto (aplicado por cima via overlay) é monoespaçado tipo máquina de escrever, branco, centrado no terço superior/médio; a foto deve deixar essa zona respirar
 — Mood de referência: Kinfolk, fotografia documental europeia, luz de fim de tarde`,
     slideCount: 8, canvaUrl: 'https://www.canva.com/design/DAHOYMschTo/7-wmTI9UhBd_fS6CmNPgjw/edit', profile: 'pessoal',
+    overlayStyle: 'typewriter', overlayTokens: { veil: 'rgba(20,14,8,.38)', text: '#FFFFFF' },
   },
   {
     id: 'tmpl_ana_carrossel_002', createdAt: '2026-07-12T00:00:00.000Z',
@@ -53,6 +54,7 @@ ESTILO DESTE TEMPLATE (Cartões sobre Foto — para carrosséis de dicas/passos/
 — O texto entra por cima em dois cartões sobrepostos: um creme (#F5F1EA) com título marrom escuro em negrito, outro taupe acastanhado translúcido (#8A7A69) com texto branco — a foto deve suportar esses blocos no centro
 — Sensação: acolhedor, prático, elegante sem esforço`,
     slideCount: 8, canvaUrl: 'https://www.canva.com/design/DAHOYBvMcGQ/gyafs_lB36VerRbIBEBbFw/edit', profile: 'pessoal',
+    overlayStyle: 'cards', overlayTokens: { card1Bg: '#F5F1EA', card1Text: '#3B2A1C', card2Bg: 'rgba(138,122,105,.84)', card2Text: '#FFFFFF', radius: 22 },
   },
   {
     id: 'tmpl_ana_carrossel_003', createdAt: '2026-07-12T00:00:00.000Z',
@@ -68,6 +70,7 @@ ESTILO DESTE TEMPLATE (Handwriting Leve — para carrosséis leves, bastidores, 
 — SLIDE FINAL (CTA): fundo LISO castanho-café escuro (#3F2E23), sem foto, apenas textura mínima
 — Sensação: amiga que partilha o que funciona, zero formalidade`,
     slideCount: 8, canvaUrl: 'https://www.canva.com/design/DAHOYK2q-Y0/DmZTpOUXjL2OHsSYSLG-bQ/edit', profile: 'pessoal',
+    overlayStyle: 'handwriting', overlayTokens: { veil: 'rgba(40,26,16,.34)', mainColor: '#FFFFFF', handColor: '#FFFFFF', outline: '#3F2E23', stickerBg: '#EFE6D8', ctaFlatBg: '#3F2E23' },
   },
   {
     id: 'tmpl_ana_frase_004', createdAt: '2026-07-12T00:00:00.000Z',
@@ -81,6 +84,7 @@ ESTILO DESTE TEMPLATE (Handwriting Leve — para carrosséis leves, bastidores, 
 — Handle pequeno em letras espaçadas abaixo da frase
 — Sensação: página de livro, statement calmo e definitivo`,
     slideCount: 1, canvaUrl: null, profile: 'pessoal',
+    overlayStyle: 'quote', overlayTokens: { flatBg: true, bg: '#5E4F3F', text: '#FFFFFF', frame: true },
   },
   {
     id: 'tmpl_ana_carrossel_005', createdAt: '2026-07-12T00:00:00.000Z',
@@ -96,6 +100,7 @@ ESTILO DESTE TEMPLATE (Tipografia Mista — para carrosséis de corrida, treino,
 — O texto entra por cima misturando sans-serif bold branca e serifada itálica, com uma palavra destacada em amarelo-manteiga e pequenas anotações manuscritas com setinhas — o centro da foto deve ficar respirável
 — Sensação: processo real de treino, sem pose de fitness influencer`,
     slideCount: 8, canvaUrl: null, profile: 'pessoal',
+    overlayStyle: 'handwriting', overlayTokens: { veil: 'rgba(20,20,16,.30)', mainColor: '#FFFFFF', handColor: '#FFFFFF', highlight: '#EFE3A8', stickerBg: '#EFE3A8' },
   },
   {
     id: 'tmpl_ana_serena_001', createdAt: '2026-07-12T00:00:00.000Z',
@@ -112,6 +117,7 @@ ESTILO DESTE TEMPLATE (Tipografia Mista — para carrosséis de corrida, treino,
 — Sensação: pausa, leveza, acolhimento — como respirar fundo num campo ao entardecer
 — PROIBIDO: cores vivas, visual corporativo, stock photography posada, flash duro`,
     slideCount: 1, canvaUrl: null, profile: 'pessoal',
+    overlayStyle: 'quote', overlayTokens: { flatBg: false, veil: 'rgba(40,30,20,.30)', text: '#FFFFFF', frame: true },
   },
   {
     id: 'tmpl_ana_serena_002', createdAt: '2026-07-12T00:00:00.000Z',
@@ -128,6 +134,7 @@ ESTILO DESTE TEMPLATE (Tipografia Mista — para carrosséis de corrida, treino,
 — Sensação: caderno de terapia bonito, silêncio, delicadeza intencional
 — PROIBIDO: poluição visual, cores saturadas, fotos escuras dominantes`,
     slideCount: 7, canvaUrl: null, profile: 'pessoal',
+    overlayStyle: 'editorial', overlayTokens: { flatBg: true, bg: '#F2EFE9', text: '#5F4B38', bodyText: '#5F4B38', accentLine: '#5F4B38', tagBg: '#DDD6CB', tagText: '#5F4B38' },
   },
   {
     id: 'tmpl_ana_serena_003', createdAt: '2026-07-12T00:00:00.000Z',
@@ -143,6 +150,7 @@ ESTILO DESTE TEMPLATE (Tipografia Mista — para carrosséis de corrida, treino,
 — Sensação: floresta ao entardecer, profundidade calma, autoridade suave
 — PROIBIDO: verdes vivos/saturados, visual de infográfico corporativo, branco puro estourado`,
     slideCount: 7, canvaUrl: null, profile: 'pessoal',
+    overlayStyle: 'olive', overlayTokens: { flatBg: false, bg: '#3E3D26', text: '#EDE8DC', veil: 'rgba(30,32,18,.46)' },
   },
   {
     id: 'tmpl_ana_serena_004', createdAt: '2026-07-12T00:00:00.000Z',
@@ -159,6 +167,7 @@ ESTILO DESTE TEMPLATE (Tipografia Mista — para carrosséis de corrida, treino,
 — Sensação: conversa sincera à luz de vela, amiga que admite as próprias falhas
 — PROIBIDO: luz fria, cenas de estúdio, sorrisos posados, cores saturadas`,
     slideCount: 7, canvaUrl: null, profile: 'pessoal',
+    overlayStyle: 'handwriting', overlayTokens: { veil: 'rgba(58,36,22,.42)', mainColor: '#FFFFFF', handColor: '#FFFFFF', stickerBg: '#C9BFA8', ctaFlatBg: '#3A2A1E' },
   },
   {
     id: 'tmpl_ana_serena_005', createdAt: '2026-07-12T00:00:00.000Z',
@@ -174,6 +183,7 @@ ESTILO DESTE TEMPLATE (Tipografia Mista — para carrosséis de corrida, treino,
 — Sensação: fichas de psicoeducação elegantes, calma estruturada, uma ideia de cada vez
 — PROIBIDO: cores fortes, sombras duras, visual de slide corporativo`,
     slideCount: 6, canvaUrl: null, profile: 'pessoal',
+    overlayStyle: 'cards', overlayTokens: { flatBg: true, bg: '#DED9CC', card1Bg: '#F6F3EC', card1Text: '#3B342A', card2Bg: 'rgba(222,217,204,.85)', card2Text: '#3B342A', radius: 30 },
   },
   {
     id: 'tmpl_ana_serena_006', createdAt: '2026-07-12T00:00:00.000Z',
@@ -189,16 +199,17 @@ ESTILO DESTE TEMPLATE (Tipografia Mista — para carrosséis de corrida, treino,
 — Sensação: diário íntimo encadernado em couro, verdade dita com carinho, profundidade quente
 — PROIBIDO: preto puro, cores frias, gradientes artificiais, visual de anúncio`,
     slideCount: 6, canvaUrl: null, profile: 'pessoal',
+    overlayStyle: 'handwriting', overlayTokens: { flatBg: true, bg: '#4A2E1D', mainColor: '#EDE7DC', handColor: '#EDE7DC', stickerBg: '#7A4630', ctaFlatBg: '#2F2015' },
   },
-  { id: 'tmpl_default_001', createdAt: '2026-06-14T00:00:00.000Z', name: 'Posts Estáticos - Chamada em Destaque [Handwriting]', contentTypes: ['frase'], aesthetic: 'Handwriting, chamada de atenção em destaque, estilo manuscrito', slideCount: 1, canvaUrl: 'https://www.canva.com/design/DAHL5Modgyc/vEEcxRj9jnHi4dFKqSm_pA/edit', profile: 'all' },
-  { id: 'tmpl_default_002', createdAt: '2026-06-14T00:00:00.000Z', name: 'Posts Estáticos [Sublime]', contentTypes: ['frase'], aesthetic: 'Elegante, minimalista, identidade visual sóbria', slideCount: 1, canvaUrl: 'https://www.canva.com/design/DAHL5R5kU2Y/xIyRwYXAdmFCqKaYiw3dYA/edit', profile: 'all' },
-  { id: 'tmpl_default_003', createdAt: '2026-06-14T00:00:00.000Z', name: 'Post Carrossel - Recomendações', contentTypes: ['carrossel', 'lista'], aesthetic: 'Carrossel de indicações e recomendações', slideCount: 178, canvaUrl: 'https://www.canva.com/design/DAHL5TqhKyI/etk6efSME5DhFwZ4hgdDuw/edit', profile: 'all' },
-  { id: 'tmpl_default_004', createdAt: '2026-06-14T00:00:00.000Z', name: 'Post Carrossel [Flow]', contentTypes: ['carrossel'], aesthetic: 'Estilo Flow, fluido e moderno', slideCount: 47, canvaUrl: 'https://www.canva.com/design/DAHMlM5WCeE/NRbPJN3Jh8i3pp0ZeFENA/edit', profile: 'all' },
-  { id: 'tmpl_default_005', createdAt: '2026-06-14T00:00:00.000Z', name: 'Post Carrossel [StudioMoulin]', contentTypes: ['carrossel'], aesthetic: 'Estilo StudioMoulin, editorial sofisticado', slideCount: 67, canvaUrl: 'https://www.canva.com/design/DAHMlGdvovg/OKFiMiynrALoa53TnTlrnQ/edit', profile: 'all' },
-  { id: 'tmpl_default_006', createdAt: '2026-06-14T00:00:00.000Z', name: 'Posts Sobre Mim [Lifestyle]', contentTypes: ['bastidores', 'dump'], aesthetic: 'Lifestyle, conteúdo pessoal, autêntico e íntimo', slideCount: 86, canvaUrl: 'https://www.canva.com/design/DAHL5N_tvhA/7MZi0VRLPp3QdXBEklwYVw/edit', profile: 'all' },
-  { id: 'tmpl_default_007', createdAt: '2026-06-14T00:00:00.000Z', name: 'Posts Variados [Flow]', contentTypes: ['carrossel', 'frase'], aesthetic: 'Estilo Flow, versátil e dinâmico', slideCount: 18, canvaUrl: 'https://www.canva.com/design/DAHMlDU5T9U/edit', profile: 'all' },
-  { id: 'tmpl_default_008', createdAt: '2026-06-14T00:00:00.000Z', name: 'Post para Frase [StudioMoulin]', contentTypes: ['frase'], aesthetic: 'Estilo StudioMoulin, elegante para frases e citações', slideCount: 22, canvaUrl: 'https://www.canva.com/design/DAHMlPnisuI/E7t-QxVHNLMOSxIAQ6oMiw/edit', profile: 'all' },
-  { id: 'tmpl_default_009', createdAt: '2026-06-14T00:00:00.000Z', name: 'Capa para Photodump', contentTypes: ['dump'], aesthetic: 'Capa criativa para posts estilo photodump', slideCount: 87, canvaUrl: 'https://www.canva.com/design/DAHL5RVJ-ug/o_RsgOzgY8HsDubf1vnAOQ/edit', profile: 'all' }
+  { id: 'tmpl_default_001', createdAt: '2026-06-14T00:00:00.000Z', name: 'Posts Estáticos - Chamada em Destaque [Handwriting]', contentTypes: ['frase'], aesthetic: 'Handwriting, chamada de atenção em destaque, estilo manuscrito', slideCount: 1, canvaUrl: 'https://www.canva.com/design/DAHL5Modgyc/vEEcxRj9jnHi4dFKqSm_pA/edit', profile: 'all', overlayStyle: 'handwriting', overlayTokens: { veil: 'rgba(20,20,20,.32)', mainColor: '#FFFFFF', handColor: '#FFFFFF' } },
+  { id: 'tmpl_default_002', createdAt: '2026-06-14T00:00:00.000Z', name: 'Posts Estáticos [Sublime]', contentTypes: ['frase'], aesthetic: 'Elegante, minimalista, identidade visual sóbria', slideCount: 1, canvaUrl: 'https://www.canva.com/design/DAHL5R5kU2Y/xIyRwYXAdmFCqKaYiw3dYA/edit', profile: 'all', overlayStyle: 'quote', overlayTokens: { flatBg: true, bg: '#4A3B2C', text: '#FFFFFF', frame: true } },
+  { id: 'tmpl_default_003', createdAt: '2026-06-14T00:00:00.000Z', name: 'Post Carrossel - Recomendações', contentTypes: ['carrossel', 'lista'], aesthetic: 'Carrossel de indicações e recomendações', slideCount: 178, canvaUrl: 'https://www.canva.com/design/DAHL5TqhKyI/etk6efSME5DhFwZ4hgdDuw/edit', profile: 'all', overlayStyle: 'cards', overlayTokens: { card1Bg: '#F5F1EA', card1Text: '#3B2A1C', card2Bg: 'rgba(138,122,105,.84)', card2Text: '#FFFFFF', radius: 20 } },
+  { id: 'tmpl_default_004', createdAt: '2026-06-14T00:00:00.000Z', name: 'Post Carrossel [Flow]', contentTypes: ['carrossel'], aesthetic: 'Estilo Flow, fluido e moderno', slideCount: 47, canvaUrl: 'https://www.canva.com/design/DAHMlM5WCeE/NRbPJN3Jh8i3pp0ZeFENA/edit', profile: 'all', overlayStyle: 'editorial', overlayTokens: { flatBg: false, veil: 'rgba(250,248,245,.14)', text: '#FFFFFF', bodyText: 'rgba(255,255,255,.92)', accentLine: '#C17B6F' } },
+  { id: 'tmpl_default_005', createdAt: '2026-06-14T00:00:00.000Z', name: 'Post Carrossel [StudioMoulin]', contentTypes: ['carrossel'], aesthetic: 'Estilo StudioMoulin, editorial sofisticado', slideCount: 67, canvaUrl: 'https://www.canva.com/design/DAHMlGdvovg/OKFiMiynrALoa53TnTlrnQ/edit', profile: 'all', overlayStyle: 'editorial', overlayTokens: { flatBg: false, veil: 'rgba(20,16,12,.30)', text: '#FFFFFF', bodyText: 'rgba(255,255,255,.92)', accentLine: '#C4A882' } },
+  { id: 'tmpl_default_006', createdAt: '2026-06-14T00:00:00.000Z', name: 'Posts Sobre Mim [Lifestyle]', contentTypes: ['bastidores', 'dump'], aesthetic: 'Lifestyle, conteúdo pessoal, autêntico e íntimo', slideCount: 86, canvaUrl: 'https://www.canva.com/design/DAHL5N_tvhA/7MZi0VRLPp3QdXBEklwYVw/edit', profile: 'all', overlayStyle: 'handwriting', overlayTokens: { veil: 'rgba(58,36,22,.36)', mainColor: '#FFFFFF', handColor: '#FFFFFF', stickerBg: '#C9BFA8' } },
+  { id: 'tmpl_default_007', createdAt: '2026-06-14T00:00:00.000Z', name: 'Posts Variados [Flow]', contentTypes: ['carrossel', 'frase'], aesthetic: 'Estilo Flow, versátil e dinâmico', slideCount: 18, canvaUrl: 'https://www.canva.com/design/DAHMlDU5T9U/edit', profile: 'all', overlayStyle: 'editorial', overlayTokens: { flatBg: false, veil: 'rgba(20,16,12,.28)', text: '#FFFFFF', bodyText: 'rgba(255,255,255,.92)', accentLine: '#8B7355' } },
+  { id: 'tmpl_default_008', createdAt: '2026-06-14T00:00:00.000Z', name: 'Post para Frase [StudioMoulin]', contentTypes: ['frase'], aesthetic: 'Estilo StudioMoulin, elegante para frases e citações', slideCount: 22, canvaUrl: 'https://www.canva.com/design/DAHMlPnisuI/E7t-QxVHNLMOSxIAQ6oMiw/edit', profile: 'all', overlayStyle: 'quote', overlayTokens: { flatBg: true, bg: '#43301F', text: '#FFFFFF', frame: true } },
+  { id: 'tmpl_default_009', createdAt: '2026-06-14T00:00:00.000Z', name: 'Capa para Photodump', contentTypes: ['dump'], aesthetic: 'Capa criativa para posts estilo photodump', slideCount: 87, canvaUrl: 'https://www.canva.com/design/DAHL5RVJ-ug/o_RsgOzgY8HsDubf1vnAOQ/edit', profile: 'all', overlayStyle: 'editorial', overlayTokens: { flatBg: false, veil: 'rgba(20,16,12,.26)', text: '#FFFFFF', bodyText: 'rgba(255,255,255,.92)', accentLine: '#C17B6F' } }
 ];
 
 function loadCT() {

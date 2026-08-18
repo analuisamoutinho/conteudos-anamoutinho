@@ -6,7 +6,7 @@
 <title>Máquina de Conteúdo</title>
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,400&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,400&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600&family=Courier+Prime:ital,wght@0,400;0,700;1,400&family=Caveat:wght@400;500;600;700&display=swap" rel="stylesheet" />
 <style>
 :root {
   --purple:    #160728;
@@ -1224,38 +1224,140 @@ const BRAND_ACCENT={pessoal:{accent:'#8B7355',bg:'#1A1612',handle:'@analuisa.mou
 
 /* ── SlideRenderer ── */
 const SlideRenderer={
-  _applyAccentWords(text,accentColor){
-    if(!text)return'';
-    const words=text.split(/\s+/);
-    const accentCount=Math.min(3,Math.max(1,Math.ceil(words.length/4)));
-    const normal=words.slice(0,words.length-accentCount).join(' ');
-    const accented=words.slice(words.length-accentCount).join(' ');
-    return`${normal?normal+' ':''}<span style="color:${accentColor};display:inline;">${accented}</span>`;
+  _esc(t){return String(t==null?'':t).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');},
+  // Destaca as últimas palavras da frase — em itálico (estilos serifados) ou
+  // com marcador de cor (estilos manuscritos). Substitui o antigo recolorir
+  // arbitrário das últimas palavras, que dava ar de citação motivacional.
+  _emphasize(text,mode,color){
+    const t=this._esc(text);
+    if(!t||mode==='none')return t;
+    const words=t.split(/\s+/);
+    if(words.length<4)return t;
+    const n=Math.min(3,Math.max(1,Math.round(words.length/5)));
+    const head=words.slice(0,words.length-n).join(' ');
+    const tail=words.slice(words.length-n).join(' ');
+    if(mode==='highlight')return`${head} <span style="background:${color};color:#3B2A1C;padding:0 .12em;border-radius:3px;">${tail}</span>`;
+    return`${head} <em style="font-style:italic;font-weight:inherit;">${tail}</em>`;
   },
-  _buildSlideHTML(photoUrl,designMeta){
-    const{heading,body,accent,bgDark,handle,slideNumber,totalSlides,funcao,overlayCSS,photoSource}=designMeta;
-    const headingLen=(heading||'').length;
-    const headingSize=headingLen>90?'58px':headingLen>65?'68px':headingLen>40?'80px':'90px';
-    const textShadow='text-shadow:0 2px 16px rgba(0,0,0,0.95),0 1px 5px rgba(0,0,0,0.98);';
-    const bodyShadow='text-shadow:0 1px 12px rgba(0,0,0,0.90),0 1px 4px rgba(0,0,0,0.95);';
-    const headingHTML=this._applyAccentWords(heading||'',accent);
-    // Overlay leve no topo + gradiente escuro pesado na metade inferior — foto respira no topo, texto lê-se na base
-    const topOverlay=overlayCSS||'rgba(0,0,0,0.22)';
-    const gradient=`linear-gradient(to top, rgba(0,0,0,0.92) 0%, rgba(0,0,0,0.78) 30%, rgba(0,0,0,0.40) 55%, rgba(0,0,0,0.00) 100%)`;
-    const showFuncao=funcao&&funcao!=='CAPA'&&funcao!=='ASSINATURA'&&funcao!=='CTA'&&funcao!=='CONTEUDO';
-    return`<div class="sr-slide-wrapper" style="background:${bgDark};">
-<img class="sr-bg" src="${photoUrl}" crossorigin="anonymous" />
-<div style="position:absolute;inset:0;z-index:1;background:${topOverlay};"></div>
-<div style="position:absolute;inset:0;z-index:1;background:${gradient};"></div>
-<div style="position:absolute;top:52px;right:72px;font-size:18px;font-weight:600;color:rgba(255,255,255,0.50);letter-spacing:.06em;z-index:3;">${slideNumber}/${totalSlides}</div>
-<div style="position:absolute;inset:0;z-index:2;display:flex;flex-direction:column;justify-content:flex-end;padding:140px 76px;">
-<div style="font-size:22px;font-weight:700;letter-spacing:.06em;text-transform:lowercase;color:${accent};margin-bottom:24px;opacity:.95;${textShadow}">${handle}</div>
-${showFuncao?`<div style="font-size:18px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,0.65);margin-bottom:16px;${textShadow}">${funcao}</div>`:''}
-<div style="font-family:'Plus Jakarta Sans',sans-serif;font-size:${headingSize};font-weight:800;line-height:1.06;letter-spacing:-.02em;margin-bottom:${body?'24px':'0'};color:#FFFFFF;${textShadow}">${headingHTML}</div>
-${body?`<div style="font-size:30px;font-weight:400;line-height:1.60;letter-spacing:-.01em;max-width:880px;color:rgba(255,255,255,0.90);${bodyShadow}">${body}</div>`:''}
-</div>
-<div style="position:absolute;bottom:0;left:0;right:0;height:6px;z-index:3;background:${accent};"></div>
+  _fit(text,sizes){
+    const len=(text||'').length;
+    for(const[max,size]of sizes){if(len<=max)return size;}
+    return sizes[sizes.length-1][1];
+  },
+  _bgLayer(photoUrl,tk){
+    if(tk.flatBg)return`<div style="position:absolute;inset:0;z-index:0;background:${tk.bg||'#F2EFE9'};"></div>`;
+    return`<img class="sr-bg" src="${photoUrl}" crossorigin="anonymous" />
+<div style="position:absolute;inset:0;z-index:1;background:${tk.veil||'rgba(20,16,12,.30)'};"></div>`;
+  },
+  _handle(handle,color,align){
+    return`<div style="font-family:'DM Sans',sans-serif;font-size:21px;font-weight:500;letter-spacing:.18em;text-transform:lowercase;color:${color};opacity:.8;text-align:${align||'left'};">${this._esc(handle)}</div>`;
+  },
+  _counter(n,total,color){
+    if(!n||!total||total<2)return'';
+    return`<div style="position:absolute;top:56px;right:72px;font-family:'DM Sans',sans-serif;font-size:19px;font-weight:500;letter-spacing:.1em;color:${color};opacity:.65;z-index:4;">${n}/${total}</div>`;
+  },
+
+  // ── editorial: foto full-bleed, título serifado no rodapé, filete de acento
+  _styleEditorial(photoUrl,m,tk){
+    const text=tk.text||'#FFFFFF',bodyText=tk.bodyText||'rgba(255,255,255,.92)',line=tk.accentLine||'#C4A882';
+    const size=this._fit(m.heading,[[42,96],[70,80],[100,66],[999,56]]);
+    return`${this._bgLayer(photoUrl,tk)}
+${this._counter(m.slideNumber,m.totalSlides,text)}
+<div style="position:absolute;inset:0;z-index:2;display:flex;flex-direction:column;justify-content:flex-end;padding:120px 92px;">
+<div style="width:96px;height:2px;background:${line};margin-bottom:38px;opacity:.9;"></div>
+<div style="font-family:'Playfair Display',serif;font-size:${size}px;font-weight:500;line-height:1.14;letter-spacing:-.01em;color:${text};margin-bottom:${m.body?'30px':'44px'};">${this._emphasize(m.heading,'italic')}</div>
+${m.body?`<div style="font-family:'DM Sans',sans-serif;font-size:31px;font-weight:300;line-height:1.62;color:${bodyText};max-width:820px;margin-bottom:44px;">${this._esc(m.body)}</div>`:''}
+${this._handle(m.handle,text,'left')}
 </div>`;
+  },
+
+  // ── typewriter: monoespaçada centrada no terço superior, muito ar
+  _styleTypewriter(photoUrl,m,tk){
+    const text=tk.text||'#FFFFFF';
+    const size=this._fit(m.heading,[[40,62],[70,54],[110,46],[999,40]]);
+    return`${this._bgLayer(photoUrl,tk)}
+${this._counter(m.slideNumber,m.totalSlides,text)}
+<div style="position:absolute;inset:0;z-index:2;display:flex;flex-direction:column;justify-content:center;align-items:center;padding:150px 110px;text-align:center;">
+<div style="font-family:'Courier Prime',monospace;font-size:${size}px;font-weight:400;line-height:1.58;letter-spacing:.01em;color:${text};">${this._emphasize(m.heading,'italic')}</div>
+${m.body?`<div style="font-family:'Courier Prime',monospace;font-size:28px;font-weight:400;line-height:1.72;color:${text};opacity:.86;margin-top:44px;max-width:760px;">${this._esc(m.body)}</div>`:''}
+</div>
+<div style="position:absolute;bottom:96px;left:0;right:0;z-index:3;">${this._handle(m.handle,text,'center')}</div>`;
+  },
+
+  // ── cards: dois cartões arredondados sobrepostos em cascata
+  _styleCards(photoUrl,m,tk){
+    const c1=tk.card1Bg||'#F5F1EA',c1t=tk.card1Text||'#3B2A1C';
+    const c2=tk.card2Bg||'rgba(138,122,105,.84)',c2t=tk.card2Text||'#FFFFFF';
+    const r=tk.radius||22;
+    const size=this._fit(m.heading,[[40,60],[70,52],[110,44],[999,38]]);
+    return`${this._bgLayer(photoUrl,tk)}
+${this._counter(m.slideNumber,m.totalSlides,tk.flatBg?c1t:'#FFFFFF')}
+<div style="position:absolute;inset:0;z-index:2;display:flex;flex-direction:column;justify-content:center;padding:110px 84px;">
+<div style="background:${c1};border-radius:${r}px;padding:52px 48px;box-shadow:0 18px 48px rgba(40,30,20,.16);">
+<div style="font-family:'Playfair Display',serif;font-size:${size}px;font-weight:600;line-height:1.2;color:${c1t};">${this._emphasize(m.heading,'italic')}</div>
+</div>
+${m.body?`<div style="background:${c2};border-radius:${r}px;padding:42px 46px;margin:-14px 40px 0 40px;box-shadow:0 14px 36px rgba(40,30,20,.14);">
+<div style="font-family:'DM Sans',sans-serif;font-size:29px;font-weight:400;line-height:1.62;color:${c2t};">${this._esc(m.body)}</div>
+</div>`:''}
+</div>
+<div style="position:absolute;bottom:80px;left:0;right:0;z-index:3;">${this._handle(m.handle,tk.flatBg?c1t:'#FFFFFF','center')}</div>`;
+  },
+
+  // ── handwriting: sans bold + apoio manuscrito, tom próximo
+  _styleHandwriting(photoUrl,m,tk){
+    const main=tk.mainColor||'#FFFFFF',hand=tk.handColor||'#FFFFFF';
+    const size=this._fit(m.heading,[[40,84],[70,72],[100,60],[999,52]]);
+    const heading=tk.highlight?this._emphasize(m.heading,'highlight',tk.highlight):this._esc(m.heading);
+    return`${this._bgLayer(photoUrl,tk)}
+${this._counter(m.slideNumber,m.totalSlides,main)}
+<div style="position:absolute;inset:0;z-index:2;display:flex;flex-direction:column;justify-content:center;padding:130px 88px;">
+<div style="font-family:'Plus Jakarta Sans',sans-serif;font-size:${size}px;font-weight:700;line-height:1.16;letter-spacing:-.015em;color:${main};">${heading}</div>
+${m.body?`<div style="font-family:'Caveat',cursive;font-size:46px;font-weight:500;line-height:1.42;color:${hand};margin-top:38px;max-width:800px;">${this._esc(m.body)}</div>`:''}
+</div>
+<div style="position:absolute;bottom:84px;left:88px;z-index:3;">${this._handle(m.handle,main,'left')}</div>`;
+  },
+
+  // ── quote: statement serifado grande com moldura fina
+  _styleQuote(photoUrl,m,tk){
+    const text=tk.text||'#FFFFFF';
+    const size=this._fit(m.heading,[[40,92],[70,78],[110,64],[999,54]]);
+    const frame=tk.frame!==false;
+    return`${this._bgLayer(photoUrl,tk)}
+<div style="position:absolute;inset:0;z-index:2;display:flex;flex-direction:column;justify-content:center;align-items:center;padding:150px 108px;text-align:center;">
+${frame?`<div style="position:absolute;inset:64px;border:1px solid ${text};opacity:.28;"></div>`:''}
+<div style="font-family:'Playfair Display',serif;font-size:${size}px;font-weight:500;line-height:1.24;color:${text};">${this._emphasize(m.heading,'italic')}</div>
+${m.body?`<div style="font-family:'DM Sans',sans-serif;font-size:29px;font-weight:300;line-height:1.62;color:${text};opacity:.88;margin-top:40px;max-width:720px;">${this._esc(m.body)}</div>`:''}
+<div style="margin-top:56px;">${this._handle(m.handle,text,'center')}</div>
+</div>`;
+  },
+
+  // ── olive: bloco editorial profundo com ticker nas margens
+  _styleOlive(photoUrl,m,tk){
+    const text=tk.text||'#EDE8DC';
+    const size=this._fit(m.heading,[[42,86],[70,72],[100,60],[999,52]]);
+    const ticker='passe para o lado · '.repeat(8);
+    return`${this._bgLayer(photoUrl,tk)}
+<div style="position:absolute;top:44px;left:0;right:0;z-index:3;font-family:'DM Sans',sans-serif;font-size:17px;letter-spacing:.16em;color:${text};opacity:.42;white-space:nowrap;overflow:hidden;text-transform:lowercase;">${ticker}</div>
+<div style="position:absolute;bottom:44px;left:0;right:0;z-index:3;font-family:'DM Sans',sans-serif;font-size:17px;letter-spacing:.16em;color:${text};opacity:.42;white-space:nowrap;overflow:hidden;text-transform:lowercase;">${ticker}</div>
+<div style="position:absolute;inset:0;z-index:2;display:flex;flex-direction:column;justify-content:center;padding:150px 92px;">
+<div style="font-family:'Playfair Display',serif;font-size:${size}px;font-weight:500;line-height:1.18;color:${text};">${this._emphasize(m.heading,'italic')}</div>
+${m.body?`<div style="font-family:'DM Sans',sans-serif;font-size:30px;font-weight:300;line-height:1.64;color:${text};opacity:.9;margin-top:36px;max-width:800px;">${this._esc(m.body)}</div>`:''}
+<div style="margin-top:52px;">${this._handle(m.handle,text,'left')}</div>
+</div>`;
+  },
+
+  _buildSlideHTML(photoUrl,designMeta){
+    const m={...designMeta};
+    m.handle=m.handle||'@analuisa.moutinho';
+    const style=m.overlayStyle||'editorial';
+    const tk=m.overlayTokens||{};
+    const builders={editorial:'_styleEditorial',typewriter:'_styleTypewriter',cards:'_styleCards',handwriting:'_styleHandwriting',quote:'_styleQuote',olive:'_styleOlive'};
+    const fn=builders[style]||builders.editorial;
+    // Sem foto gerada, o estilo passa a fundo liso para não render um vazio preto.
+    const tokens=photoUrl?tk:{...tk,flatBg:true,bg:tk.bg||m.bgLight||'#F2EFE9',text:tk.flatBg?tk.text:(m.bgDark||'#3B342A'),bodyText:tk.flatBg?tk.bodyText:(m.bgDark||'#3B342A')};
+    const inner=this[fn](photoUrl,m,tokens);
+    const base=tokens.flatBg?(tokens.bg||m.bgLight||'#F2EFE9'):(m.bgDark||'#2C2420');
+    return`<div class="sr-slide-wrapper" style="background:${base};">${inner}</div>`;
   },
   async renderSlide(photoUrl,designMeta){
     const container=document.getElementById('sr-render-container');
@@ -1268,12 +1370,16 @@ ${body?`<div style="font-size:30px;font-weight:400;line-height:1.60;letter-spaci
       img.onload=resolve;img.onerror=resolve;
       setTimeout(resolve,8000);
     });
+    // Sem isto o html2canvas captura antes das webfonts carregarem e o slide
+    // sai na fonte de fallback do sistema.
+    if(document.fonts?.ready){try{await document.fonts.ready;}catch(e){}}
     await new Promise(r=>setTimeout(r,180));
     try{
+      const tk=designMeta.overlayTokens||{};
       const canvas=await html2canvas(slideEl,{
         width:1024,height:1536,scale:2,
         useCORS:true,allowTaint:false,
-        backgroundColor:designMeta.bgDark||'#0A0A0A',
+        backgroundColor:(tk.flatBg?(tk.bg||designMeta.bgLight):designMeta.bgDark)||'#2C2420',
         logging:false,imageTimeout:10000,
       });
       const pngB64=canvas.toDataURL('image/png',1.0).split(',')[1];

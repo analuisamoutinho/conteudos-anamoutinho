@@ -12,7 +12,7 @@ const { saveGeneratedContent } = require('../lib/content');
 const { buildCarouselPrompt, cropTo45 } = require('../lib/image');
 const { resolveQuality } = require('../lib/userSettings');
 const { loadCT, matchBestTemplate, templateStyle } = require('../lib/canva');
-const { askOpenAI, MODEL_SMART } = require('../lib/ai');
+const { askOpenAI, generateImage, MODEL_SMART, IMAGE_MODEL } = require('../lib/ai');
 
 // ═══════════════════════════════════════════════════════════════════════════
 // CAROUSEL GENERATE AND SAVE
@@ -91,11 +91,14 @@ router.post('/api/image/carousel-slide', async (req, res) => {
       totalSlides: totalSlides || 1,
       sceneHint,
     });
-    const moodList = brand.moods || ['HERO_DARK'];
-    const moodIndex = Math.min((slideNumber || 1) - 1, moodList.length - 1);
-    const mood = moodList[moodIndex] || 'HERO_DARK';
-    const isDark = mood.includes('DARK') || mood.includes('LOFI') || mood.includes('WARM') || mood === 'FRASE_IMPACTO' || mood === 'VIRADA' || mood === 'CTA_INTIMO';
-    const designMeta = { heading: heading||'', body: body||'', accent: brand.accent||'#C8A020', bgDark: brand.bgDark||'#0A0A0A', bgLight: brand.bgLight||'#F5F4F0', handle: brand.handle||account.handle, isDark, mood, slideNumber, totalSlides, funcao: funcao||(slideNumber===1?'CAPA':slideNumber===totalSlides?'ASSINATURA':'CONTEUDO'), templateId: matchedTemplate?.id || null, templateName: matchedTemplate?.name || null };
+    // Estilo do overlay de texto: vem do template Canva casado (aparência real
+    // das coleções da Ana). Sem template, cai no fallback editorial que usa as
+    // cores reais da identidade da marca (creme/terracota) em vez de um
+    // gradiente escuro genérico.
+    const fallbackOverlayTokens = { flatBg: false, veil: 'rgba(20,16,12,.28)', text: '#FFFFFF', bodyText: 'rgba(255,255,255,.92)', accentLine: brand.accentFem || brand.accent || '#C17B6F' };
+    const overlayStyle  = matchedTemplate?.overlayStyle  || 'editorial';
+    const overlayTokens = matchedTemplate?.overlayTokens || fallbackOverlayTokens;
+    const designMeta = { heading: heading||'', body: body||'', accent: brand.accent||'#C8A020', bgDark: brand.bgDark||'#0A0A0A', bgLight: brand.bgLight||'#F5F4F0', handle: brand.handle||account.handle, overlayStyle, overlayTokens, slideNumber, totalSlides, funcao: funcao||(slideNumber===1?'CAPA':slideNumber===totalSlides?'ASSINATURA':'CONTEUDO'), templateId: matchedTemplate?.id || null, templateName: matchedTemplate?.name || null };
 
     let imageData;
 
@@ -105,7 +108,7 @@ router.post('/api/image/carousel-slide', async (req, res) => {
       const { FormData: NodeFormData, Blob: NodeBlob } = await import('node:buffer').catch(() => ({}));
       const FormDataLib = (typeof FormData !== 'undefined') ? FormData : (await import('formdata-node').catch(() => null))?.FormData;
       const form = new (FormDataLib || FormData)();
-      form.append('model', 'gpt-image-1');
+      form.append('model', IMAGE_MODEL);
       form.append('prompt', promptPhoto + ' Keep the person/subject from the reference photo as the main element. Apply the brand editorial style on top.');
       form.append('n', '1');
       form.append('size', '1024x1536');
@@ -122,18 +125,14 @@ router.post('/api/image/carousel-slide', async (req, res) => {
       if (data.error) {
         console.warn('[carousel-slide] edits falhou, fallback para generations:', data.error.message);
         // Fallback: gera normalmente sem a foto
-        const r2 = await fetch('https://api.openai.com/v1/images/generations', { method: 'POST', headers: { 'Authorization': 'Bearer ' + requireOpenAIKey(), 'Content-Type': 'application/json' }, body: JSON.stringify({ model: 'gpt-image-1', prompt: promptPhoto, n: 1, size: '1024x1536', quality, output_format: 'png' }) });
-        const data2 = await r2.json();
-        if (data2.error) return res.status(500).json({ error: data2.error.message });
-        imageData = data2.data?.[0];
+        const img = await generateImage({ prompt: promptPhoto, size: '1024x1536', quality });
+        imageData = { b64_json: img.b64, url: img.url };
       } else {
         imageData = data.data?.[0];
       }
     } else {
-      const r = await fetch('https://api.openai.com/v1/images/generations', { method: 'POST', headers: { 'Authorization': 'Bearer ' + requireOpenAIKey(), 'Content-Type': 'application/json' }, body: JSON.stringify({ model: 'gpt-image-1', prompt: promptPhoto, n: 1, size: '1024x1536', quality, output_format: 'png' }) });
-      const data = await r.json();
-      if (data.error) { console.error('[carousel-slide] GPT error:', data.error); return res.status(500).json({ error: data.error.message || JSON.stringify(data.error) }); }
-      imageData = data.data?.[0];
+      const img = await generateImage({ prompt: promptPhoto, size: '1024x1536', quality });
+      imageData = { b64_json: img.b64, url: img.url };
     }
 
     if (!imageData) return res.status(500).json({ error: 'Nenhuma imagem retornada' });
