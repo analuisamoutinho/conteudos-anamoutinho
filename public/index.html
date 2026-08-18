@@ -674,6 +674,7 @@ body{font-family:var(--font-body);background:var(--pale);color:var(--dark);min-h
           <div style="display:flex;gap:8px;flex-wrap:wrap;">
             <button class="btn btn-secondary btn-sm" onclick="downloadCarousel()">⬇️ Exportar JSON</button>
             <button class="btn btn-secondary btn-sm" onclick="exportCarouselForDesigner()">📄 Exportar para Designer</button>
+            <button class="btn btn-secondary btn-sm" onclick="baixarImagensCarrossel()" id="btnDownloadImages" style="display:none;">📥 Baixar PNGs</button>
             <button class="btn btn-primary btn-sm" onclick="generateCarouselImages()" id="btnGenImages">🎨 Gerar imagens</button>
           </div>
         </div>
@@ -937,7 +938,7 @@ body{font-family:var(--font-body);background:var(--pale);color:var(--dark);min-h
 <div class="modal-overlay" id="calPostModal"><div class="modal" style="max-width:600px;"><div class="modal-header"><h3 id="calPostModalTitle">Post do Calendário</h3><button class="modal-close" onclick="closeModal('calPostModal')">×</button></div><div id="calPostModalBody"></div><div class="modal-footer"><button class="btn btn-secondary" onclick="closeModal('calPostModal')">Fechar</button><button class="btn btn-outline" id="modalBtnGenerate" onclick="generateFromCalendarPost()">✨ Gerar criativo</button><button class="btn btn-primary" id="modalBtnPublish" onclick="publishFromCalendarPost()">🚀 Agendar / Publicar</button></div></div></div>
 <div class="modal-overlay" id="contentModal"><div class="modal" style="max-width:640px;"><div class="modal-header"><h3 id="contentModalTitle">Criativo</h3><button class="modal-close" onclick="closeModal('contentModal')">×</button></div><div id="contentModalBody"></div><div class="modal-footer"><button class="btn btn-secondary" onclick="closeModal('contentModal')">Fechar</button><button class="btn btn-outline" id="contentModalBtnImages" onclick="gerarImagensDoModal()" style="display:none">🎨 Gerar Imagens</button><button class="btn btn-outline" id="contentModalBtnSchedule" onclick="scheduleFromModal()">📆 Agendar</button><button class="btn btn-primary" id="contentModalBtnPublish" onclick="publishFromModal()">📤 Publicar agora</button></div></div></div>
 <!-- LIGHTBOX -->
-<div class="lightbox-overlay" id="slideLightbox"><div class="lightbox-inner"><div class="lb-image-panel" id="lbImagePanel"><button class="lb-nav-btn prev" id="lbPrevBtn" onclick="lbNavigate(-1)">‹</button><div id="lbImageWrap" style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;"><div class="lb-image-placeholder"><div class="ph-icon">🖼️</div><div>Imagem ainda não gerada</div></div></div><button class="lb-nav-btn next" id="lbNextBtn" onclick="lbNavigate(1)">›</button></div><div class="lb-info-panel"><div class="lb-header"><div class="lb-slide-meta"><div class="lb-slide-num" id="lbSlideNum">Slide 1 / 10</div><div class="lb-slide-heading" id="lbSlideHeading">–</div><div class="lb-slide-body" id="lbSlideBody"></div></div><button class="lb-close-btn" onclick="closeLightbox()">×</button></div><div class="lb-strip" id="lbStrip"></div><div class="lb-approval-bar"><button class="lb-approval-btn approve" id="lbBtnApprove" onclick="lbSetStatus('aprovado')">✓ Aprovar slide</button><button class="lb-approval-btn request-change" id="lbBtnChange" onclick="lbSetStatus('alteracao')">✎ Pedir alteração</button></div><div class="lb-comments-area" id="lbComments"><div class="lb-comment-empty" id="lbCommentsEmpty">Nenhuma nota ainda.</div></div><div class="lb-composer"><div class="lb-composer-row"><textarea id="lbCommentInput" placeholder="Adiciona uma nota..." rows="1" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();lbSendComment();}"></textarea><button class="lb-send-btn" onclick="lbSendComment()">↑</button></div></div></div></div></div>
+<div class="lightbox-overlay" id="slideLightbox"><div class="lightbox-inner"><div class="lb-image-panel" id="lbImagePanel"><button class="lb-nav-btn prev" id="lbPrevBtn" onclick="lbNavigate(-1)">‹</button><div id="lbImageWrap" style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;"><div class="lb-image-placeholder"><div class="ph-icon">🖼️</div><div>Imagem ainda não gerada</div></div></div><button class="lb-nav-btn next" id="lbNextBtn" onclick="lbNavigate(1)">›</button></div><div class="lb-info-panel"><div class="lb-header"><div class="lb-slide-meta"><div class="lb-slide-num" id="lbSlideNum">Slide 1 / 10</div><div class="lb-slide-heading" id="lbSlideHeading">–</div><div class="lb-slide-body" id="lbSlideBody"></div></div><button class="lb-close-btn" onclick="closeLightbox()">×</button></div><div class="lb-strip" id="lbStrip"></div><div class="lb-approval-bar"><button class="lb-approval-btn approve" id="lbBtnApprove" onclick="lbSetStatus('aprovado')">✓ Aprovar slide</button><button class="lb-approval-btn request-change" id="lbBtnChange" onclick="lbSetStatus('alteracao')">✎ Pedir alteração</button><button class="lb-approval-btn" id="lbBtnDownload" onclick="lbBaixarSlide()" title="Baixar este slide em PNG">📥 Baixar PNG</button></div><div class="lb-comments-area" id="lbComments"><div class="lb-comment-empty" id="lbCommentsEmpty">Nenhuma nota ainda.</div></div><div class="lb-composer"><div class="lb-composer-row"><textarea id="lbCommentInput" placeholder="Adiciona uma nota..." rows="1" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();lbSendComment();}"></textarea><button class="lb-send-btn" onclick="lbSendComment()">↑</button></div></div></div></div></div>
 <div id="sr-render-container"></div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script>
@@ -1210,6 +1211,17 @@ function selectCarouselTemplate(templateId) {
 function openLightbox(index){lbCurrentIndex=index;document.getElementById('slideLightbox').classList.add('visible');lbRenderSlide();lbBuildStrip();}
 function closeLightbox(){document.getElementById('slideLightbox').classList.remove('visible');if(lbSlides.length)renderSlidesPreview(lbSlides);}
 function lbRenderSlide(){const i=lbCurrentIndex,slide=lbSlides[i],img=currentCarouselImages[i],total=lbSlides.length;document.getElementById('lbSlideNum').textContent=`Slide ${i+1} / ${total}`;document.getElementById('lbSlideHeading').textContent=slide?.heading||'–';document.getElementById('lbSlideBody').textContent=slide?.body||'';const wrap=document.getElementById('lbImageWrap');const h=(slide?.heading||'').replace(/</g,'&lt;');const b=(slide?.body||'').replace(/</g,'&lt;');if(img){/* a imagem já vem renderizada com a tipografia da marca — não sobrepor overlay */wrap.innerHTML=`<img src="${img}" style="width:100%;height:100%;object-fit:contain;display:block;background:${SlideRenderer.C.bege};"/>`;}else{wrap.innerHTML=`<div class="lb-image-placeholder"><div class="ph-icon">🖼️</div><div>Slide ${i+1} — imagem não gerada</div></div>`;}document.getElementById('lbPrevBtn').disabled=(i===0);document.getElementById('lbNextBtn').disabled=(i===total-1);const status=lbStatusStore[i]||'pendente';document.getElementById('lbBtnApprove').classList.toggle('active',status==='aprovado');document.getElementById('lbBtnChange').classList.toggle('active',status==='alteracao');lbRenderComments(i);lbUpdateStrip();}
+// Baixa o slide que está aberto no lightbox.
+async function lbBaixarSlide(){
+  const img=currentCarouselImages[lbCurrentIndex];
+  if(!img)return toast('Este slide ainda não tem imagem','error');
+  let dataUrl=img;
+  if(!dataUrl.startsWith('data:')){
+    try{const r=await fetch(dataUrl);const blob=await r.blob();dataUrl=await new Promise(res=>{const fr=new FileReader();fr.onload=e=>res(e.target.result);fr.readAsDataURL(blob);});}
+    catch(e){return toast('Não foi possível preparar o download: '+e.message,'error');}
+  }
+  baixarSlide(lbCurrentIndex,lbCurrentIndex+1,dataUrl,currentCarouselData?.title||'carrossel');
+}
 function lbNavigate(dir){const next=lbCurrentIndex+dir;if(next<0||next>=lbSlides.length)return;lbCurrentIndex=next;lbRenderSlide();}
 function lbGoto(i){lbCurrentIndex=i;lbRenderSlide();}
 function lbSetStatus(status){const i=lbCurrentIndex,prev=lbStatusStore[i];lbStatusStore[i]=(prev===status)?'pendente':status;if(lbStatusStore[i]==='aprovado'){const c=lbCommentStore[i]||[];if(!c.some(x=>x.type==='aprovacao'))lbAddComment(i,'Slide aprovado ✓','aprovacao');}lbRenderSlide();lbUpdateStrip();}
@@ -1557,6 +1569,7 @@ async function generateCarouselImages(autoPublishConfig=null){
   const slides=currentCarouselData.slides,topic=currentCarouselData.title||'',contentId=currentCarouselContentId;
   const btn=document.getElementById('btnGenImages'),progressBar=document.getElementById('imageProgress'),progressFill=document.getElementById('imageProgressFill'),statusEl=document.getElementById('imageGenStatus');
   btn.disabled=true;progressBar.style.display='block';currentCarouselImages=[];
+  const _dl=document.getElementById('btnDownloadImages');if(_dl)_dl.style.display='none';
  
   // Verificar Google Fotos (só para perfil pessoal)
   let gphotosAccessToken=null;
@@ -1671,6 +1684,8 @@ async function generateCarouselImages(autoPublishConfig=null){
   const validUrls=currentCarouselImages.filter(u=>u&&!u.startsWith('data:'));
   if(contentId&&validUrls.length){try{await fetch(`/api/content/${contentId}`,{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify({imageUrls:validUrls,status:'pendente'})});}catch(e){}}
   toast(`${ok} slides compostos! 🎨`,'success');
+  const dlBtn=document.getElementById('btnDownloadImages');
+  if(dlBtn)dlBtn.style.display=ok>0?'inline-flex':'none';
   if(autoPublishConfig){const{action,scheduledAt,caption,calendarPost}=autoPublishConfig;await _autoPublishAfterImages({action,scheduledAt,caption,contentId,calendarPost});}
   else{document.getElementById('publishPanel').classList.add('visible');}
 }
@@ -1678,9 +1693,9 @@ async function generateCarouselImages(autoPublishConfig=null){
 // As 4 editorias fixas da Brand The Code™ + formatos. Editorias primeiro:
 // são elas que giram no calendário e definem a identidade do perfil.
 const CM_TYPES_ALL = {
-  cultural:{label:'Cultural / Trend',emoji:'📡',tag:'Editoria',color:'#B33A2B',metodologia:'bd',desc:'Lê um fenômeno ou mudança de época e conecta a quem tem negócio.'},
-  tese:{label:'Tese de Negócio',emoji:'📊',tag:'Editoria',color:'#8E2A20',metodologia:'bd',desc:'Uma afirmação defensável sobre como negócios funcionam, com mecanismo.'},
-  autoral:{label:'Post Autoral',emoji:'✍️',tag:'Editoria',color:'#5C1620',metodologia:'bd',desc:'Visão de mundo assumida. Não precisa terminar em dica.'},
+  cultural:{label:'Cultural / Trend',emoji:'📡',tag:'Editoria',color:'#A92E1D',metodologia:'bd',desc:'Lê um fenômeno ou mudança de época e conecta a quem tem negócio.'},
+  tese:{label:'Tese de Negócio',emoji:'📊',tag:'Editoria',color:'#7F2117',metodologia:'bd',desc:'Uma afirmação defensável sobre como negócios funcionam, com mecanismo.'},
+  autoral:{label:'Post Autoral',emoji:'✍️',tag:'Editoria',color:'#292725',metodologia:'bd',desc:'Visão de mundo assumida. Não precisa terminar em dica.'},
   oferta:{label:'Oferta Direta',emoji:'🎯',tag:'Editoria',color:'#7C8A6E',metodologia:'bd',desc:'Convida para algo real, com CTA explícito e específico.'},
   frase:{label:'Frase de Impacto',emoji:'💬',tag:'Estático',color:'#6B7280',metodologia:'bd',desc:'Uma verdade em 2-3 linhas. Funciona sozinha, sem contexto.'},
   lofi:{label:'Lo-Fi (câmera ligada)',emoji:'🎥',tag:'Vídeo',color:'#C17B6F',metodologia:'bd',desc:'Liga a câmera e fala direto. Maior ROI para quem tem oratória.'},
@@ -2667,6 +2682,29 @@ function baixarSlide(idx, slideNum, dataUrl, topicName) {
   document.body.appendChild(a);
   a.click();
   document.body.removeChild(a);
+}
+
+// Download dos PNGs do carrossel principal (fluxo Criar → Carrossel).
+// Reaproveita baixarSlide, que já existe para o fluxo de templates.
+async function baixarImagensCarrossel() {
+  const imgs = (currentCarouselImages || []).filter(Boolean);
+  if (!imgs.length) return toast('Gera as imagens primeiro', 'error');
+  const topic = currentCarouselData?.title || 'carrossel';
+  toast(`A baixar ${imgs.length} imagens…`, 'info');
+  for (let i = 0; i < imgs.length; i++) {
+    let dataUrl = imgs[i];
+    // Imagem servida por URL precisa virar dataURL para o download funcionar.
+    if (!dataUrl.startsWith('data:')) {
+      try {
+        const r = await fetch(dataUrl);
+        const blob = await r.blob();
+        dataUrl = await new Promise(res => { const fr = new FileReader(); fr.onload = e => res(e.target.result); fr.readAsDataURL(blob); });
+      } catch(e) { console.warn('[download slide ' + (i+1) + ']', e.message); continue; }
+    }
+    baixarSlide(i, i + 1, dataUrl, topic);
+    await new Promise(r => setTimeout(r, 400));
+  }
+  toast(`${imgs.length} PNGs baixados! 🎉`, 'success');
 }
 
 async function baixarTodosSlides() {
