@@ -139,6 +139,10 @@ body{font-family:var(--font-body);background:var(--pale);color:var(--dark);min-h
 .slide-card{flex-shrink:0;width:180px;height:200px;border-radius:var(--radius);background:var(--gradient);display:flex;flex-direction:column;justify-content:flex-end;padding:14px;color:var(--white);scroll-snap-align:start;position:relative;overflow:hidden;cursor:pointer;transition:transform .18s,box-shadow .18s;}
 .slide-card:hover{transform:translateY(-3px) scale(1.02);box-shadow:0 8px 28px rgba(0,0,0,.22);}
 .slide-card::before{content:'';position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,.72) 0%,rgba(0,0,0,.2) 55%,rgba(0,0,0,.05) 100%);z-index:1;pointer-events:none;}
+/* Slide já renderizado com a tipografia da marca: nada por cima. */
+.slide-card.has-img::before{display:none;}
+.slide-card.has-img .slide-img{object-fit:contain;background:#EFEBE1;}
+.slide-card.has-img .slide-number{background:rgba(31,27,23,.72);color:#F7F3EA;padding:3px 8px;border-radius:99px;display:inline-block;}
 .slide-card .slide-img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;border-radius:var(--radius);z-index:0;}
 .slide-card-content{position:relative;z-index:2;}
 .slide-heading-ro{font-family:var(--font-head);font-size:.78rem;font-weight:700;color:#fff;line-height:1.25;margin-top:4px;text-shadow:0 2px 6px rgba(0,0,0,.7);display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;}
@@ -1120,13 +1124,12 @@ function renderSlidesPreview(slides){
     const img=imgs[i];
     const h=(s.heading||'').replace(/"/g,'&quot;');
     const b=(s.body||'').replace(/</g,'&lt;');
-    return`<div class="slide-card" id="slideCard_${i}" onclick="openLightbox(${i})" title="Clica para ver em detalhe">
+    return`<div class="slide-card${img?' has-img':''}" id="slideCard_${i}" onclick="openLightbox(${i})" title="Clica para ver em detalhe">
       ${img?`<img class="slide-img" src="${img}" />`:''}
       ${status!=='pendente'?`<div class="slide-status-badge ${status}">${status==='aprovado'?'✓ OK':'✎ Alterar'}</div>`:''}
       ${comments.length?`<div class="slide-comment-dot">${comments.length}</div>`:''}
       ${img?`<div class="slide-card-content">
         <div class="slide-number">Slide ${i+1}/${slides.length}</div>
-        <div class="slide-heading-ro">${(s.heading||'').replace(/</g,'&lt;')}</div>
       </div>`:`<div class="slide-card-content">
         <div class="slide-number">Slide ${i+1}/${slides.length}</div>
         <input class="slide-edit-heading" value="${h}" placeholder="Título..."
@@ -1208,7 +1211,7 @@ function selectCarouselTemplate(templateId) {
 /* ── LIGHTBOX ── */
 function openLightbox(index){lbCurrentIndex=index;document.getElementById('slideLightbox').classList.add('visible');lbRenderSlide();lbBuildStrip();}
 function closeLightbox(){document.getElementById('slideLightbox').classList.remove('visible');if(lbSlides.length)renderSlidesPreview(lbSlides);}
-function lbRenderSlide(){const i=lbCurrentIndex,slide=lbSlides[i],img=currentCarouselImages[i],total=lbSlides.length;document.getElementById('lbSlideNum').textContent=`Slide ${i+1} / ${total}`;document.getElementById('lbSlideHeading').textContent=slide?.heading||'–';document.getElementById('lbSlideBody').textContent=slide?.body||'';const wrap=document.getElementById('lbImageWrap');const h=(slide?.heading||'').replace(/</g,'&lt;');const b=(slide?.body||'').replace(/</g,'&lt;');if(img){wrap.innerHTML=`<div style="position:relative;width:100%;height:100%;display:flex;align-items:stretch;"><img src="${img}" style="width:100%;height:100%;object-fit:cover;display:block;"/><div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,.75) 0%,rgba(0,0,0,.35) 55%,rgba(0,0,0,.1) 100%);display:flex;flex-direction:column;justify-content:flex-end;padding:28px 24px;"><div style="font-size:1.05rem;font-weight:700;color:#fff;line-height:1.3;text-shadow:0 2px 8px rgba(0,0,0,.5);">${h}</div>${b?`<div style="font-size:.8rem;color:rgba(255,255,255,.88);line-height:1.6;margin-top:8px;text-shadow:0 1px 4px rgba(0,0,0,.5);">${b}</div>`:''}</div></div>`;}else{wrap.innerHTML=`<div class="lb-image-placeholder"><div class="ph-icon">🖼️</div><div>Slide ${i+1} — imagem não gerada</div></div>`;}document.getElementById('lbPrevBtn').disabled=(i===0);document.getElementById('lbNextBtn').disabled=(i===total-1);const status=lbStatusStore[i]||'pendente';document.getElementById('lbBtnApprove').classList.toggle('active',status==='aprovado');document.getElementById('lbBtnChange').classList.toggle('active',status==='alteracao');lbRenderComments(i);lbUpdateStrip();}
+function lbRenderSlide(){const i=lbCurrentIndex,slide=lbSlides[i],img=currentCarouselImages[i],total=lbSlides.length;document.getElementById('lbSlideNum').textContent=`Slide ${i+1} / ${total}`;document.getElementById('lbSlideHeading').textContent=slide?.heading||'–';document.getElementById('lbSlideBody').textContent=slide?.body||'';const wrap=document.getElementById('lbImageWrap');const h=(slide?.heading||'').replace(/</g,'&lt;');const b=(slide?.body||'').replace(/</g,'&lt;');if(img){/* a imagem já vem renderizada com a tipografia da marca — não sobrepor overlay */wrap.innerHTML=`<img src="${img}" style="width:100%;height:100%;object-fit:contain;display:block;background:${SlideRenderer.C.bege};"/>`;}else{wrap.innerHTML=`<div class="lb-image-placeholder"><div class="ph-icon">🖼️</div><div>Slide ${i+1} — imagem não gerada</div></div>`;}document.getElementById('lbPrevBtn').disabled=(i===0);document.getElementById('lbNextBtn').disabled=(i===total-1);const status=lbStatusStore[i]||'pendente';document.getElementById('lbBtnApprove').classList.toggle('active',status==='aprovado');document.getElementById('lbBtnChange').classList.toggle('active',status==='alteracao');lbRenderComments(i);lbUpdateStrip();}
 function lbNavigate(dir){const next=lbCurrentIndex+dir;if(next<0||next>=lbSlides.length)return;lbCurrentIndex=next;lbRenderSlide();}
 function lbGoto(i){lbCurrentIndex=i;lbRenderSlide();}
 function lbSetStatus(status){const i=lbCurrentIndex,prev=lbStatusStore[i];lbStatusStore[i]=(prev===status)?'pendente':status;if(lbStatusStore[i]==='aprovado'){const c=lbCommentStore[i]||[];if(!c.some(x=>x.type==='aprovacao'))lbAddComment(i,'Slide aprovado ✓','aprovacao');}lbRenderSlide();lbUpdateStrip();}
@@ -1463,11 +1466,15 @@ async function generateCarouselImages(autoPublishConfig=null){
                 const slideRes=await fetch('/api/image/carousel-slide',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({heading:s.heading||'',body:s.body||'',slideNumber:i+1,totalSlides:slides.length,funcao,topic,profile:currentProfile,contentId,imagePromptHint:s.imagePrompt||'',designStyleHint:getCarouselDesignStyleHint(),quality:getSelectedQuality(),engine,referenceImageB64:photoB64})});
                 const slideData=await slideRes.json();
                 if(!slideData.error){
-                  // GPT já bake o texto na imagem — usar diretamente sem SlideRenderer
+                  // Fundo gerado a partir da foto real; a tipografia da marca
+                  // entra por cima aqui, no estilo do template casado.
                   const photoUrl=slideData.url||(slideData.b64?`data:image/png;base64,${slideData.b64}`:null);
                   if(photoUrl){
-                    try{const sv=await fetch('/api/image/save-b64',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({b64:slideData.b64||'',contentId:contentId||`tmp_${Date.now()}`,slideIndex:i})});const svd=await sv.json();if(svd.url)finalUrl=svd.url;}catch(e){}
-                    finalUrl=finalUrl||photoUrl;
+                    const meta={...(slideData.designMeta||{}),heading:s.heading||'',body:s.body||'',slideNumber:i+1,totalSlides:slides.length,funcao};
+                    const rendered=await SlideRenderer.renderSlide(photoUrl,meta);
+                    const outB64=rendered||slideData.b64;
+                    if(outB64){try{const sv=await fetch('/api/image/save-b64',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({b64:outB64,contentId:contentId||`tmp_${Date.now()}`,slideIndex:i})});const svd=await sv.json();if(svd.url)finalUrl=svd.url;}catch(e){}}
+                    finalUrl=finalUrl||(outB64?`data:image/png;base64,${outB64}`:photoUrl);
                   }
                 }
               }
@@ -1487,11 +1494,15 @@ async function generateCarouselImages(autoPublishConfig=null){
         const slideRes=await fetch('/api/image/carousel-slide',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({heading:s.heading||'',body:s.body||'',slideNumber:i+1,totalSlides:slides.length,funcao,topic,profile:currentProfile,contentId,imagePromptHint:s.imagePrompt||'',designStyleHint:getCarouselDesignStyleHint(),quality:getSelectedQuality(),engine})});
         const slideData=await slideRes.json();
         if(slideData.error)throw new Error(slideData.error);
-        // GPT já bake o texto na imagem via prompt — usar diretamente sem SlideRenderer
+        // O gpt-image gera SÓ o fundo (o prompt proíbe texto). A tipografia da
+        // marca é aplicada aqui pelo SlideRenderer, no estilo do template.
         const photoUrl=slideData.url||(slideData.b64?`data:image/png;base64,${slideData.b64}`:null);
         if(photoUrl){
-          if(slideData.b64){try{const saveRes=await fetch('/api/image/save-b64',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({b64:slideData.b64,contentId:contentId||`tmp_${Date.now()}`,slideIndex:i})});const saveData=await saveRes.json();if(saveData.url)finalUrl=saveData.url;}catch(e){}}
-          finalUrl=finalUrl||photoUrl;
+          const meta={...(slideData.designMeta||{}),heading:s.heading||'',body:s.body||'',slideNumber:i+1,totalSlides:slides.length,funcao};
+          const rendered=await SlideRenderer.renderSlide(photoUrl,meta);
+          const outB64=rendered||slideData.b64;
+          if(outB64){try{const saveRes=await fetch('/api/image/save-b64',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({b64:outB64,contentId:contentId||`tmp_${Date.now()}`,slideIndex:i})});const saveData=await saveRes.json();if(saveData.url)finalUrl=saveData.url;}catch(e){}}
+          finalUrl=finalUrl||(outB64?`data:image/png;base64,${outB64}`:photoUrl);
         }
       }else if(!finalUrl){
         const brand=BRAND_ACCENT[currentProfile]||BRAND_ACCENT.pessoal;
