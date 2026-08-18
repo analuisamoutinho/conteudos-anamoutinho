@@ -6,7 +6,7 @@
 <title>Máquina de Conteúdo</title>
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,400&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600&family=Courier+Prime:ital,wght@0,400;0,700;1,400&family=Caveat:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,400&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600;1,700&family=Inter:wght@300;400;500;600&family=Caveat:wght@400;500;600;700&family=Permanent+Marker&display=swap" rel="stylesheet" />
 <style>
 :root {
   --purple:    #160728;
@@ -304,6 +304,7 @@ body{font-family:var(--font-body);background:var(--pale);color:var(--dark);min-h
 .ds-btn-sub{font-size:.67rem;color:var(--mid);margin-top:2px;line-height:1.3;}
 .sr-slide-wrapper{position:relative;width:1024px;height:1536px;overflow:hidden;font-family:'Plus Jakarta Sans',sans-serif;flex-shrink:0;}
 .sr-bg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:0;}
+.sr-photo{position:absolute;object-fit:cover;}
 .sr-overlay{position:absolute;inset:0;z-index:1;}
 .sr-overlay-dark-bottom{background:linear-gradient(to bottom,transparent 0%,transparent 25%,rgba(0,0,0,.15) 45%,rgba(0,0,0,.55) 70%,rgba(0,0,0,.82) 100%);}
 .sr-overlay-dark-full{background:rgba(0,0,0,.42);}
@@ -1224,10 +1225,19 @@ const BRAND_ACCENT={pessoal:{accent:'#8B7355',bg:'#1A1612',handle:'@analuisa.mou
 
 /* ── SlideRenderer ── */
 const SlideRenderer={
+  // Textura de papel (grão fino, 128px, embutida) — a base neutra da marca
+  // nunca é branco chapado: as referências todas partem de papel bege.
+  PAPER:'data:image/png;base64,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',
+  // ── Paleta da marca ─────────────────────────────────────────────────────
+  C:{terracota:'#B33A2B',terracotaEsc:'#8E2A20',vinho:'#5C1620',salvia:'#7C8A6E',
+     bege:'#EFEBE1',kraft:'#E5DDCD',creme:'#F7F3EA',tinta:'#1F1B17',realce:'#F3C9B6'},
+
   _esc(t){return String(t==null?'':t).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');},
-  // Destaca as últimas palavras da frase — em itálico (estilos serifados) ou
-  // com marcador de cor (estilos manuscritos). Substitui o antigo recolorir
-  // arbitrário das últimas palavras, que dava ar de citação motivacional.
+  _fit(text,sizes){const len=(text||'').length;for(const[max,size]of sizes){if(len<=max)return size;}return sizes[sizes.length-1][1];},
+  _paper(op){return`<div style="position:absolute;inset:0;z-index:1;background-image:url('${this.PAPER}');background-repeat:repeat;background-size:128px 128px;opacity:${op==null?.55:op};"></div>`;},
+
+  // Destaca as últimas palavras: itálico serifado, marca-texto salmão ou
+  // círculo desenhado à mão — os três acentos que aparecem nas referências.
   _emphasize(text,mode,color){
     const t=this._esc(text);
     if(!t||mode==='none')return t;
@@ -1236,127 +1246,129 @@ const SlideRenderer={
     const n=Math.min(3,Math.max(1,Math.round(words.length/5)));
     const head=words.slice(0,words.length-n).join(' ');
     const tail=words.slice(words.length-n).join(' ');
-    if(mode==='highlight')return`${head} <span style="background:${color};color:#3B2A1C;padding:0 .12em;border-radius:3px;">${tail}</span>`;
+    if(mode==='marker')return`${head} <span style="background:${color||this.C.realce};padding:0 .14em;white-space:nowrap;box-decoration-break:clone;-webkit-box-decoration-break:clone;">${tail}</span>`;
+    if(mode==='color')return`${head} <span style="color:${color||this.C.terracota};">${tail}</span>`;
     return`${head} <em style="font-style:italic;font-weight:inherit;">${tail}</em>`;
   },
-  _fit(text,sizes){
-    const len=(text||'').length;
-    for(const[max,size]of sizes){if(len<=max)return size;}
-    return sizes[sizes.length-1][1];
+
+  // Elipse desenhada à mão à volta de uma palavra (ref 1 e ref 4)
+  _circulo(color){
+    return`<svg viewBox="0 0 400 130" preserveAspectRatio="none" style="position:absolute;inset:-18px -34px;width:calc(100% + 68px);height:calc(100% + 36px);overflow:visible;">
+<path d="M200 12 C 96 10, 20 36, 16 66 C 12 98, 108 120, 206 118 C 306 116, 388 96, 386 64 C 384 34, 300 12, 188 14" fill="none" stroke="${color}" stroke-width="3.2" stroke-linecap="round" opacity=".85"/>
+</svg>`;
   },
-  _bgLayer(photoUrl,tk){
-    if(tk.flatBg)return`<div style="position:absolute;inset:0;z-index:0;background:${tk.bg||'#F2EFE9'};"></div>`;
-    return`<img class="sr-bg" src="${photoUrl}" crossorigin="anonymous" />
-<div style="position:absolute;inset:0;z-index:1;background:${tk.veil||'rgba(20,16,12,.30)'};"></div>`;
+  _kicker(txt,color){
+    return`<div style="font-family:'Inter',sans-serif;font-size:20px;font-weight:600;letter-spacing:.24em;text-transform:uppercase;color:${color};">${this._esc(txt)}</div>`;
   },
-  _handle(handle,color,align){
-    return`<div style="font-family:'DM Sans',sans-serif;font-size:21px;font-weight:500;letter-spacing:.18em;text-transform:lowercase;color:${color};opacity:.8;text-align:${align||'left'};">${this._esc(handle)}</div>`;
+  _assinatura(handle,color,align){
+    return`<div style="font-family:'Inter',sans-serif;font-size:21px;font-weight:400;letter-spacing:.2em;color:${color};text-align:${align||'left'};">${this._esc(handle)}</div>`;
   },
   _counter(n,total,color){
     if(!n||!total||total<2)return'';
-    return`<div style="position:absolute;top:56px;right:72px;font-family:'DM Sans',sans-serif;font-size:19px;font-weight:500;letter-spacing:.1em;color:${color};opacity:.65;z-index:4;">${n}/${total}</div>`;
+    return`<div style="position:absolute;top:58px;right:74px;font-family:'Inter',sans-serif;font-size:19px;font-weight:500;letter-spacing:.1em;color:${color};opacity:.55;z-index:4;">${n}/${total}</div>`;
   },
 
-  // ── editorial: foto full-bleed, título serifado no rodapé, filete de acento
-  _styleEditorial(photoUrl,m,tk){
-    const text=tk.text||'#FFFFFF',bodyText=tk.bodyText||'rgba(255,255,255,.92)',line=tk.accentLine||'#C4A882';
-    const size=this._fit(m.heading,[[42,96],[70,80],[100,66],[999,56]]);
-    return`${this._bgLayer(photoUrl,tk)}
-${this._counter(m.slideNumber,m.totalSlides,text)}
-<div style="position:absolute;inset:0;z-index:2;display:flex;flex-direction:column;justify-content:flex-end;padding:120px 92px;">
-<div style="width:96px;height:2px;background:${line};margin-bottom:38px;opacity:.9;"></div>
-<div style="font-family:'Playfair Display',serif;font-size:${size}px;font-weight:500;line-height:1.14;letter-spacing:-.01em;color:${text};margin-bottom:${m.body?'30px':'44px'};">${this._emphasize(m.heading,'italic')}</div>
-${m.body?`<div style="font-family:'DM Sans',sans-serif;font-size:31px;font-weight:300;line-height:1.62;color:${bodyText};max-width:820px;margin-bottom:44px;">${this._esc(m.body)}</div>`:''}
-${this._handle(m.handle,text,'left')}
+  // ── CAPA: bege texturizado, serifada terracota, marca-texto ─────────────
+  _styleCapa(photoUrl,m,tk){
+    const C=this.C,bg=tk.bg||C.bege,tint=tk.text||C.terracota;
+    const size=this._fit(m.heading,[[36,112],[60,94],[90,78],[999,64]]);
+    const foto=photoUrl?`<img class="sr-photo" src="${photoUrl}" style="top:0;right:0;width:46%;height:38%;object-fit:cover;z-index:1;transform:rotate(2.2deg);border:14px solid #FFF;box-shadow:0 14px 40px rgba(40,26,20,.22);" crossorigin="anonymous"/>`:'';
+    return`<div style="position:absolute;inset:0;background:${bg};z-index:0;"></div>${this._paper()}${foto}
+<div style="position:absolute;inset:0;z-index:3;padding:120px 92px;display:flex;flex-direction:column;justify-content:flex-end;">
+<div style="font-family:'Playfair Display',serif;font-weight:700;font-size:${size}px;line-height:1.06;letter-spacing:-.015em;color:${tint};">${this._emphasize(m.heading,'marker',tk.realce||C.realce)}</div>
+${m.body?`<div style="font-family:'Caveat',cursive;font-size:48px;font-weight:500;line-height:1.34;color:${tk.hand||C.tinta};margin-top:40px;max-width:760px;">${this._esc(m.body)}</div>`:''}
+<div style="display:flex;align-items:center;justify-content:space-between;margin-top:64px;">
+${this._assinatura(m.handle,tk.muted||'rgba(31,27,23,.5)','left')}
+<div style="font-family:'Inter',sans-serif;font-size:19px;font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:${tint};opacity:.8;">arrasta →</div>
+</div>
 </div>`;
   },
 
-  // ── typewriter: monoespaçada centrada no terço superior, muito ar
-  _styleTypewriter(photoUrl,m,tk){
-    const text=tk.text||'#FFFFFF';
-    const size=this._fit(m.heading,[[40,62],[70,54],[110,46],[999,40]]);
-    return`${this._bgLayer(photoUrl,tk)}
+  // ── CARTÃO: bloco de cor sólida, frase serifada creme (modelo A) ────────
+  _styleCartao(photoUrl,m,tk){
+    const C=this.C,bg=tk.bg||C.terracota,text=tk.text||C.creme;
+    const size=this._fit(m.heading,[[40,88],[70,74],[110,62],[999,52]]);
+    return`<div style="position:absolute;inset:0;background:${C.bege};z-index:0;"></div>${this._paper(.5)}
+<div style="position:absolute;inset:56px;background:${bg};z-index:2;"></div>
 ${this._counter(m.slideNumber,m.totalSlides,text)}
-<div style="position:absolute;inset:0;z-index:2;display:flex;flex-direction:column;justify-content:center;align-items:center;padding:150px 110px;text-align:center;">
-<div style="font-family:'Courier Prime',monospace;font-size:${size}px;font-weight:400;line-height:1.58;letter-spacing:.01em;color:${text};">${this._emphasize(m.heading,'italic')}</div>
-${m.body?`<div style="font-family:'Courier Prime',monospace;font-size:28px;font-weight:400;line-height:1.72;color:${text};opacity:.86;margin-top:44px;max-width:760px;">${this._esc(m.body)}</div>`:''}
-</div>
-<div style="position:absolute;bottom:96px;left:0;right:0;z-index:3;">${this._handle(m.handle,text,'center')}</div>`;
-  },
-
-  // ── cards: dois cartões arredondados sobrepostos em cascata
-  _styleCards(photoUrl,m,tk){
-    const c1=tk.card1Bg||'#F5F1EA',c1t=tk.card1Text||'#3B2A1C';
-    const c2=tk.card2Bg||'rgba(138,122,105,.84)',c2t=tk.card2Text||'#FFFFFF';
-    const r=tk.radius||22;
-    const size=this._fit(m.heading,[[40,60],[70,52],[110,44],[999,38]]);
-    return`${this._bgLayer(photoUrl,tk)}
-${this._counter(m.slideNumber,m.totalSlides,tk.flatBg?c1t:'#FFFFFF')}
-<div style="position:absolute;inset:0;z-index:2;display:flex;flex-direction:column;justify-content:center;padding:110px 84px;">
-<div style="background:${c1};border-radius:${r}px;padding:52px 48px;box-shadow:0 18px 48px rgba(40,30,20,.16);">
-<div style="font-family:'Playfair Display',serif;font-size:${size}px;font-weight:600;line-height:1.2;color:${c1t};">${this._emphasize(m.heading,'italic')}</div>
-</div>
-${m.body?`<div style="background:${c2};border-radius:${r}px;padding:42px 46px;margin:-14px 40px 0 40px;box-shadow:0 14px 36px rgba(40,30,20,.14);">
-<div style="font-family:'DM Sans',sans-serif;font-size:29px;font-weight:400;line-height:1.62;color:${c2t};">${this._esc(m.body)}</div>
-</div>`:''}
-</div>
-<div style="position:absolute;bottom:80px;left:0;right:0;z-index:3;">${this._handle(m.handle,tk.flatBg?c1t:'#FFFFFF','center')}</div>`;
-  },
-
-  // ── handwriting: sans bold + apoio manuscrito, tom próximo
-  _styleHandwriting(photoUrl,m,tk){
-    const main=tk.mainColor||'#FFFFFF',hand=tk.handColor||'#FFFFFF';
-    const size=this._fit(m.heading,[[40,84],[70,72],[100,60],[999,52]]);
-    const heading=tk.highlight?this._emphasize(m.heading,'highlight',tk.highlight):this._esc(m.heading);
-    return`${this._bgLayer(photoUrl,tk)}
-${this._counter(m.slideNumber,m.totalSlides,main)}
-<div style="position:absolute;inset:0;z-index:2;display:flex;flex-direction:column;justify-content:center;padding:130px 88px;">
-<div style="font-family:'Plus Jakarta Sans',sans-serif;font-size:${size}px;font-weight:700;line-height:1.16;letter-spacing:-.015em;color:${main};">${heading}</div>
-${m.body?`<div style="font-family:'Caveat',cursive;font-size:46px;font-weight:500;line-height:1.42;color:${hand};margin-top:38px;max-width:800px;">${this._esc(m.body)}</div>`:''}
-</div>
-<div style="position:absolute;bottom:84px;left:88px;z-index:3;">${this._handle(m.handle,main,'left')}</div>`;
-  },
-
-  // ── quote: statement serifado grande com moldura fina
-  _styleQuote(photoUrl,m,tk){
-    const text=tk.text||'#FFFFFF';
-    const size=this._fit(m.heading,[[40,92],[70,78],[110,64],[999,54]]);
-    const frame=tk.frame!==false;
-    return`${this._bgLayer(photoUrl,tk)}
-<div style="position:absolute;inset:0;z-index:2;display:flex;flex-direction:column;justify-content:center;align-items:center;padding:150px 108px;text-align:center;">
-${frame?`<div style="position:absolute;inset:64px;border:1px solid ${text};opacity:.28;"></div>`:''}
-<div style="font-family:'Playfair Display',serif;font-size:${size}px;font-weight:500;line-height:1.24;color:${text};">${this._emphasize(m.heading,'italic')}</div>
-${m.body?`<div style="font-family:'DM Sans',sans-serif;font-size:29px;font-weight:300;line-height:1.62;color:${text};opacity:.88;margin-top:40px;max-width:720px;">${this._esc(m.body)}</div>`:''}
-<div style="margin-top:56px;">${this._handle(m.handle,text,'center')}</div>
+<div style="position:absolute;inset:56px;z-index:3;padding:100px 82px;display:flex;flex-direction:column;justify-content:center;">
+<div style="font-family:'Playfair Display',serif;font-weight:600;font-size:${size}px;line-height:1.16;color:${text};">${this._emphasize(m.heading,'italic')}</div>
+${m.body?`<div style="font-family:'Inter',sans-serif;font-size:30px;font-weight:300;line-height:1.62;color:${text};opacity:.86;margin-top:38px;max-width:780px;">${this._esc(m.body)}</div>`:''}
+<div style="margin-top:56px;">${this._assinatura(m.handle,text,'left')}</div>
 </div>`;
   },
 
-  // ── olive: bloco editorial profundo com ticker nas margens
-  _styleOlive(photoUrl,m,tk){
-    const text=tk.text||'#EDE8DC';
-    const size=this._fit(m.heading,[[42,86],[70,72],[100,60],[999,52]]);
-    const ticker='passe para o lado · '.repeat(8);
-    return`${this._bgLayer(photoUrl,tk)}
-<div style="position:absolute;top:44px;left:0;right:0;z-index:3;font-family:'DM Sans',sans-serif;font-size:17px;letter-spacing:.16em;color:${text};opacity:.42;white-space:nowrap;overflow:hidden;text-transform:lowercase;">${ticker}</div>
-<div style="position:absolute;bottom:44px;left:0;right:0;z-index:3;font-family:'DM Sans',sans-serif;font-size:17px;letter-spacing:.16em;color:${text};opacity:.42;white-space:nowrap;overflow:hidden;text-transform:lowercase;">${ticker}</div>
-<div style="position:absolute;inset:0;z-index:2;display:flex;flex-direction:column;justify-content:center;padding:150px 92px;">
-<div style="font-family:'Playfair Display',serif;font-size:${size}px;font-weight:500;line-height:1.18;color:${text};">${this._emphasize(m.heading,'italic')}</div>
-${m.body?`<div style="font-family:'DM Sans',sans-serif;font-size:30px;font-weight:300;line-height:1.64;color:${text};opacity:.9;margin-top:36px;max-width:800px;">${this._esc(m.body)}</div>`:''}
-<div style="margin-top:52px;">${this._handle(m.handle,text,'left')}</div>
+  // ── LISTA: kicker fixo + serifada + corpo sans (modelo B) ───────────────
+  _styleLista(photoUrl,m,tk){
+    const C=this.C,bg=tk.bg||C.bege,tint=tk.accent||C.terracota,ink=tk.text||C.tinta;
+    const size=this._fit(m.heading,[[40,74],[70,64],[110,54],[999,46]]);
+    const foto=photoUrl?`<img class="sr-photo" src="${photoUrl}" style="bottom:118px;left:50%;transform:translateX(-50%) rotate(-1.4deg);width:56%;height:30%;object-fit:cover;z-index:2;border:13px solid #FFF;box-shadow:0 12px 34px rgba(40,26,20,.2);" crossorigin="anonymous"/>`:'';
+    return`<div style="position:absolute;inset:0;background:${bg};z-index:0;"></div>${this._paper()}${foto}
+<div style="position:absolute;top:74px;left:88px;right:88px;z-index:3;">${this._kicker(tk.kicker||m.handle.replace('@','').replace(/\./g,' '),tint)}</div>
+${this._counter(m.slideNumber,m.totalSlides,ink)}
+<div style="position:absolute;top:170px;left:88px;right:88px;z-index:3;">
+<div style="font-family:'Playfair Display',serif;font-weight:600;font-size:${size}px;line-height:1.14;color:${ink};">${this._emphasize(m.heading,'color',tint)}</div>
+${m.body?`<div style="font-family:'Inter',sans-serif;font-size:30px;font-weight:300;line-height:1.66;color:${ink};opacity:.82;margin-top:34px;">${this._esc(m.body)}</div>`:''}
+</div>
+<div style="position:absolute;bottom:64px;left:88px;z-index:3;">${this._assinatura(m.handle,'rgba(31,27,23,.45)','left')}</div>`;
+  },
+
+  // ── NOTA: rótulo marcador + manuscrita (o "WTF MOMENT" da ref 1) ────────
+  _styleNota(photoUrl,m,tk){
+    const C=this.C,bg=tk.bg||C.bege,tint=tk.accent||C.terracota,ink=tk.text||C.tinta;
+    const foto=photoUrl?`<img class="sr-photo" src="${photoUrl}" style="top:180px;left:50%;transform:translateX(-50%) rotate(1.8deg);width:60%;height:34%;object-fit:cover;z-index:2;border:14px solid #FFF;box-shadow:0 14px 38px rgba(40,26,20,.22);" crossorigin="anonymous"/>`:'';
+    const tape=photoUrl?`<div style="position:absolute;top:158px;left:32%;width:190px;height:56px;background:rgba(243,201,182,.62);transform:rotate(-7deg);z-index:3;"></div>`:'';
+    return`<div style="position:absolute;inset:0;background:${bg};z-index:0;"></div>${this._paper()}${foto}${tape}
+<div style="position:absolute;top:82px;left:0;right:0;z-index:3;text-align:center;">
+<div style="font-family:'Permanent Marker',cursive;font-size:52px;letter-spacing:.06em;color:${tint};">${this._esc(tk.label||'o ponto')}</div>
+</div>
+<div style="position:absolute;bottom:130px;left:96px;right:96px;z-index:3;text-align:center;">
+<div style="font-family:'Playfair Display',serif;font-weight:600;font-style:italic;font-size:${this._fit(m.heading,[[40,64],[70,56],[999,48]])}px;line-height:1.24;color:${ink};">${this._esc(m.heading)}</div>
+${m.body?`<div style="font-family:'Caveat',cursive;font-size:46px;font-weight:500;line-height:1.4;color:${ink};opacity:.86;margin-top:32px;">${this._esc(m.body)}</div>`:''}
+</div>
+<div style="position:absolute;bottom:60px;left:0;right:0;z-index:3;">${this._assinatura(m.handle,'rgba(31,27,23,.42)','center')}</div>`;
+  },
+
+  // ── ESTÁTICO: gradiente/foto + frase serifada + assinatura (refs 3 e 4) ─
+  _styleEstatico(photoUrl,m,tk){
+    const C=this.C,text=tk.text||C.creme,dest=tk.destaque||C.realce;
+    const size=this._fit(m.heading,[[40,94],[70,80],[110,66],[999,56]]);
+    const base=tk.bg||C.vinho;
+    const fundo=photoUrl
+      ?`<img class="sr-bg" src="${photoUrl}" crossorigin="anonymous"/><div style="position:absolute;inset:0;z-index:1;background:${tk.veil||'rgba(35,14,16,.5)'};"></div>`
+      :`<div style="position:absolute;inset:0;z-index:0;background:radial-gradient(130% 100% at 25% 8%, ${tk.bgTopo||'#7E2029'} 0%, ${base} 62%);"></div>`;
+    return`${fundo}${this._paper(.28)}
+<div style="position:absolute;inset:0;z-index:3;display:flex;flex-direction:column;justify-content:center;align-items:center;padding:150px 104px;text-align:center;">
+<div style="font-family:'Playfair Display',serif;font-weight:500;font-size:${size}px;line-height:1.2;color:${text};">${this._emphasize(m.heading,'color',dest)}</div>
+${m.body?`<div style="font-family:'Inter',sans-serif;font-size:29px;font-weight:300;line-height:1.62;color:${text};opacity:.8;margin-top:40px;max-width:740px;">${this._esc(m.body)}</div>`:''}
+</div>
+<div style="position:absolute;bottom:86px;left:0;right:0;z-index:3;">${this._assinatura(m.handle,'rgba(247,243,234,.6)','center')}</div>`;
+  },
+
+  // ── FECHAMENTO: bloco sólido + CTA em pill ──────────────────────────────
+  _styleFechamento(photoUrl,m,tk){
+    const C=this.C,bg=tk.bg||C.tinta,text=tk.text||C.creme,tint=tk.accent||C.realce;
+    const size=this._fit(m.heading,[[40,88],[70,74],[999,60]]);
+    return`<div style="position:absolute;inset:0;background:${bg};z-index:0;"></div>${this._paper(.22)}
+<div style="position:absolute;inset:0;z-index:3;display:flex;flex-direction:column;justify-content:center;align-items:center;padding:150px 100px;text-align:center;">
+<div style="font-family:'Playfair Display',serif;font-weight:600;font-size:${size}px;line-height:1.18;color:${text};">${this._emphasize(m.heading,'italic')}</div>
+${m.body?`<div style="display:inline-block;margin-top:56px;padding:26px 52px;border-radius:999px;background:${tint};font-family:'Inter',sans-serif;font-size:28px;font-weight:600;color:${C.tinta};">${this._esc(m.body)}</div>`:''}
+<div style="margin-top:58px;">${this._assinatura(m.handle,'rgba(247,243,234,.55)','center')}</div>
 </div>`;
   },
 
   _buildSlideHTML(photoUrl,designMeta){
     const m={...designMeta};
     m.handle=m.handle||'@analuisa.moutinho';
-    const style=m.overlayStyle||'editorial';
+    const builders={capa:'_styleCapa',cartao:'_styleCartao',lista:'_styleLista',nota:'_styleNota',estatico:'_styleEstatico',fechamento:'_styleFechamento'};
+    // A função do slide manda quando o template não fixa um estilo.
+    const porFuncao={CAPA:'capa',CTA:'fechamento',ASSINATURA:'fechamento'};
+    const style=m.overlayStyle||porFuncao[m.funcao]||'lista';
+    const fn=builders[style]||builders.lista;
     const tk=m.overlayTokens||{};
-    const builders={editorial:'_styleEditorial',typewriter:'_styleTypewriter',cards:'_styleCards',handwriting:'_styleHandwriting',quote:'_styleQuote',olive:'_styleOlive'};
-    const fn=builders[style]||builders.editorial;
-    // Sem foto gerada, o estilo passa a fundo liso para não render um vazio preto.
-    const tokens=photoUrl?tk:{...tk,flatBg:true,bg:tk.bg||m.bgLight||'#F2EFE9',text:tk.flatBg?tk.text:(m.bgDark||'#3B342A'),bodyText:tk.flatBg?tk.bodyText:(m.bgDark||'#3B342A')};
-    const inner=this[fn](photoUrl,m,tokens);
-    const base=tokens.flatBg?(tokens.bg||m.bgLight||'#F2EFE9'):(m.bgDark||'#2C2420');
+    const inner=this[fn](photoUrl,m,tk);
+    const escuro=style==='estatico'||style==='fechamento'||style==='cartao';
+    const base=escuro?(tk.bg||(style==='fechamento'?this.C.tinta:this.C.vinho)):(tk.bg||this.C.bege);
     return`<div class="sr-slide-wrapper" style="background:${base};">${inner}</div>`;
   },
   async renderSlide(photoUrl,designMeta){
@@ -1364,7 +1376,7 @@ ${m.body?`<div style="font-family:'DM Sans',sans-serif;font-size:30px;font-weigh
     container.innerHTML=this._buildSlideHTML(photoUrl,designMeta);
     const slideEl=container.querySelector('.sr-slide-wrapper');
     await new Promise((resolve)=>{
-      const img=slideEl.querySelector('.sr-bg');
+      const img=slideEl.querySelector('.sr-bg,.sr-photo');
       if(!img)return resolve();
       if(img.complete&&img.naturalWidth>0)return resolve();
       img.onload=resolve;img.onerror=resolve;
@@ -1379,7 +1391,7 @@ ${m.body?`<div style="font-family:'DM Sans',sans-serif;font-size:30px;font-weigh
       const canvas=await html2canvas(slideEl,{
         width:1024,height:1536,scale:2,
         useCORS:true,allowTaint:false,
-        backgroundColor:(tk.flatBg?(tk.bg||designMeta.bgLight):designMeta.bgDark)||'#2C2420',
+        backgroundColor:tk.bg||SlideRenderer.C.bege,
         logging:false,imageTimeout:10000,
       });
       const pngB64=canvas.toDataURL('image/png',1.0).split(',')[1];
