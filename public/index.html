@@ -1718,14 +1718,15 @@ function renderTrendCard(t) {
     <div class="trend-gancho">"${t.gancho || ''}"</div>
     <div class="trend-angulo">${t.angulo || ''}</div>
     <div class="trend-actions">
-      <button class="btn btn-primary btn-sm" onclick="usarTrendComoTema(${JSON.stringify(JSON.stringify(t))})">✏️ Usar como pauta</button>
-      <button class="btn btn-secondary btn-sm" onclick="copiarGancho(this, ${JSON.stringify(JSON.stringify(t.gancho))})">📋 Copiar gancho</button>
+      <button class="btn btn-primary btn-sm" data-action="usar">✏️ Usar como pauta</button>
+      <button class="btn btn-secondary btn-sm" data-action="copiar">📋 Copiar gancho</button>
     </div>`;
+  div.querySelector('[data-action="usar"]').addEventListener('click', () => usarTrendComoTema(t));
+  div.querySelector('[data-action="copiar"]').addEventListener('click', (e) => copiarGancho(e.currentTarget, t.gancho));
   return div;
 }
 
-function usarTrendComoTema(tJson) {
-  const t = JSON.parse(tJson);
+function usarTrendComoTema(t) {
   if (t.tipo_ideal === 'reels') {
     showSection('roteiro', null);
     setTimeout(() => {
@@ -1759,8 +1760,7 @@ function copiarFallback(texto, cb) {
   const ta=document.createElement('textarea'); ta.value=texto; ta.style.position='fixed'; ta.style.opacity='0';
   document.body.appendChild(ta); ta.select(); try{document.execCommand('copy');if(cb)cb();}catch(e){toast('Não foi possível copiar','error');}document.body.removeChild(ta);
 }
-function copiarGancho(btn, ganchoJson) {
-  const gancho = JSON.parse(ganchoJson);
+function copiarGancho(btn, gancho) {
   copiarTexto(gancho, btn, 'Gancho copiado!');
 }
 
