@@ -1518,17 +1518,21 @@ async function generateCarouselImages(autoPublishConfig=null){
   else{document.getElementById('publishPanel').classList.add('visible');}
 }
 /* ── CONTENT MACHINE ── */
+// As 4 editorias fixas da Brand The Code™ + formatos. Editorias primeiro:
+// são elas que giram no calendário e definem a identidade do perfil.
 const CM_TYPES_ALL = {
-  lofi:{label:'Lo-Fi (câmera ligada)',emoji:'🎥',tag:'Lo-Fi',color:'#C17B6F',metodologia:'rr',desc:'Liga a câmera e fala direto. Maior ROI para quem tem oratória.'},
-  carrossel:{label:'Carrossel',emoji:'📋',tag:'Texto',color:'#8B7355',metodologia:'rr',desc:'Forte para educação e listas. Slide 1 com gancho, profundidade no meio.'},
-  video_curto:{label:'Vídeo Curto (até 13s)',emoji:'⚡',tag:'Curto',color:'#D97706',metodologia:'rr',desc:'Uma sacada impactante em segundos. Alto potencial viral.'},
-  video_medio:{label:'Vídeo Médio (até 1min)',emoji:'🎬',tag:'Médio',color:'#059669',metodologia:'rr',desc:'Equilibra alcance e profundidade. Gancho + desenvolvimento + conclusão.'},
-  frase:{label:'Frase de Impacto',emoji:'✍️',tag:'Frase',color:'#6B7280',metodologia:'rr',desc:'Uma verdade em 2-3 linhas. Sem explicação — ressoa sozinha.'},
-  dump:{label:'Dump / Bastidores',emoji:'📸',tag:'Bastidores',color:'#4B5563',metodologia:'rr',desc:'Momentos reais com narrativa. Humaniza e cria relacionamento.'},
-  bastidores:{label:'Bastidores',emoji:'🎬',tag:'Processo',color:'#7C3AED',metodologia:'rr',desc:'O processo real, os erros, as decisões. Conecta por autenticidade.'},
+  cultural:{label:'Cultural / Trend',emoji:'📡',tag:'Editoria',color:'#B33A2B',metodologia:'bd',desc:'Lê um fenômeno ou mudança de época e conecta a quem tem negócio.'},
+  tese:{label:'Tese de Negócio',emoji:'📊',tag:'Editoria',color:'#8E2A20',metodologia:'bd',desc:'Uma afirmação defensável sobre como negócios funcionam, com mecanismo.'},
+  autoral:{label:'Post Autoral',emoji:'✍️',tag:'Editoria',color:'#5C1620',metodologia:'bd',desc:'Visão de mundo assumida. Não precisa terminar em dica.'},
+  oferta:{label:'Oferta Direta',emoji:'🎯',tag:'Editoria',color:'#7C8A6E',metodologia:'bd',desc:'Convida para algo real, com CTA explícito e específico.'},
+  frase:{label:'Frase de Impacto',emoji:'💬',tag:'Estático',color:'#6B7280',metodologia:'bd',desc:'Uma verdade em 2-3 linhas. Funciona sozinha, sem contexto.'},
+  lofi:{label:'Lo-Fi (câmera ligada)',emoji:'🎥',tag:'Vídeo',color:'#C17B6F',metodologia:'bd',desc:'Liga a câmera e fala direto. Maior ROI para quem tem oratória.'},
+  video_curto:{label:'Vídeo Curto (até 13s)',emoji:'⚡',tag:'Vídeo',color:'#D97706',metodologia:'bd',desc:'Uma sacada impactante em segundos. Alto potencial viral.'},
+  video_medio:{label:'Vídeo Médio (até 1min)',emoji:'🎬',tag:'Vídeo',color:'#059669',metodologia:'bd',desc:'Equilibra alcance e profundidade. Gancho + desenvolvimento + conclusão.'},
 };
-const CM_TIPOS_RR = ['lofi','carrossel','video_curto','video_medio','frase','dump','bastidores'];
+const CM_TIPOS_RR = ['cultural','tese','autoral','oferta','frase','lofi','video_curto','video_medio'];
 const TIPOS_VIDEO_RR = ['lofi','video_curto','video_medio'];
+const EDITORIAS_BD = ['cultural','tese','autoral','oferta'];
 
 function getCMTiposParaPerfil(){return CM_TIPOS_RR;}
 function isPerfilRR(){return true;}
@@ -1586,7 +1590,8 @@ function criarEscolherFormato(formato) {
   if (formato === 'carrossel') {
     // Passo 2: mostrar tipos do CM para carrossel
     const grid = document.getElementById('criarTypeGrid');
-    const tiposAtivos = getCMTiposParaPerfil().filter(id => !TIPOS_VIDEO_RR.includes(id));
+    // No carrossel entram as 4 editorias fixas — frase é estático e vídeo tem fluxo próprio.
+    const tiposAtivos = EDITORIAS_BD.slice();
     grid.innerHTML = tiposAtivos.map(id => {
       const t = CM_TYPES_ALL[id];
       if (!t) return '';
@@ -1944,7 +1949,7 @@ function loadCMFromHistory(i){const h=cmSessionHistory[i];if(!h)return;cmSelecte
 
 /* ── CANVA INTEGRATION ── */
 let canvaTemplates=[],canvaSelectedContent=null,canvaCurrentTemplateUrl=null,canvaCurrentClipboardText="";
-const CANVA_CT=[{id:"frase",e:"✍️",l:"Frase"},{id:"carrossel",e:"📋",l:"Carrossel"},{id:"dump",e:"📸",l:"Dump"},{id:"bastidores",e:"🎬",l:"Bastidores"},{id:"lofi",e:"📺",l:"Lo-Fi"},{id:"video_curto",e:"⚡",l:"Vídeo Curto"},{id:"video_medio",e:"🎬",l:"Vídeo Médio"}];
+const CANVA_CT=[{id:"cultural",e:"📡",l:"Cultural"},{id:"tese",e:"📊",l:"Tese"},{id:"autoral",e:"✍️",l:"Autoral"},{id:"oferta",e:"🎯",l:"Oferta"},{id:"frase",e:"💬",l:"Frase"},{id:"lofi",e:"📺",l:"Lo-Fi"},{id:"video_curto",e:"⚡",l:"Vídeo Curto"},{id:"video_medio",e:"🎬",l:"Vídeo Médio"}];
 async function initCanvaSection(){await loadCanvaTemplates();renderCanvaTemplateGrid();await populateCanvaContentSelect();renderCanvaTypesGrid();}
 function canvaTab(t,b){
   document.querySelectorAll(".canva-tab").forEach(x=>x.classList.remove("active"));
