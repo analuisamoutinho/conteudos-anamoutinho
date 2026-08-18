@@ -670,7 +670,6 @@ body{font-family:var(--font-body);background:var(--pale);color:var(--dark);min-h
           <div class="slides-preview" id="slidesPreview"></div>
           <div class="progress-bar" id="imageProgress" style="display:none"><div class="progress-fill" id="imageProgressFill" style="width:0%"></div></div>
           <div id="imageGenStatus" style="font-size:.78rem;color:var(--mid);margin:6px 0;"></div>
-          <div id="photoSuggestArea" style="display:none;margin:10px 0;"><div style="font-size:.75rem;color:var(--mid);margin-bottom:6px;">📸 Fotos do banco relevantes:</div><div class="photo-suggestions" id="photoSuggestions"></div></div>
           <div class="form-group" style="margin-top:14px;"><label class="form-label">Legenda + Hashtags</label><textarea class="textarea" id="carouselGeneratedCaption" rows="4"></textarea></div>
           <div style="display:flex;gap:8px;flex-wrap:wrap;">
             <button class="btn btn-secondary btn-sm" onclick="downloadCarousel()">⬇️ Exportar JSON</button>
@@ -1110,8 +1109,7 @@ function enterCarouselPreviewMode(){document.getElementById('carouselGrid').clas
 function resetCarouselToConfig(){document.getElementById('carouselGrid').classList.remove('preview-mode');document.getElementById('carouselPreviewCard').style.display='none';document.getElementById('publishPanel').classList.remove('visible');}
 let carouselMode='blocks';
 function setCarouselMode(mode){carouselMode=mode;document.getElementById('modeBtnBlocks').classList.toggle('active',mode==='blocks');document.getElementById('modeBtnTopic').classList.toggle('active',mode==='topic');document.getElementById('modeBlocks').style.display=mode==='blocks'?'block':'none';document.getElementById('modeTopic').style.display=mode==='topic'?'block':'none';}
-async function generateCarousel(){let body={};if(carouselMode==='blocks'){const blocks=document.getElementById('carouselBlocks').value.trim();if(!blocks)return toast('Cola os blocos de texto','error');body={blocks,profile:currentProfile,caption:document.getElementById('carouselCaption').value};}else{const topic=document.getElementById('carouselTopic').value.trim();if(!topic)return toast('Escreve o tema','error');body={topic,profile:currentProfile,caption:document.getElementById('carouselCaption').value};}const btn=document.getElementById('btnGenCarousel');btn.disabled=true;btn.textContent='⏳ A gerar...';try{const r=await fetch('/api/carousel/generate-and-save',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});const d=await r.json();if(d.error)throw new Error(d.error);currentCarouselData={...d,imageUrls:[]};currentCarouselContentId=d.contentId;currentCarouselImages=[];lbCommentStore={};lbStatusStore={};renderSlidesPreview(d.slides);document.getElementById('carouselSlideCount').textContent=`${d.slides.length} slides gerados pela IA`;document.getElementById('carouselGeneratedCaption').value=`${d.caption}\n\n${d.hashtags}`;document.getElementById('carouselPreviewTitle').textContent=d.title||'Pré-visualização';document.getElementById('carouselPreviewCard').style.display='block';document.getElementById('publishPanel').classList.add('visible');enterCarouselPreviewMode();if(currentProfile==='pessoal')loadPhotoSuggestions(body.topic||body.blocks?.slice(0,100));toast(`Carrossel com ${d.slides.length} slides gerado!`,'success');}catch(e){toast('Erro: '+e.message,'error');}finally{btn.disabled=false;btn.textContent='✨ Gerar carrossel';}}
-async function loadPhotoSuggestions(topic){if(!topic)return;const area=document.getElementById('photoSuggestArea');area.style.display='block';document.getElementById('photoSuggestions').innerHTML='<div style="font-size:.75rem;color:var(--mid);">A procurar...</div>';try{const r=await fetch('/api/photos/suggest',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({topic,profile:'pessoal',limit:4})});const d=await r.json();if(!d.suggestions?.length){document.getElementById('photoSuggestions').innerHTML='<div style="font-size:.72rem;color:var(--mid);">Nenhuma foto encontrada.</div>';return;}document.getElementById('photoSuggestions').innerHTML=d.suggestions.map(p=>`<img src="${p.dataUrl}" class="photo-suggestion-item" title="${p.description}" onclick="this.classList.toggle('selected')"/>`).join('');}catch(e){area.style.display='none';}}
+async function generateCarousel(){let body={};if(carouselMode==='blocks'){const blocks=document.getElementById('carouselBlocks').value.trim();if(!blocks)return toast('Cola os blocos de texto','error');body={blocks,profile:currentProfile,caption:document.getElementById('carouselCaption').value};}else{const topic=document.getElementById('carouselTopic').value.trim();if(!topic)return toast('Escreve o tema','error');body={topic,profile:currentProfile,caption:document.getElementById('carouselCaption').value};}const btn=document.getElementById('btnGenCarousel');btn.disabled=true;btn.textContent='⏳ A gerar...';try{const r=await fetch('/api/carousel/generate-and-save',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});const d=await r.json();if(d.error)throw new Error(d.error);currentCarouselData={...d,imageUrls:[]};currentCarouselContentId=d.contentId;currentCarouselImages=[];lbCommentStore={};lbStatusStore={};renderSlidesPreview(d.slides);document.getElementById('carouselSlideCount').textContent=`${d.slides.length} slides gerados pela IA`;document.getElementById('carouselGeneratedCaption').value=`${d.caption}\n\n${d.hashtags}`;document.getElementById('carouselPreviewTitle').textContent=d.title||'Pré-visualização';document.getElementById('carouselPreviewCard').style.display='block';document.getElementById('publishPanel').classList.add('visible');enterCarouselPreviewMode();if(currentProfile==='pessoal')toast(`Carrossel com ${d.slides.length} slides gerado!`,'success');}catch(e){toast('Erro: '+e.message,'error');}finally{btn.disabled=false;btn.textContent='✨ Gerar carrossel';}}
 
 /* ── RENDER SLIDES PREVIEW (com textos editáveis) ── */
 function renderSlidesPreview(slides){
@@ -1256,9 +1254,56 @@ const SlideRenderer={
 
   // Elipse desenhada à mão à volta de uma palavra (ref 1 e ref 4)
   _circulo(color){
-    return`<svg viewBox="0 0 400 130" preserveAspectRatio="none" style="position:absolute;inset:-18px -34px;width:calc(100% + 68px);height:calc(100% + 36px);overflow:visible;">
+    return`<svg viewBox="0 0 400 130" preserveAspectRatio="none" style="position:absolute;inset:-18px -34px;width:calc(100% + 68px);height:calc(100% + 36px);">
 <path d="M200 12 C 96 10, 20 36, 16 66 C 12 98, 108 120, 206 118 C 306 116, 388 96, 386 64 C 384 34, 300 12, 188 14" fill="none" stroke="${color}" stroke-width="3.2" stroke-linecap="round" opacity=".85"/>
 </svg>`;
+  },
+  // ── Elementos de colagem ────────────────────────────────────────────────
+  // Fita adesiva: lisa, xadrez (gingham) ou washi translúcida, sempre torta.
+  _fita(op){
+    const o = op || {};
+    const cor = o.cor || 'rgba(243,201,182,.72)';
+    const w = o.w || 190, h = o.h || 54, rot = o.rot == null ? -7 : o.rot;
+    const xadrez = o.xadrez
+      ? `background-image:linear-gradient(${cor} 50%,transparent 50%),linear-gradient(90deg,${cor} 50%,transparent 50%);background-size:14px 14px;background-color:rgba(255,255,255,.55);`
+      : `background:${cor};`;
+    return`<div style="position:absolute;${o.pos||'top:0;left:0;'}width:${w}px;height:${h}px;${xadrez}transform:rotate(${rot}deg);z-index:${o.z||4};box-shadow:0 2px 6px rgba(40,26,20,.10);"></div>`;
+  },
+  // Seta curva desenhada à mão.
+  // ATENÇÃO — duas armadilhas do html2canvas com SVG, testadas e confirmadas:
+  // 1) posição em percentagem nunca é desenhada (fica invisível no PNG final).
+  // 2) `right:` combinado com um tamanho diferente do viewBox nativo também
+  //    fica invisível — por isso o posicionamento (incluindo right) vai sempre
+  //    num <div> wrapper, e o <svg> interno ocupa 100% dele a partir de 0,0.
+  _seta(cor,style,flip){
+    return`<div style="position:absolute;${style};z-index:4;">
+<svg viewBox="0 0 200 220" style="position:absolute;top:0;left:0;width:100%;height:100%;${flip?'transform:scaleX(-1);':''}">
+<path d="M28 16 C 96 22, 150 62, 138 118 C 130 158, 84 176, 62 152 C 44 132, 66 106, 92 118 C 122 132, 128 176, 96 200" fill="none" stroke="${cor}" stroke-width="4" stroke-linecap="round" opacity=".9"/>
+<path d="M96 200 L 74 186 M96 200 L 108 176" fill="none" stroke="${cor}" stroke-width="4" stroke-linecap="round" opacity=".9"/>
+</svg></div>`;
+  },
+  // Rabisco/squiggle curto
+  _rabisco(cor,style){
+    return`<div style="position:absolute;${style};z-index:4;">
+<svg viewBox="0 0 220 60" style="position:absolute;top:0;left:0;width:100%;height:100%;">
+<path d="M6 40 C 40 6, 62 6, 84 34 C 106 62, 130 62, 152 34 C 172 8, 196 8, 214 30" fill="none" stroke="${cor}" stroke-width="3.4" stroke-linecap="round" opacity=".85"/>
+</svg></div>`;
+  },
+  // Sublinhado à mão, por baixo de uma palavra
+  _sublinhado(cor){
+    return`<div style="position:absolute;left:-6px;right:-6px;bottom:-14px;height:22px;z-index:3;">
+<svg viewBox="0 0 300 26" preserveAspectRatio="none" style="position:absolute;top:0;left:0;width:100%;height:100%;">
+<path d="M4 14 C 70 4, 150 22, 296 8" fill="none" stroke="${cor}" stroke-width="5" stroke-linecap="round" opacity=".9"/>
+</svg></div>`;
+  },
+  // Recorte de jornal/print colado, saindo pela borda
+  _recorte(photoUrl,o){
+    const rot = o.rot == null ? 3 : o.rot;
+    const fundo = photoUrl
+      ? `<img class="sr-photo" src="${photoUrl}" style="inset:0;width:100%;height:100%;object-fit:cover;" crossorigin="anonymous"/>`
+      : `<div style="position:absolute;inset:0;background:${o.fallback||'#D9D2C4'};"></div>`;
+    return`<div style="position:absolute;${o.pos};width:${o.w};height:${o.h};transform:rotate(${rot}deg);z-index:${o.z||2};background:#FFF;padding:${o.borda||14}px;box-shadow:0 14px 38px rgba(40,26,20,.20);">
+<div style="position:relative;width:100%;height:100%;overflow:hidden;">${fundo}</div></div>`;
   },
   _kicker(txt,color){
     return`<div style="font-family:'Inter',sans-serif;font-size:20px;font-weight:600;letter-spacing:.24em;text-transform:uppercase;color:${color};">${this._esc(txt)}</div>`;
@@ -1271,20 +1316,25 @@ const SlideRenderer={
     return`<div style="position:absolute;top:58px;right:74px;font-family:'Inter',sans-serif;font-size:19px;font-weight:500;letter-spacing:.1em;color:${color};opacity:.55;z-index:4;">${n}/${total}</div>`;
   },
 
-  // ── CAPA: bege texturizado, serifada terracota, marca-texto ─────────────
+  // ── CAPA: display serifado terracota, frase circulada à mão, recortes ───
   _styleCapa(photoUrl,m,tk){
     const C=this.C,bg=tk.bg||C.bege,tint=tk.text||C.terracota;
-    const size=this._fit(m.heading,[[36,112],[60,94],[90,78],[999,64]]);
-    const foto=photoUrl?`<img class="sr-photo" src="${photoUrl}" style="top:0;right:0;width:46%;height:38%;object-fit:cover;z-index:1;transform:rotate(2.2deg);border:14px solid #FFF;box-shadow:0 14px 40px rgba(40,26,20,.22);" crossorigin="anonymous"/>`:'';
-    return`<div style="position:absolute;inset:0;background:${bg};z-index:0;"></div>${this._paper()}${foto}
-<div style="position:absolute;inset:0;z-index:3;padding:120px 92px;display:flex;flex-direction:column;justify-content:flex-end;">
-<div style="font-family:'Playfair Display',serif;font-weight:700;font-size:${size}px;line-height:1.06;letter-spacing:-.015em;color:${tint};">${this._emphasize(m.heading,'marker',tk.realce||C.realce)}</div>
-${m.body?`<div style="font-family:'Caveat',cursive;font-size:48px;font-weight:500;line-height:1.34;color:${tk.hand||C.tinta};margin-top:40px;max-width:760px;">${this._esc(m.body)}</div>`:''}
-<div style="display:flex;align-items:center;justify-content:space-between;margin-top:64px;">
-${this._assinatura(m.handle,tk.muted||'rgba(31,27,23,.5)','left')}
-<div style="font-family:'Inter',sans-serif;font-size:19px;font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:${tint};opacity:.8;">arrasta →</div>
+    const size=this._fit(m.heading,[[30,124],[48,104],[70,86],[999,70]]);
+    return`<div style="position:absolute;inset:0;background:${bg};z-index:0;"></div>${this._paper()}
+${this._recorte(photoUrl,{pos:'top:-40px;right:-56px;',w:'44%',h:'30%',rot:4,z:2})}
+${this._fita({pos:'top:14px;right:16%;',w:150,h:46,rot:-14,z:3})}
+${this._recorte(null,{pos:'bottom:-52px;left:-60px;',w:'30%',h:'22%',rot:-6,z:2,fallback:'#E8DFC9'})}
+${this._fita({pos:'bottom:150px;left:14%;',w:130,h:42,rot:9,z:3,xadrez:true,cor:'rgba(179,58,43,.34)'})}
+<div style="position:absolute;inset:0;z-index:5;padding:130px 92px;display:flex;flex-direction:column;justify-content:center;">
+<div style="font-family:'Playfair Display',serif;font-weight:700;font-size:${size}px;line-height:1.04;letter-spacing:-.02em;color:${tint};">${this._esc(m.heading)}</div>
+${m.body?((m.body.length<=42)?`<div style="position:relative;display:inline-block;align-self:flex-start;margin-top:52px;padding:10px 26px;">
+${this._circulo(tint)}
+<span style="position:relative;font-family:'Permanent Marker',cursive;font-size:44px;letter-spacing:.05em;color:${tint};">${this._esc(m.body)}</span>
+</div>`:`<div style="font-family:'Caveat',cursive;font-size:44px;font-weight:500;line-height:1.34;color:${this.C.tinta};margin-top:44px;max-width:780px;">${this._esc(m.body)}</div>`):''}
+${this._rabisco(tint,'bottom:118px;right:96px;width:180px;height:48px;')}
 </div>
-</div>`;
+<div style="position:absolute;bottom:62px;left:92px;z-index:6;">${this._assinatura(m.handle,'rgba(31,27,23,.5)','left')}</div>
+<div style="position:absolute;bottom:62px;right:92px;z-index:6;font-family:'Caveat',cursive;font-size:38px;color:${tint};">arrasta →</div>`;
   },
 
   // ── CARTÃO: bloco de cor sólida, frase serifada creme (modelo A) ────────
@@ -1316,20 +1366,25 @@ ${m.body?`<div style="font-family:'Inter',sans-serif;font-size:30px;font-weight:
 <div style="position:absolute;bottom:64px;left:88px;z-index:3;">${this._assinatura(m.handle,'rgba(31,27,23,.45)','left')}</div>`;
   },
 
-  // ── NOTA: rótulo marcador + manuscrita (o "WTF MOMENT" da ref 1) ────────
+  // ── NOTA: a estrutura exata da referência ───────────────────────────────
+  // kicker itálico → citação serifada → recorte com fita → rótulo em
+  // marcador → comentário manuscrito
   _styleNota(photoUrl,m,tk){
     const C=this.C,bg=tk.bg||C.bege,tint=tk.accent||C.terracota,ink=tk.text||C.tinta;
-    const foto=photoUrl?`<img class="sr-photo" src="${photoUrl}" style="top:180px;left:50%;transform:translateX(-50%) rotate(1.8deg);width:60%;height:34%;object-fit:cover;z-index:2;border:14px solid #FFF;box-shadow:0 14px 38px rgba(40,26,20,.22);" crossorigin="anonymous"/>`:'';
-    const tape=photoUrl?`<div style="position:absolute;top:158px;left:32%;width:190px;height:56px;background:rgba(243,201,182,.62);transform:rotate(-7deg);z-index:3;"></div>`:'';
-    return`<div style="position:absolute;inset:0;background:${bg};z-index:0;"></div>${this._paper()}${foto}${tape}
-<div style="position:absolute;top:82px;left:0;right:0;z-index:3;text-align:center;">
-<div style="font-family:'Permanent Marker',cursive;font-size:52px;letter-spacing:.06em;color:${tint};">${this._esc(tk.label||'o ponto')}</div>
+    const size=this._fit(m.heading,[[30,74],[50,62],[75,52],[999,44]]);
+    return`<div style="position:absolute;inset:0;background:${bg};z-index:0;"></div>${this._paper()}
+${tk.kicker?`<div style="position:absolute;top:70px;left:0;right:0;z-index:5;text-align:center;font-family:'Inter',sans-serif;font-style:italic;font-weight:600;font-size:30px;color:${tint};">${this._esc(tk.kicker)}</div>`:''}
+<div style="position:absolute;top:${tk.kicker?'128px':'92px'};left:76px;right:76px;z-index:5;text-align:center;">
+<div style="font-family:'Playfair Display',serif;font-weight:600;font-size:${size}px;line-height:1.16;color:${tint};">“${this._esc(m.heading)}”</div>
 </div>
-<div style="position:absolute;bottom:130px;left:96px;right:96px;z-index:3;text-align:center;">
-<div style="font-family:'Playfair Display',serif;font-weight:600;font-style:italic;font-size:${this._fit(m.heading,[[40,64],[70,56],[999,48]])}px;line-height:1.24;color:${ink};">${this._esc(m.heading)}</div>
-${m.body?`<div style="font-family:'Caveat',cursive;font-size:46px;font-weight:500;line-height:1.4;color:${ink};opacity:.86;margin-top:32px;">${this._esc(m.body)}</div>`:''}
+${this._recorte(photoUrl,{pos:'top:38%;left:12%;',w:'62%',h:'27%',rot:-1.6,z:2})}
+${this._fita({pos:'top:36.5%;left:9%;',w:180,h:52,rot:-11,z:3,xadrez:true,cor:'rgba(179,58,43,.30)'})}
+${this._seta(tint,'top:965px;right:120px;width:120px;height:130px;',true)}
+<div style="position:absolute;bottom:150px;left:82px;right:82px;z-index:5;">
+<div style="font-family:'Permanent Marker',cursive;font-size:46px;letter-spacing:.06em;color:${tint};margin-bottom:24px;">${this._esc(tk.label||'o ponto')}</div>
+${m.body?`<div style="font-family:'Caveat',cursive;font-size:44px;font-weight:500;line-height:1.36;color:${ink};opacity:.92;">${this._esc(m.body)}</div>`:''}
 </div>
-<div style="position:absolute;bottom:60px;left:0;right:0;z-index:3;">${this._assinatura(m.handle,'rgba(31,27,23,.42)','center')}</div>`;
+<div style="position:absolute;bottom:62px;left:0;right:0;z-index:6;">${this._assinatura(m.handle,'rgba(31,27,23,.42)','center')}</div>`;
   },
 
   // ── ESTÁTICO: gradiente/foto + frase serifada + assinatura (refs 3 e 4) ─
@@ -1348,16 +1403,22 @@ ${m.body?`<div style="font-family:'Inter',sans-serif;font-size:29px;font-weight:
 <div style="position:absolute;bottom:86px;left:0;right:0;z-index:3;">${this._assinatura(m.handle,'rgba(247,243,234,.6)','center')}</div>`;
   },
 
-  // ── FECHAMENTO: bloco sólido + CTA em pill ──────────────────────────────
+  // ── FECHAMENTO: frase serifada com sublinhado à mão + CTA manuscrito ────
   _styleFechamento(photoUrl,m,tk){
-    const C=this.C,bg=tk.bg||C.tinta,text=tk.text||C.creme,tint=tk.accent||C.realce;
-    const size=this._fit(m.heading,[[40,88],[70,74],[999,60]]);
-    return`<div style="position:absolute;inset:0;background:${bg};z-index:0;"></div>${this._paper(.22)}
-<div style="position:absolute;inset:0;z-index:3;display:flex;flex-direction:column;justify-content:center;align-items:center;padding:150px 100px;text-align:center;">
-<div style="font-family:'Playfair Display',serif;font-weight:600;font-size:${size}px;line-height:1.18;color:${text};">${this._emphasize(m.heading,'italic')}</div>
-${m.body?`<div style="display:inline-block;margin-top:56px;padding:26px 52px;border-radius:999px;background:${tint};font-family:'Inter',sans-serif;font-size:28px;font-weight:600;color:${C.tinta};">${this._esc(m.body)}</div>`:''}
-<div style="margin-top:58px;">${this._assinatura(m.handle,'rgba(247,243,234,.55)','center')}</div>
-</div>`;
+    const C=this.C,bg=tk.bg||C.bege,tint=tk.accent||C.terracota,ink=tk.text||C.terracota;
+    const size=this._fit(m.heading,[[34,96],[56,80],[80,66],[999,56]]);
+    return`<div style="position:absolute;inset:0;background:${bg};z-index:0;"></div>${this._paper()}
+${this._recorte(null,{pos:'top:-30px;left:-52px;',w:'26%',h:'20%',rot:-7,z:2,fallback:'#E8DFC9'})}
+${this._recorte(photoUrl,{pos:'bottom:-46px;right:-56px;',w:'34%',h:'24%',rot:5,z:2})}
+${this._fita({pos:'top:96px;left:12%;',w:140,h:44,rot:11,z:3})}
+<div style="position:absolute;inset:0;z-index:5;display:flex;flex-direction:column;justify-content:center;align-items:center;padding:150px 96px;text-align:center;">
+<div style="font-family:'Playfair Display',serif;font-weight:700;font-size:${size}px;line-height:1.1;color:${ink};">${this._esc(m.heading)}</div>
+${m.body?`<div style="position:relative;display:inline-block;margin-top:56px;">
+<span style="font-family:'Caveat',cursive;font-size:52px;font-weight:600;color:${tint};">${this._esc(m.body)}</span>
+${this._sublinhado(tint)}
+</div>`:''}
+</div>
+<div style="position:absolute;bottom:64px;left:0;right:0;z-index:6;">${this._assinatura(m.handle,'rgba(31,27,23,.45)','center')}</div>`;
   },
 
   _buildSlideHTML(photoUrl,designMeta){
