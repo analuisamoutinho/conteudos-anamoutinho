@@ -1234,6 +1234,28 @@ const SlideRenderer={
      bege:'#EFEBE1',kraft:'#E5DDCD',creme:'#F7F3EA',tinta:'#1F1B17',realce:'#F3C9B6'},
 
   _esc(t){return String(t==null?'':t).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');},
+  // Variação determinística por slide: o número do slide semeia escolhas de
+  // fita, rotação e lado dos elementos. Mesmo slide → sempre igual (re-render
+  // estável); slides diferentes → composições diferentes, como um designer
+  // alternando a colagem ao longo do carrossel — em vez de um template clonado.
+  _variante(m){
+    const seed=((m.slideNumber||1)*31+(m.totalSlides||1)*7)>>>0;
+    const pick=(arr,salt)=>arr[(seed+salt)%arr.length];
+    const FITAS=[
+      {cor:'rgba(243,201,182,.72)'},
+      {cor:'rgba(179,58,43,.30)',xadrez:true},
+      {cor:'rgba(124,138,110,.42)'},
+      {cor:'rgba(151,178,203,.48)',xadrez:true},
+      {cor:'rgba(233,196,106,.5)'},
+    ];
+    return{
+      pick,
+      rot:(base,salt)=>base+(((seed+salt)%5)-2),
+      fita1:pick(FITAS,0),
+      fita2:pick(FITAS,2),
+      lado:(seed%2)===0,
+    };
+  },
   _fit(text,sizes){const len=(text||'').length;for(const[max,size]of sizes){if(len<=max)return size;}return sizes[sizes.length-1][1];},
   _paper(op){return`<div style="position:absolute;inset:0;z-index:1;background-image:url('${this.PAPER}');background-repeat:repeat;background-size:128px 128px;opacity:${op==null?.55:op};"></div>`;},
 
@@ -1318,13 +1340,13 @@ const SlideRenderer={
 
   // ── CAPA: display serifado terracota, frase circulada à mão, recortes ───
   _styleCapa(photoUrl,m,tk){
-    const C=this.C,bg=tk.bg||C.bege,tint=tk.text||C.terracota;
+    const C=this.C,bg=tk.bg||C.bege,tint=tk.text||C.terracota,v=this._variante(m);
     const size=this._fit(m.heading,[[30,124],[48,104],[70,86],[999,70]]);
     return`<div style="position:absolute;inset:0;background:${bg};z-index:0;"></div>${this._paper()}
-${this._recorte(photoUrl,{pos:'top:-40px;right:-56px;',w:'44%',h:'30%',rot:4,z:2})}
-${this._fita({pos:'top:14px;right:16%;',w:150,h:46,rot:-14,z:3})}
-${this._recorte(null,{pos:'bottom:-52px;left:-60px;',w:'30%',h:'22%',rot:-6,z:2,fallback:'#E8DFC9'})}
-${this._fita({pos:'bottom:150px;left:14%;',w:130,h:42,rot:9,z:3,xadrez:true,cor:'rgba(179,58,43,.34)'})}
+${this._recorte(photoUrl,{pos:v.lado?'top:-40px;right:-56px;':'top:-40px;left:-56px;',w:'44%',h:'30%',rot:v.rot(v.lado?4:-4,1),z:2})}
+${this._fita({pos:v.lado?'top:14px;right:16%;':'top:14px;left:16%;',w:150,h:46,rot:v.rot(-14,2),z:3,...v.fita1})}
+${this._recorte(null,{pos:v.lado?'bottom:-52px;left:-60px;':'bottom:-52px;right:-60px;',w:'30%',h:'22%',rot:v.rot(-6,3),z:2,fallback:'#E8DFC9'})}
+${this._fita({pos:v.lado?'bottom:150px;left:14%;':'bottom:150px;right:14%;',w:130,h:42,rot:v.rot(9,4),z:3,...v.fita2})}
 <div style="position:absolute;inset:0;z-index:5;padding:130px 92px;display:flex;flex-direction:column;justify-content:center;">
 <div style="font-family:'Playfair Display',serif;font-weight:700;font-size:${size}px;line-height:1.04;letter-spacing:-.02em;color:${tint};">${this._esc(m.heading)}</div>
 ${m.body?((m.body.length<=42)?`<div style="position:relative;display:inline-block;align-self:flex-start;margin-top:52px;padding:10px 26px;">
@@ -1353,10 +1375,11 @@ ${m.body?`<div style="font-family:'Inter',sans-serif;font-size:30px;font-weight:
 
   // ── LISTA: kicker fixo + serifada + corpo sans (modelo B) ───────────────
   _styleLista(photoUrl,m,tk){
-    const C=this.C,bg=tk.bg||C.bege,tint=tk.accent||C.terracota,ink=tk.text||C.tinta;
+    const C=this.C,bg=tk.bg||C.bege,tint=tk.accent||C.terracota,ink=tk.text||C.tinta,v=this._variante(m);
     const size=this._fit(m.heading,[[40,74],[70,64],[110,54],[999,46]]);
-    const foto=photoUrl?`<img class="sr-photo" src="${photoUrl}" style="bottom:118px;left:50%;transform:translateX(-50%) rotate(-1.4deg);width:56%;height:30%;object-fit:cover;z-index:2;border:13px solid #FFF;box-shadow:0 12px 34px rgba(40,26,20,.2);" crossorigin="anonymous"/>`:'';
-    return`<div style="position:absolute;inset:0;background:${bg};z-index:0;"></div>${this._paper()}${foto}
+    const foto=photoUrl?`<img class="sr-photo" src="${photoUrl}" style="bottom:118px;left:50%;transform:translateX(calc(-50% + ${v.lado?28:-28}px)) rotate(${v.rot(v.lado?-1.4:1.6,1)}deg);width:56%;height:30%;object-fit:cover;z-index:2;border:13px solid #FFF;box-shadow:0 12px 34px rgba(40,26,20,.2);" crossorigin="anonymous"/>`:'';
+    const fitaFoto=photoUrl?this._fita({pos:v.lado?'bottom:562px;left:24%;':'bottom:562px;right:24%;',w:150,h:46,rot:v.rot(v.lado?-9:10,2),z:3,...v.fita1}):'';
+    return`<div style="position:absolute;inset:0;background:${bg};z-index:0;"></div>${this._paper()}${foto}${fitaFoto}
 <div style="position:absolute;top:74px;left:88px;right:88px;z-index:3;">${this._kicker(tk.kicker||m.handle.replace('@','').replace(/\./g,' '),tint)}</div>
 ${this._counter(m.slideNumber,m.totalSlides,ink)}
 <div style="position:absolute;top:170px;left:88px;right:88px;z-index:3;">
@@ -1370,16 +1393,16 @@ ${m.body?`<div style="font-family:'Inter',sans-serif;font-size:30px;font-weight:
   // kicker itálico → citação serifada → recorte com fita → rótulo em
   // marcador → comentário manuscrito
   _styleNota(photoUrl,m,tk){
-    const C=this.C,bg=tk.bg||C.bege,tint=tk.accent||C.terracota,ink=tk.text||C.tinta;
+    const C=this.C,bg=tk.bg||C.bege,tint=tk.accent||C.terracota,ink=tk.text||C.tinta,v=this._variante(m);
     const size=this._fit(m.heading,[[30,74],[50,62],[75,52],[999,44]]);
     return`<div style="position:absolute;inset:0;background:${bg};z-index:0;"></div>${this._paper()}
 ${tk.kicker?`<div style="position:absolute;top:70px;left:0;right:0;z-index:5;text-align:center;font-family:'Inter',sans-serif;font-style:italic;font-weight:600;font-size:30px;color:${tint};">${this._esc(tk.kicker)}</div>`:''}
 <div style="position:absolute;top:${tk.kicker?'128px':'92px'};left:76px;right:76px;z-index:5;text-align:center;">
 <div style="font-family:'Playfair Display',serif;font-weight:600;font-size:${size}px;line-height:1.16;color:${tint};">“${this._esc(m.heading)}”</div>
 </div>
-${this._recorte(photoUrl,{pos:'top:38%;left:12%;',w:'62%',h:'27%',rot:-1.6,z:2})}
-${this._fita({pos:'top:36.5%;left:9%;',w:180,h:52,rot:-11,z:3,xadrez:true,cor:'rgba(179,58,43,.30)'})}
-${this._seta(tint,'top:965px;right:120px;width:120px;height:130px;',true)}
+${this._recorte(photoUrl,{pos:v.lado?'top:38%;left:12%;':'top:38%;left:26%;',w:'62%',h:'27%',rot:v.rot(v.lado?-1.6:1.8,1),z:2})}
+${this._fita({pos:v.lado?'top:36.5%;left:9%;':'top:36.5%;right:9%;',w:180,h:52,rot:v.rot(v.lado?-11:12,2),z:3,...v.fita1})}
+${v.lado?this._seta(tint,'top:965px;right:120px;width:120px;height:130px;',true):this._seta(tint,'top:965px;left:110px;width:120px;height:130px;',false)}
 <div style="position:absolute;bottom:150px;left:82px;right:82px;z-index:5;">
 <div style="font-family:'Permanent Marker',cursive;font-size:46px;letter-spacing:.06em;color:${tint};margin-bottom:24px;">${this._esc(tk.label||'o ponto')}</div>
 ${m.body?`<div style="font-family:'Caveat',cursive;font-size:44px;font-weight:500;line-height:1.36;color:${ink};opacity:.92;">${this._esc(m.body)}</div>`:''}
@@ -1405,12 +1428,12 @@ ${m.body?`<div style="font-family:'Inter',sans-serif;font-size:29px;font-weight:
 
   // ── FECHAMENTO: frase serifada com sublinhado à mão + CTA manuscrito ────
   _styleFechamento(photoUrl,m,tk){
-    const C=this.C,bg=tk.bg||C.bege,tint=tk.accent||C.terracota,ink=tk.text||C.terracota;
+    const C=this.C,bg=tk.bg||C.bege,tint=tk.accent||C.terracota,ink=tk.text||C.terracota,v=this._variante(m);
     const size=this._fit(m.heading,[[34,96],[56,80],[80,66],[999,56]]);
     return`<div style="position:absolute;inset:0;background:${bg};z-index:0;"></div>${this._paper()}
-${this._recorte(null,{pos:'top:-30px;left:-52px;',w:'26%',h:'20%',rot:-7,z:2,fallback:'#E8DFC9'})}
-${this._recorte(photoUrl,{pos:'bottom:-46px;right:-56px;',w:'34%',h:'24%',rot:5,z:2})}
-${this._fita({pos:'top:96px;left:12%;',w:140,h:44,rot:11,z:3})}
+${this._recorte(null,{pos:v.lado?'top:-30px;left:-52px;':'top:-30px;right:-52px;',w:'26%',h:'20%',rot:v.rot(-7,1),z:2,fallback:'#E8DFC9'})}
+${this._recorte(photoUrl,{pos:v.lado?'bottom:-46px;right:-56px;':'bottom:-46px;left:-56px;',w:'34%',h:'24%',rot:v.rot(5,2),z:2})}
+${this._fita({pos:v.lado?'top:96px;left:12%;':'top:96px;right:12%;',w:140,h:44,rot:v.rot(11,3),z:3,...v.fita1})}
 <div style="position:absolute;inset:0;z-index:5;display:flex;flex-direction:column;justify-content:center;align-items:center;padding:150px 96px;text-align:center;">
 <div style="font-family:'Playfair Display',serif;font-weight:700;font-size:${size}px;line-height:1.1;color:${ink};">${this._esc(m.heading)}</div>
 ${m.body?`<div style="position:relative;display:inline-block;margin-top:56px;">
