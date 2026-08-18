@@ -26,7 +26,7 @@ if (!fs.existsSync(PHOTOS_FILE)) fs.writeFileSync(PHOTOS_FILE, '[]');
 const CANVA_TEMPLATES_FILE = '/tmp/canva_templates.json';
 
 // ── Tendências ────────────────────────────────────────────────────────────
-const NICHE_CONFIG = { pessoal: 'marca pessoal, desenvolvimento humano, virtudes, vida ordenada, rotina, leitura, corrida, construção de longo prazo' };
+const NICHE_CONFIG = { pessoal: 'marketing que gera negócio, decisões empresariais, gestão, liderança, vendas, processos, equipe, dinheiro, tecnologia e IA — para donos de negócio que já faturam e querem crescer sem depender apenas do próprio esforço' };
 const TRENDS_TTL   = 60 * 60 * 1000;
 
 module.exports = {

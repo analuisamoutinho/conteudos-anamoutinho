@@ -5,43 +5,75 @@ const { PROFILES_FILE } = require('../config');
 // PERFIS
 // ═══════════════════════════════════════════════════════════════════════════
 
+// ═══════════════════════════════════════════════════════════════════════════
+// MANUAL DA MARCA — fonte da verdade (editado aqui no código, não na UI)
+// ═══════════════════════════════════════════════════════════════════════════
+// Ideia central da marca:
+//   "Como construir empresas maiores sem construir uma vida menor."
+// Frase-norte do perfil:
+//   "Você já construiu alguma coisa. Agora precisa aprender a fazê-la crescer
+//    sem deixar que ela consuma você."
+
 const DEFAULT_PROFILES = {
   pessoal: {
     profileId: 'pessoal', tipo: 'pessoal', nome: 'Ana Moutinho',
     handle: '@analuisa.moutinho',
-    niche: 'Marca pessoal, desenvolvimento humano, virtudes, vida ordenada, construção de longo prazo — contada por quem ainda está aprendendo, não por quem já chegou',
-    bio: 'Ainda estou descobrindo como construir uma vida mais ordenada, virtuosa e significativa. Compartilho o que aprendo enquanto aprendo.',
-    sobreMim: `Sou uma mulher movida por sentido, profundidade e construção. Não me interesso por uma vida apenas bonita por fora — gosto do que tem raiz, ordem, permanência e verdade. Tenho um olhar atento para os detalhes do cotidiano, porque acredito que a vida real se revela nas pequenas escolhas: na forma como trabalhamos, cuidamos da casa, honramos nossos vínculos, organizamos a rotina e permanecemos fiéis ao que importa.
+    niche: 'Marketing, negócios e decisões para quem está construindo uma empresa de verdade — aquisição, gestão, liderança, dinheiro, processos, IA e os bastidores reais de quem vive isso',
+    bio: 'Para quem já tem um negócio e quer aprender a fazê-lo crescer sem depender apenas de esforço.',
+    sobreMim: `Falo com quem já colocou um negócio na rua e agora enfrenta a parte difícil: crescer sem perder o controle.
 
-Meu conteúdo nasce desse lugar — e ainda está sendo construído junto comigo. Falo sobre amadurecimento, rotina, fé, beleza, trabalho, autocuidado e construção de futuro. Não como performance e nem como chegada. Como caminho. Um caminho que estou trilhando agora, com tudo o que isso implica de dúvida, recomeço e aprendizado em tempo real.
+Não falo de negócios de fora. Estou vivendo isso — na Case e nos projetos que construo. As reuniões, as análises, as decisões, os erros, o que mudei de opinião: tudo isso é matéria-prima do conteúdo.
 
-Tenho sensibilidade para perceber o invisível por trás das situações comuns. Gosto de transformar experiências em reflexão, caos em linguagem, desejo em direção. Minha comunicação une firmeza e delicadeza: acolhe, mas não acomoda; inspira, mas não ilude.
+Meu território é a interseção entre marketing que gera negócio e decisão empresarial. Marketing não como "fazer um post", mas como aquisição, oferta, posicionamento, conversão, CAC, LTV, funil, retenção — sempre com a pergunta: isso está ajudando a empresa a ganhar dinheiro?
 
-Acredito que uma vida bonita não é uma vida perfeita. É uma vida com alicerce. E é isso que estou aprendendo a construir.
+E, junto disso, o que quase ninguém fala em voz alta: a solidão de decidir sozinho, o medo de investir mais e descobrir que o problema é maior, a dificuldade de delegar, a sensação de que o crescimento está aumentando o caos em vez de diminuir.
 
-ESSÊNCIA DA MARCA:
-Construção com profundidade — de rotina, de casa interior, de fé, de saúde, de trabalho, de presença, de relações, de beleza e de futuro. Sem pressa vazia, sem superficialidade.
+A ideia central da marca é esta: como construir empresas maiores sem construir uma vida menor.
 
-MENSAGEM CENTRAL: A vida que você deseja precisa de alicerce, não apenas de desejo.
-
-ATENÇÃO CRÍTICA: Este "sobre mim" descreve uma direção e um conjunto de valores — não uma chegada. A Ana ainda está construindo tudo isso. O conteúdo deve soar como o diário de quem tem clareza sobre o que quer mas ainda está aprendendo a viver à altura disso, não como o depoimento de quem já resolveu.`,
-    manifesto: 'Defendo: rotina com propósito, profundidade acima de pressa, virtude como construção diária, honestidade sobre o processo real. Não tolero: performance vazia, vida "perfeita" de vitrine, autoajuda genérica, pressa que substitui alicerce.',
-    inimigoComum: 'A cultura da pressa vazia e da vida performática nas redes: a ideia de que se precisa parecer que já chegou, de que produtividade sem propósito é virtude, e de que autoajuda genérica resolve o que só se resolve com constância e verdade.',
-    tom: 'Reflexivo, íntimo, honesto sobre as próprias contradições. Fala como alguém que está no meio do processo — não como quem chegou do outro lado. Levemente provocativo, mas sem didatismo. Nunca guru, nunca coach, nunca superior. A voz é de companheira de caminhada: "eu também estou tentando entender isso". Usa primeira pessoa real: duvida, erra, recomeça, ri de si mesma às vezes.',
-    proibidos: ['Desbloqueie', 'Seja sua melhor versão', 'Transforme sua vida', 'Coach', 'Mentoria', 'Sucesso', 'Fórmula', 'Método infalível', 'Próximo nível', 'Descubra', 'Segredo', 'Aprendi que', 'A verdade é que', 'O segredo é simples', 'Você precisa', 'Faça assim', 'É simples assim'],
+ATENÇÃO CRÍTICA: o tom não é de guru nem de palestrante. É de alguém que está dentro da operação, decide com dados quando dá e com critério quando não dá, e fala com o empresário como par — não de cima.`,
+    manifesto: 'Defendo: decisão com base em número e critério, não em feeling; marketing julgado pelo que faz a empresa ganhar; empresa que funciona sem depender do dono para tudo; ambição com vida junto. Não tolero: dica solta sem consequência, métrica de vaidade, promessa de fórmula, prestador que vende o que não entrega, crescimento que só aumenta o caos.',
+    inimigoComum: 'A ideia de que basta "vender mais" e de que crescer é uma questão de esforço do dono. O resultado é um empresário que virou o gargalo da própria empresa, decide no escuro, terceiriza a esperança para agências e prestadores, e cresce faturamento enquanto perde margem, controle e vida.',
+    tom: 'Direto, adulto e específico. Fala de par para par com quem tem CNPJ — nunca de cima, nunca didatismo de coach. Nomeia o que a pessoa vive mas ainda não formulou. Usa exemplo concreto, número e situação real em vez de conceito genérico. Tem opinião e assume — mas mostra o raciocínio, não só a conclusão. Pode ser provocativo; nunca motivacional.',
+    proibidos: ['Desbloqueie', 'Seja sua melhor versão', 'Transforme sua vida', 'Escale seu negócio para o próximo nível', 'Coach', 'Sucesso', 'Fórmula', 'Método infalível', 'Próximo nível', 'Segredo', 'Mindset milionário', 'Faturar 6 dígitos', 'O segredo é simples', 'Você precisa', 'É simples assim', 'Basta', 'Sem esforço'],
     pilares: [
-      'Vida ordenada e sistemas pessoais (o que estou tentando montar e o que ainda não funciona)',
-      'Virtudes e formação de caráter (prudência, coragem, temperança, disciplina — o que li, o que tentei, onde falho)',
-      'Corrida e autoaperfeiçoamento físico (o processo real, não o resultado polido)',
-      'Leitura e filosofia prática (o que faz sentido pra mim, o que ainda não entendo)',
-      'Bastidores do negócio e da vida intencional (as dúvidas reais, não só as vitórias)',
-      'Falhas, correções e recomeços — contados com honestidade, não com moralismo',
+      'Marketing que gera negócio — aquisição, tráfego, oferta, posicionamento, conversão, conteúdo, mídia, CAC, LTV, funil, atendimento, retenção. Sempre com a pergunta: isso está ajudando a empresa a ganhar dinheiro?',
+      'Decisões empresariais — quando aumentar (e quando não aumentar) investimento, quando contratar agência, quando o problema é processo e não pessoa, o que analisar antes de abrir uma segunda unidade, o que fazer quando o faturamento cresce e a margem cai',
+      'O dono como gargalo — delegação, equipe, processos, dependência do fundador, a fase em que ser indispensável deixa de ser qualidade e vira problema',
+      'Bastidores reais — reuniões, análises, decisões, erros, aprendizados, clientes, bastidores da Case, liderança, ferramentas, coisas que deram errado e opiniões que mudaram',
+      'As dores que ninguém fala — solidão empresarial, medo, insegurança, comparação, exaustão, culpa, pressão, medo de crescer errado, sensação de estar atrasado',
+      'Visão de mundo — trabalho, dinheiro, ambição, liderança, crescimento, tecnologia, IA, cultura empresarial e empreendedorismo. Nem todo conteúdo precisa terminar em dica.',
     ],
-    publicoAlvo: 'Homens e mulheres 25-38 anos que também estão tentando construir uma vida com mais ordem e intenção — e se sentem sozinhos nisso. Não buscam guru nem fórmula. Buscam alguém que também está no meio do processo e fala sobre isso com honestidade.',
-    cta: 'Me conta nos comentários se você também sente isso. Salva pra quando precisar lembrar.',
-    referencias: ['Sofia Coppola', 'Filosofia aristotélica e virtudes clássicas', 'Lo-fi diary aesthetic', 'Candid editorial', 'Estética minimalista clara — off-white, creme, marrom café, tons quentes neutros'],
+    publicoAlvo: `Donos de negócio e pessoas que carregam um CNPJ tentando transformar uma operação que já existe em uma empresa mais forte, lucrativa, organizada e capaz de crescer.
+
+O segmento importa pouco (restaurante, clínica, odontologia, loja, franquia, empresa de serviços, e-commerce, agência, negócio local, B2B). O que une é o MOMENTO EMPRESARIAL: já colocou o negócio na rua e agora enfrenta a parte difícil — crescer sem perder o controle. NÃO é para quem está pensando em abrir um negócio.
+
+PERSONA CENTRAL: o empresário que olha para o próprio negócio e pensa "isso aqui poderia ser muito maior do que é". Já vende, já tem clientes, talvez tenha equipe, talvez invista em anúncios, talvez tenha agência, talvez fature bastante. Mas sente que há dinheiro sendo perdido, oportunidade desperdiçada e decisão tomada no feeling. E, principalmente: ele ainda é uma peça importante demais para a empresa funcionar.
+
+A GRANDE TENSÃO: não é "quero faturar mais". É "quero construir uma empresa maior sem precisar carregar tudo sozinho".
+
+O QUE ELE DIZ: "Preciso vender mais." · "Meu tráfego não está funcionando." · "Os leads são ruins." · "Minha equipe não entrega." · "Preciso organizar a empresa." · "Não sei onde estou perdendo dinheiro." · "Quero contratar alguém para cuidar do marketing." · "Preciso melhorar meu posicionamento." · "Quero abrir outra unidade." · "Preciso delegar." · "Quero que a empresa dependa menos de mim."
+
+O QUE ELE NÃO DIZ (território mais forte para o conteúdo): "Não sei se estou tomando as decisões certas." · "Minha empresa fatura, mas eu não sinto segurança." · "Tenho vergonha de admitir que não entendo todos os números." · "Se eu parar de trabalhar, muita coisa para." · "Criei um negócio para ter liberdade e criei um trabalho que me persegue." · "Não sei se o problema é o marketing, minha equipe, minha oferta ou eu." · "Tenho medo de investir mais e descobrir que o problema é maior do que imaginava." · "Já fui enganado por prestador." · "Não confio que as pessoas vão fazer como eu faria." · "Estou cansado de decidir sozinho." · "Tenho medo de que o crescimento esteja aumentando o caos." · "Não quero chegar daqui a cinco anos com uma empresa maior e uma vida pior."`,
+    cta: 'Se você se reconheceu, me conta nos comentários como isso aparece na sua empresa. Salva para revisitar na próxima decisão.',
+    referencias: ['Editorial + humano + espontâneo + inteligente + brasileiro', 'Fotos reais de reunião, mesa de trabalho, caderno e tela do computador', 'Prints e anotações à mão', 'Tipografia com personalidade e textos grandes', 'Texturas — nada de mockup 3D ou apresentação corporativa'],
     tiposConteudo: ['lofi', 'carrossel', 'video_curto', 'video_medio', 'frase', 'dump', 'bastidores'],
-    observacoes: 'Ana está no processo de construir a vida que quer — não chegou lá. Esse é o ponto central. O conteúdo deve soar como diário aberto de alguém que está tentando, errando e aprendendo em tempo real — não como lição de quem já resolveu. Temas recorrentes: ordem na vida, planejamento, rotinas, sistemas, leitura, corrida de rua, autoaperfeiçoamento. Conflitos internos REAIS que aparecem no conteúdo: perfeccionismo vs ação, muitos interesses simultâneos, dificuldade de constância, cansaço, recomeço. A IA deve usar linguagem de quem ainda está aprendendo: "estou tentando", "não sei ainda", "errei nisso", "percebi que", "ainda não consigo", "voltei a fazer". NUNCA posicionar a Ana como referência acabada. Ela é referência pelo processo honesto, não pela chegada. Estética: elegância, minimalismo, sofisticação, tons profundos. Sem pasteis.',
+    observacoes: `IDEIA CENTRAL DA MARCA: "Como construir empresas maiores sem construir uma vida menor."
+FRASE-NORTE: "Você já construiu alguma coisa. Agora precisa aprender a fazê-la crescer sem deixar que ela consuma você."
+
+POSICIONAMENTO: não é "Ana, especialista em marketing" (pequeno demais) nem "Ana, mentora de empresários" (genérico demais). É: marketing, negócios e decisões para quem está construindo uma empresa de verdade.
+
+AUDIÊNCIA ÚNICA: o perfil não tem segunda audiência. Tudo — liderança, vendas, gestão, equipe, posicionamento, dinheiro, processos, tecnologia, IA, atendimento, decisão, produtividade, erros, bastidores, ambição, medo, cansaço, liberdade, vida — conversa com o mesmo dono de negócio.
+
+RELAÇÃO COM A CASE: a Case é a manifestação empresarial do que o perfil defende. No perfil: "o empresário precisa parar de tomar decisões no escuro." Na Case: como o diagnóstico tira uma empresa do escuro. No perfil: "mais leads não resolvem um atendimento ruim." Na Case: o diagnóstico de um caso real. O perfil cria demanda pela visão; a Case gera confiança na solução.
+
+RÉGUA — antes de aprovar qualquer conteúdo, as 5 perguntas precisam ser SIM:
+1. Isso fala com alguém que JÁ possui um negócio?
+2. Ele consegue se reconhecer em uma situação concreta?
+3. Existe uma tensão ou problema real aqui?
+4. Estou dizendo algo que essa pessoa precisava ouvir mas talvez não soubesse formular?
+5. Isso reforça a visão da Ana sobre negócios?
+
+ESTÉTICA: nada de agência premium tradicional — visual perfeito, minimalista corporativo, serifas por toda parte, grids impecáveis, mockups, elementos 3D e cara de apresentação transmitem distância. Buscar editorial + humano + espontâneo + inteligente + brasileiro. Posts que parecem feitos por uma pessoa, não por um departamento de branding: texturas, fotos reais, tipografia com personalidade, textos grandes, escrita à mão em alguns momentos, prints, anotações, foto de reunião, mesa de trabalho, caderno, tela do computador, bastidores. Menos "olha como minha marca é sofisticada", mais "eu sei exatamente o que você está vivendo".`,
     pdfUploadedAt: null, updatedAt: null,
   },
 };
@@ -54,8 +86,15 @@ function loadProfiles() {
     }
     const raw = JSON.parse(fs.readFileSync(PROFILES_FILE, 'utf-8'));
     const merged = {};
+    // O manual da marca vive no código (DEFAULT_PROFILES) — ele é a fonte da
+    // verdade e sobrepõe o que estiver gravado em disco. Do ficheiro só
+    // aproveitamos estado de runtime (upload de PDF, timestamp).
+    const RUNTIME_KEYS = ['pdfUploadedAt', 'updatedAt'];
     for (const key of Object.keys(DEFAULT_PROFILES)) {
-      merged[key] = { ...DEFAULT_PROFILES[key], ...(raw[key] || {}) };
+      const stored  = raw[key] || {};
+      const runtime = {};
+      for (const k of RUNTIME_KEYS) if (stored[k] != null) runtime[k] = stored[k];
+      merged[key] = { ...stored, ...DEFAULT_PROFILES[key], ...runtime };
     }
     for (const key of Object.keys(raw)) {
       if (!merged[key]) merged[key] = raw[key];

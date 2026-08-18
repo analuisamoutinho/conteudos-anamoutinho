@@ -27,9 +27,9 @@ const BRAND_IDENTITIES = {
     bgMid:'#EDEAE4',bgBrand:'#F5F2EE',textOnDark:'#F5F2EE',textOnLight:'#2C2420',
     handle:'@analuisa.moutinho',name:'Ana Moutinho',
     moods:['DIARIO_EDITORIAL','TYPE_CREME','COLAGEM_REAL','FRASE_IMPACTO','HERO_LOFI','DIARIO_EDITORIAL','TYPE_CREME','VIRADA','CTA_INTIMO'],
-    aestheticDNA:`IDENTIDADE: "Ana mais real" — diário visual inteligente de alguém construindo a própria vida com intenção, disciplina e profundidade. Não é influencer. É pensadora.
+    aestheticDNA:`IDENTIDADE: "Ana mais real" — diário visual de quem está dentro da operação: marketing, negócios e decisões para quem está construindo uma empresa de verdade. Não é influencer nem palestrante. É quem vive o problema junto com o empresário.
 
-CONCEITO VISUAL: editorial minimalista intimista. Como as páginas de um livro bonito encontradas com a estética de um feed de fotógrafo documental europeu. Sofisticação sem ostentação. Profundidade sem heaviness.
+CONCEITO VISUAL: editorial humano e inteligente — feito por uma pessoa, não por um departamento de branding. Como as páginas de um livro bonito encontradas com a estética de um feed de fotógrafo documental europeu. Sofisticação sem ostentação. Profundidade sem heaviness.
 
 PALETA CROMÁTICA OBRIGATÓRIA:
 — Fundo primário dominante: off-white creme #FAF8F5 (ocupa 65-75% da composição) — nunca branco puro, nunca cinza frio
@@ -70,17 +70,25 @@ SENSAÇÃO E ATMOSFERA:
 — Como um ensaio fotográfico de alguém muito bem-resolvida sendo vista em seu habitat natural
 — Transmite: inteligência, intencionalidade, disciplina, profundidade, vida real construída com propósito
 
-TOM VISUAL: editorial · intimista · arejado · granulado · creme · terracota suave · pensativo · direto
+TOM VISUAL: editorial · humano · espontâneo · inteligente · brasileiro · arejado · granulado · creme · direto
+
+FEITO POR PESSOA, NÃO POR DEPARTAMENTO DE BRANDING:
+— O post não pode parecer apresentação corporativa nem portfólio de agência premium: perfeição excessiva, grids impecáveis, mockups e elementos 3D transmitem distância
+— Preferir: fotos reais (reunião, mesa de trabalho, caderno, tela do computador), prints, anotações, escrita à mão pontual, textura visível
+— Tipografia com personalidade e texto grande — frase que parece escrita para uma pessoa específica
+— A sensação a transmitir é "eu sei exatamente o que você está vivendo", não "olha como minha marca é sofisticada"
 
 PROIBIDO ABSOLUTAMENTE: fundos escuros, preto, neon, gradientes coloridos, elementos decorativos infantis, estética de coach, LinkedIn, motivacional, citações com fontes script floreadas, fotos de banco de imagens com sorriso forçado, emojis gráficos.`,
-    copyDNA:`COPY PARA ANA MOUTINHO (Metodologia RR):
-IDENTIDADE CENTRAL: Construindo uma vida mais ordenada, virtuosa e significativa, enquanto constroi negocios que crescem de forma solida e sustentavel.
-1. HOOK: afirmacao que nomeia algo que a pessoa sente mas nao sabe nomear. Toca em dor ou desejo real ligado a: ordem, virtude, autoaperfeicoamento, corrida, leitura, carater, coerencia.
-2. TOM: reflexivo + direto + provocativo. Mistura como fazer com por que fazer com vale a pena fazer.
-3. ESTRUTURA: gancho -> historia real ou observacao -> conclusao com tese clara -> CTA intimo.
-4. TEMAS PERMITIDOS: planejamento, rotinas, sistemas, metas, disciplina, coragem, prudencia, temperanca, corrida de rua, leitura de livros, virtudes aristotelicas, ordem pessoal, bastidores reais, falhas e aprendizados, construcao de longo prazo, legado, fundacao, constancia.
-5. PROIBIDO: desbloqueie, seja sua melhor versao, sucesso, qualquer tom de guru ou coach.
-6. CONFLITOS REAIS QUE CONECTAM: perfeccionismo vs acao, excesso de interesses, dificuldade de constancia, querer excelencia sem paralisar.`,
+    copyDNA:`COPY PARA ANA MOUTINHO
+PÚBLICO: dono de negócio que já vende e agora precisa fazer a empresa crescer sem carregar tudo sozinho. Nunca falar com quem "quer abrir um negócio".
+IDEIA CENTRAL DA MARCA: como construir empresas maiores sem construir uma vida menor.
+1. HOOK: afirmacao que nomeia algo que o empresario vive mas ainda nao formulou. Situacao concreta da operacao (equipe, leads, margem, decisao, delegacao), nunca conceito abstrato.
+2. TOM: adulto, direto, especifico. De par para par com quem tem CNPJ. Opiniao assumida com raciocinio a vista. Provocativo quando precisa. Nunca motivacional, nunca palestrante, nunca de cima.
+3. ESTRUTURA: gancho -> situacao real ou bastidor -> tensao (o que quase ninguem diz em voz alta) -> tese clara -> CTA que convida a reconhecer-se, nao a aplaudir.
+4. TERRITORIOS: marketing que gera negocio (aquisicao, oferta, posicionamento, conversao, CAC, LTV, funil, retencao, atendimento); decisoes empresariais (quando investir mais, quando contratar agencia, quando o problema e processo e nao pessoa, faturamento subindo com margem caindo, segunda unidade); o dono como gargalo (delegacao, equipe, processo, dependencia do fundador); bastidores reais (reunioes, analises, erros, opinioes que mudaram, bastidores da Case); dores que ninguem fala (solidao, medo, insegurança, comparacao, exaustao, culpa, medo de crescer errado); visao de mundo (trabalho, dinheiro, ambicao, lideranca, tecnologia, IA, cultura empresarial).
+5. PROIBIDO: desbloqueie, proximo nivel, segredo, formula, mindset, escale seu negocio, faturar 6 digitos, qualquer tom de guru ou coach, dica solta sem consequencia, metrica de vaidade.
+6. TENSOES REAIS QUE CONECTAM: "se eu parar, muita coisa para"; "fatura bem mas nao sinto segurança"; "nao sei se o problema e o marketing, a equipe, a oferta ou eu"; "ja fui enganado por prestador"; "cresci e o caos cresceu junto"; "criei um negocio para ter liberdade e criei um trabalho que me persegue".
+7. REGUA (5 SIM obrigatorios): fala com quem ja tem negocio? ele se reconhece numa situacao concreta? existe tensao real? diz algo que ele precisava ouvir mas nao sabia formular? reforca a visao da Ana sobre negocios?`,
   },
 };
 

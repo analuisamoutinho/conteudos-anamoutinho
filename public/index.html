@@ -321,48 +321,6 @@ body{font-family:var(--font-body);background:var(--pale);color:var(--dark);min-h
 .sr-bottom-bar{position:absolute;bottom:0;left:0;right:0;height:6px;z-index:3;}
 .sr-slide-num{position:absolute;top:56px;right:80px;font-size:20px;font-weight:600;letter-spacing:.06em;opacity:.45;z-index:3;}
 #sr-render-container{position:fixed;top:-9999px;left:-9999px;width:1024px;height:1536px;z-index:-1;pointer-events:none;}
-/* Manual */
-.manual-layout{display:grid;grid-template-columns:1fr 1fr;gap:20px;align-items:start;padding-bottom:80px;}
-.manual-col-left,.manual-col-right{display:flex;flex-direction:column;gap:16px;}
-.manual-card{padding:20px 22px;}
-.manual-card-header{display:flex;align-items:flex-start;gap:12px;margin-bottom:16px;}
-.manual-card-icon{font-size:1.25rem;line-height:1;margin-top:1px;flex-shrink:0;}
-.manual-card-title{font-family:var(--font-head);font-size:.92rem;font-weight:700;color:var(--dark);line-height:1.2;}
-.manual-card-sub{font-size:.72rem;color:var(--mid);margin-top:2px;}
-.manual-tipo-selector{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px;}
-.manual-tipo-btn{display:flex;align-items:flex-start;gap:10px;padding:12px 14px;border:1.5px solid var(--light);border-radius:10px;background:var(--white);cursor:pointer;text-align:left;transition:all .18s;font-family:var(--font-body);}
-.manual-tipo-btn:hover{border-color:var(--magenta);box-shadow:0 0 0 3px rgba(228,0,124,.07);}
-.manual-tipo-btn.active{border-color:var(--magenta);background:rgba(228,0,124,.05);box-shadow:0 0 0 3px rgba(228,0,124,.12);}
-.manual-tipo-icon{font-size:1.4rem;flex-shrink:0;line-height:1;margin-top:1px;}
-.manual-tipo-label{font-size:.82rem;font-weight:700;color:var(--dark);}
-.manual-tipo-desc{font-size:.68rem;color:var(--mid);margin-top:2px;line-height:1.4;}
-.manual-tipo-badge{display:inline-flex;align-items:center;gap:6px;font-size:.72rem;font-weight:700;padding:4px 12px;border-radius:99px;letter-spacing:.03em;}
-.manual-tipo-badge.pessoal{background:rgba(139,115,85,.12);color:#6B4F2A;}
-.manual-tipo-badge.corporativa{background:rgba(59,15,76,.1);color:var(--purple);}
-.manual-profile-switcher{display:flex;gap:8px;margin-bottom:24px;flex-wrap:wrap;}
-.manual-ps-btn{display:flex;align-items:center;gap:8px;padding:8px 16px;border-radius:99px;border:1.5px solid var(--light);background:var(--white);font-family:var(--font-body);font-size:.8rem;cursor:pointer;transition:all .15s;color:var(--mid);}
-.manual-ps-btn:hover{border-color:var(--magenta);color:var(--dark);}
-.manual-ps-btn.active{border-color:var(--magenta);background:rgba(228,0,124,.06);color:var(--dark);font-weight:600;}
-.manual-ps-dot{width:7px;height:7px;border-radius:50%;background:var(--magenta);flex-shrink:0;}
-.manual-tag{display:inline-flex;align-items:center;gap:5px;padding:4px 10px;border-radius:8px;font-size:.75rem;font-weight:500;}
-.manual-tag.pilar{background:rgba(59,130,246,.1);color:#1D4ED8;border:1px solid rgba(59,130,246,.2);}
-.manual-tag.proibido{background:rgba(239,68,68,.08);color:#B91C1C;border:1px solid rgba(239,68,68,.2);}
-.manual-tag.ref{background:rgba(139,115,85,.1);color:#6B4F2A;border:1px solid rgba(139,115,85,.2);}
-.manual-tag-remove{background:none;border:none;cursor:pointer;font-size:.8rem;line-height:1;color:inherit;opacity:.5;padding:0;transition:opacity .1s;}
-.manual-tag-remove:hover{opacity:1;}
-.manual-tipos-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:10px;}
-.manual-tipo-check{display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:8px;border:1.5px solid var(--light);background:var(--white);cursor:pointer;transition:all .15s;font-family:var(--font-body);font-size:.78rem;color:var(--mid);}
-.manual-tipo-check.active{border-color:var(--magenta);background:rgba(228,0,124,.05);color:var(--dark);font-weight:600;}
-.manual-tipo-check-dot{width:7px;height:7px;border-radius:2px;background:var(--light);flex-shrink:0;transition:background .15s;}
-.manual-tipo-check.active .manual-tipo-check-dot{background:var(--magenta);}
-.manual-tipos-legend{font-size:.7rem;color:var(--mid);padding:8px 10px;background:var(--pale);border-radius:8px;}
-.manual-pdf-zone{border:2px dashed var(--light);border-radius:10px;padding:24px 16px;text-align:center;cursor:pointer;transition:all .2s;}
-.manual-pdf-zone:hover{border-color:var(--magenta);background:rgba(228,0,124,.03);}
-.manual-pdf-zone.has-file{border-color:#10B981;background:rgba(16,185,129,.04);}
-.manual-pdf-icon{font-size:1.6rem;margin-bottom:6px;}
-.manual-pdf-text{font-size:.82rem;font-weight:600;color:var(--dark);}
-.manual-pdf-sub{font-size:.72rem;color:var(--mid);margin-top:2px;}
-.manual-actions-bar{position:fixed;bottom:0;left:var(--sidebar);right:0;height:64px;background:rgba(255,255,255,.96);backdrop-filter:blur(12px);border-top:1px solid var(--light);display:flex;align-items:center;justify-content:space-between;padding:0 32px;z-index:200;box-shadow:0 -4px 24px rgba(0,0,0,.06);}
 /* Roteiro de vídeo */
 .roteiro-wrapper{display:flex;flex-direction:column;gap:0;}
 .roteiro-gancho-box{background:rgba(228,0,124,.07);border:1.5px solid rgba(228,0,124,.25);border-radius:var(--radius);padding:14px 18px;margin:16px 0 8px;}
@@ -399,7 +357,9 @@ body{font-family:var(--font-body);background:var(--pale);color:var(--dark);min-h
 .trend-badges{display:flex;gap:6px;flex-wrap:wrap;flex-shrink:0;}
 .trend-badge{font-size:.62rem;font-weight:700;padding:2px 8px;border-radius:99px;white-space:nowrap;}
 .trend-badge.google{background:#EBF5FB;color:#1A5276;}
-.trend-badge.twitter{background:#E8F4FD;color:#0D6EFD;}
+.trend-badge.reddit{background:#FFEDE6;color:#C1440E;}
+.trend-badge.news{background:#EAF3EA;color:#1E6B36;}
+.trend-badge.ia{background:#F3EAFD;color:#6D28D9;}
 .trend-badge.ambos{background:#EDE9FE;color:#6D28D9;}
 .trend-badge.urgencia-alta{background:rgba(228,0,124,.1);color:var(--magenta);}
 .trend-badge.urgencia-media{background:#FEF3C7;color:#92400E;}
@@ -494,7 +454,6 @@ body{font-family:var(--font-body);background:var(--pale);color:var(--dark);min-h
     <div class="nav-section-title">Marca</div>
     <button class="nav-item" data-section="photos" onclick="showSection('photos',this)"><span class="nav-icon">📸</span>Banco de fotos</button>
     <button class="nav-item" data-section="canva" onclick="showSection('canva',this)"><span class="nav-icon">🎨</span>Templates</button>
-    <button class="nav-item" data-section="manual" onclick="showSection('manual',this)"><span class="nav-icon">📖</span>Manual da marca</button>
   </nav>
   <div class="sidebar-user">
     <div class="sidebar-user-avatar">A</div>
@@ -844,10 +803,12 @@ body{font-family:var(--font-body);background:var(--pale);color:var(--dark);min-h
   <section class="section" id="section-trends">
     <div class="section-header">
       <h2>📡 Tendências</h2>
-      <p>O que está em alta agora no Google Trends e Twitter/X Brasil — filtrado pelo nicho do perfil activo.</p>
+      <p>O que está em alta agora no Google Trends, no Reddit BR e no Google News Brasil — filtrado pelo momento de quem tem um negócio na rua.</p>
     </div>
     <div class="trends-meta" id="trendsMeta" style="display:none;">
       <span class="trends-fonte-pill" id="trendsGooglePill">⬤ Google Trends</span>
+      <span class="trends-fonte-pill" id="trendsRedditPill">⬤ Reddit BR</span>
+      <span class="trends-fonte-pill" id="trendsNewsPill">⬤ Google News BR</span>
       <span class="trends-update" id="trendsUpdatedAt"></span>
       <button class="btn btn-secondary btn-sm" onclick="loadTrends(true)" style="margin-left:4px;">🔄 Atualizar</button>
     </div>
@@ -930,30 +891,6 @@ body{font-family:var(--font-body);background:var(--pale);color:var(--dark);min-h
     </div>
   </section>
 
-  <!-- MANUAL -->
-  <section class="section" id="section-manual">
-    <div class="section-header"><h2>Manual do Perfil</h2><p>Identidade, diretrizes e contexto de cada conta.</p></div>
-    <div class="manual-profile-switcher" id="manualProfileSwitcher"></div>
-    <div class="manual-layout">
-      <div class="manual-col-left">
-        <div class="card manual-card"><div class="manual-card-header"><span class="manual-card-icon">🏷️</span><div><div class="manual-card-title">Tipo de Marca</div><div class="manual-card-sub">Define a linha editorial e os tipos de conteúdo disponíveis</div></div></div><div class="manual-tipo-selector" id="manualTipoSelector"><button class="manual-tipo-btn active" data-tipo="pessoal" onclick="setManualTipo('pessoal')"><div class="manual-tipo-icon">👤</div><div class="manual-tipo-info"><div class="manual-tipo-label">Marca Pessoal</div><div class="manual-tipo-desc">Diário editorial, intimidade, perspectiva única, dump, bastidores</div></div></button></div><div class="manual-tipo-badge" id="manualTipoBadge"></div></div>
-        <div class="card manual-card"><div class="manual-card-header"><span class="manual-card-icon">✦</span><div><div class="manual-card-title">Identidade</div><div class="manual-card-sub">Nome, handle e bio resumida do perfil</div></div></div><div class="form-group"><label class="form-label">Nome do perfil</label><input type="text" class="input" id="manualNome" placeholder="Ex: Ana Moutinho"/></div><div class="form-group"><label class="form-label">Handle Instagram</label><input type="text" class="input" id="manualHandle" placeholder="@handle"/></div><div class="form-group"><label class="form-label">Nicho / Segmento</label><input type="text" class="input" id="manualNiche" placeholder="Ex: Marca pessoal, desenvolvimento humano..."/></div><div class="form-group"><label class="form-label">Bio em uma linha</label><textarea class="textarea" id="manualBio" rows="2" placeholder="O que esse perfil representa em uma frase directa"></textarea></div></div>
-        <div class="card manual-card"><div class="manual-card-header"><span class="manual-card-icon">🎯</span><div><div class="manual-card-title">Público-alvo</div><div class="manual-card-sub">Para quem esse conteúdo é feito</div></div></div><div class="form-group" style="margin:0"><textarea class="textarea" id="manualPublico" rows="3" placeholder="Ex: Mulheres 25-38 anos construindo identidade profissional..."></textarea></div></div>
-        <div class="card manual-card"><div class="manual-card-header"><span class="manual-card-icon">🚩</span><div><div class="manual-card-title">Manifesto & Inimigo Comum</div><div class="manual-card-sub">Pilar 1 (Metodologia RR) — o que ela defende e o que une a comunidade</div></div></div><div class="form-group"><label class="form-label">Manifesto (o que defende / o que não tolera)</label><textarea class="textarea" id="manualManifesto" rows="3" placeholder="Ex: Defendo X, Y, Z. Não tolero A, B, C."></textarea></div><div class="form-group" style="margin:0"><label class="form-label">Inimigo comum (comportamento ou crença, nunca uma pessoa)</label><textarea class="textarea" id="manualInimigoComum" rows="3" placeholder="Ex: A cultura de..."></textarea></div></div>
-        <div class="card manual-card"><div class="manual-card-header"><span class="manual-card-icon">📄</span><div><div class="manual-card-title">Manual em PDF</div><div class="manual-card-sub">Documento completo de briefing do cliente</div></div></div><div class="manual-pdf-zone" id="manualPdfZone" onclick="document.getElementById('manualPdfInput').click()"><div class="manual-pdf-icon">📎</div><div class="manual-pdf-text" id="manualPdfText">Clica para carregar o PDF do cliente</div><div class="manual-pdf-sub" id="manualPdfSub">Briefing, brand book, diretrizes — até 20MB</div></div><input type="file" id="manualPdfInput" accept=".pdf" style="display:none" onchange="uploadManualFromProfile(event)"/><div id="manualPdfStatus" style="margin-top:8px;font-size:.75rem;"></div></div>
-      </div>
-      <div class="manual-col-right">
-        <div class="card manual-card"><div class="manual-card-header"><span class="manual-card-icon">🎙️</span><div><div class="manual-card-title">Tom de voz</div><div class="manual-card-sub">Como esse perfil fala</div></div></div><div class="form-group" style="margin:0"><textarea class="textarea" id="manualTom" rows="3" placeholder="Ex: Reflexivo, íntimo, direto. Nunca motivacional..."></textarea></div></div>
-        <div class="card manual-card"><div class="manual-card-header"><span class="manual-card-icon">🧱</span><div><div class="manual-card-title">Pilares de Conteúdo</div><div class="manual-card-sub">Temas recorrentes que definem a presença digital</div></div></div><div id="manualPilaresContainer" style="display:flex;flex-direction:column;gap:6px;margin-bottom:10px;"></div><div style="display:flex;gap:8px;"><input type="text" class="input" id="manualPilarInput" placeholder="Adicionar pilar..." style="flex:1"/><button class="btn btn-outline btn-sm" onclick="addManualPilar()">+ Adicionar</button></div></div>
-        <div class="card manual-card"><div class="manual-card-header"><span class="manual-card-icon">🚫</span><div><div class="manual-card-title">Palavras &amp; Expressões Proibidas</div><div class="manual-card-sub">A IA nunca usará esses termos</div></div></div><div id="manualProibidosContainer" style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px;"></div><div style="display:flex;gap:8px;"><input type="text" class="input" id="manualProibidoInput" placeholder="Palavra ou expressão..." style="flex:1" onkeydown="if(event.key==='Enter')addManualProibido()"/><button class="btn btn-outline btn-sm" onclick="addManualProibido()">+ Banir</button></div></div>
-        <div class="card manual-card"><div class="manual-card-header"><span class="manual-card-icon">📋</span><div><div class="manual-card-title">Tipos de Conteúdo</div><div class="manual-card-sub">Formatos permitidos para esse perfil</div></div></div><div class="manual-tipos-grid" id="manualTiposGrid"></div><div class="manual-tipos-legend" id="manualTiposLegend"></div></div>
-        <div class="card manual-card"><div class="manual-card-header"><span class="manual-card-icon">🔖</span><div><div class="manual-card-title">CTA Padrão</div><div class="manual-card-sub">Chamada para ação usada no slide final</div></div></div><div class="form-group" style="margin-bottom:0"><textarea class="textarea" id="manualCta" rows="2" placeholder="Ex: Comente CASE que nossa equipe te chama."></textarea></div></div>
-        <div class="card manual-card"><div class="manual-card-header"><span class="manual-card-icon">🎨</span><div><div class="manual-card-title">Referências Visuais</div><div class="manual-card-sub">Estética, publicações e criadores de referência</div></div></div><div id="manualRefContainer" style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px;"></div><div style="display:flex;gap:8px;"><input type="text" class="input" id="manualRefInput" placeholder="Ex: Monocle, Sofia Coppola..." style="flex:1" onkeydown="if(event.key==='Enter')addManualRef()"/><button class="btn btn-outline btn-sm" onclick="addManualRef()">+ Ref</button></div></div>
-        <div class="card manual-card"><div class="manual-card-header"><span class="manual-card-icon">📝</span><div><div class="manual-card-title">Observações Gerais</div><div class="manual-card-sub">Contexto adicional, briefing livre</div></div></div><div class="form-group" style="margin:0"><textarea class="textarea" id="manualObservacoes" rows="4" placeholder="Qualquer contexto adicional que a IA deva considerar..."></textarea></div></div>
-      </div>
-    </div>
-    <div class="manual-actions-bar"><div style="display:flex;align-items:center;gap:12px;"><div id="manualSaveStatus" style="font-size:.78rem;color:var(--mid);"></div></div><div style="display:flex;gap:10px;"><button class="btn btn-secondary" onclick="resetManualForm()">↺ Descartar alterações</button><button class="btn btn-primary" onclick="saveManualProfile()" id="btnSaveManual">💾 Salvar manual</button></div></div>
-  </section>
 </main>
 
 <!-- TEMPLATES CANVA -->
@@ -1064,7 +1001,7 @@ function showSection(id,navBtn){
   document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
   const t=document.getElementById('section-'+id);if(t)t.classList.add('active');
   setNavActive(id,navBtn);
-  const titles={dashboard:'Dashboard',library:'Biblioteca',criar:'Criar',carousel:'Carrossel',feed:'Post Feed',roteiro:'Roteiro de Reels',calendar:'Calendário',trends:'Tendências',photos:'Banco de Fotos',contentmachine:'Content Machine',manual:'Manual do Perfil'};
+  const titles={dashboard:'Dashboard',library:'Biblioteca',criar:'Criar',carousel:'Carrossel',feed:'Post Feed',roteiro:'Roteiro de Reels',calendar:'Calendário',trends:'Tendências',photos:'Banco de Fotos',contentmachine:'Content Machine'};
   document.getElementById('topbarTitle').textContent=titles[id]||id;
   if(id==='calendar')setTimeout(loadSavedCalendar,100);
   if(id==='trends')loadTrends();
@@ -1073,7 +1010,6 @@ function showSection(id,navBtn){
   if(id==='dashboard')loadDashboard();
   if(id==='library')loadLibrary();
   if(id==='photos'){loadPhotos();checkGPhotoStatus();}
-  if(id==='manual')initManualSection();
   if(id==='carousel')setTimeout(initSlidesDragScroll,250);
 }
 function setNavActive(id,btn){document.querySelectorAll('.nav-item').forEach(b=>b.classList.remove('active'));if(btn)btn.classList.add('active');else{const m=document.querySelector(`.nav-item[data-section="${id}"]`);if(m)m.classList.add('active');}}
@@ -1727,8 +1663,13 @@ async function loadTrends(forceRefresh = false) {
     if (d.warning) { errEl.textContent = d.warning; errEl.style.display = 'block'; }
 
     // Fontes pill
-    const gPill = document.getElementById('trendsGooglePill');
-    gPill.className = 'trends-fonte-pill ' + (d.fontes?.google ? 'ok' : 'off');
+    const setPill = (id, on) => {
+      const el = document.getElementById(id);
+      if (el) el.className = 'trends-fonte-pill ' + (on ? 'ok' : 'off');
+    };
+    setPill('trendsGooglePill', d.fontes?.google);
+    setPill('trendsRedditPill', d.fontes?.reddit);
+    setPill('trendsNewsPill',   d.fontes?.news);
     const upd = document.getElementById('trendsUpdatedAt');
     if (d.updatedAt) {
       const dt = new Date(d.updatedAt);
@@ -1754,7 +1695,10 @@ function renderTrendCard(t) {
   const urgClass = { alta: 'urgencia-alta', media: 'urgencia-media', baixa: 'urgencia-baixa' }[t.urgencia] || '';
   const urgLabel = { alta: '🔥 Alta', media: '⚡ Média', baixa: '🌱 Baixa' }[t.urgencia] || t.urgencia;
   const tipoIcon = { carrossel: '🎠', post: '🖼️', reels: '🎬' }[t.tipo_ideal] || '📄';
-  const fonteClass = 'google';
+  const fonteClass = /reddit/i.test(t.fonte || '') ? 'reddit'
+    : /news/i.test(t.fonte || '') ? 'news'
+    : /ia|estimativa/i.test(t.fonte || '') ? 'ia'
+    : 'google';
 
   const div = document.createElement('div');
   div.className = `trend-card ${urgClass}`;
@@ -1879,35 +1823,6 @@ function copyCMSlides(){const text=cmCurrentSlides.map((s,i)=>{const num=s.slide
 function saveCMToLibrary(){showSection('library',null);}
 function renderCMHistory(){if(!cmSessionHistory.length)return;document.getElementById('cmHistory').style.display='block';document.getElementById('cmHistoryList').innerHTML=cmSessionHistory.map((h,i)=>{const t=CM_TYPES_ALL[h.tipo]||{emoji:'📄',label:h.tipo};const badge=h.isRoteiro?'<span style="font-size:.65rem;background:#EDE9FE;color:#7C3AED;border-radius:99px;padding:1px 7px;font-weight:700;">Roteiro</span>':'<span style="font-size:.65rem;background:#FCE7F3;color:#BE185D;border-radius:99px;padding:1px 7px;font-weight:700;">Slides</span>';return'<button onclick="loadCMFromHistory('+i+')" style="display:flex;align-items:center;gap:10px;background:var(--white);border:1.5px solid var(--light);border-radius:10px;padding:10px 14px;text-align:left;cursor:pointer;width:100%;"><span style="font-size:18px;">'+t.emoji+'</span><div style="flex:1;min-width:0;"><div style="font-size:13px;font-weight:700;color:var(--dark);display:flex;align-items:center;gap:6px;">'+t.label+' '+badge+'</div><div style="font-size:11px;color:var(--mid);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">'+h.tema+'</div></div></button>';}).join('');}
 function loadCMFromHistory(i){const h=cmSessionHistory[i];if(!h)return;cmSelectedType=h.tipo;if(h.isRoteiro){window._currentRoteiro=h.data;renderCMRoteiro(h.data);}else{cmCurrentSlides=h.data?.slidesNormalizados||[];cmCurrentSlideIdx=0;renderCMResult({tipo:h.tipo,tema:h.tema,slides:cmCurrentSlides,slidesNormalizados:cmCurrentSlides});}}
-
-/* ── MANUAL ── */
-let manualCurrentProfile='pessoal',manualProfileData={},manualDirty=false;
-const ALL_CONTENT_TYPES=[{id:'dump',emoji:'📸',label:'Dump / Bastidores',tipos:['pessoal']},{id:'lofi',emoji:'🎥',label:'Lo-Fi (câmera ligada)',tipos:['pessoal']},{id:'carrossel',emoji:'📋',label:'Carrossel',tipos:['pessoal']},{id:'video_curto',emoji:'⚡',label:'Vídeo Curto',tipos:['pessoal']},{id:'video_medio',emoji:'🎬',label:'Vídeo Médio',tipos:['pessoal']},{id:'frase',emoji:'✍️',label:'Frase de Impacto',tipos:['pessoal']},{id:'bastidores',emoji:'🎬',label:'Bastidores',tipos:['pessoal']}];
-
-async function initManualSection(){try{const r=await fetch('/api/profiles');manualProfileData=await r.json();}catch(e){manualProfileData=buildLocalProfileDefaults();}renderManualProfileSwitcher();loadManualProfile(currentProfile);}
-function buildLocalProfileDefaults(){return{pessoal:{profileId:'pessoal',tipo:'pessoal',nome:'Ana Moutinho',handle:'@analuisa.moutinho',niche:'Marca pessoal, construção de vida intencional',bio:'Construindo a própria vida com intenção. Sem fórmulas, sem guru.',manifesto:'Defendo: rotina com propósito, profundidade acima de pressa, virtude como construção diária. Não tolero: performance vazia, vida "perfeita" de vitrine, autoajuda genérica.',inimigoComum:'A cultura da pressa vazia e da vida performática nas redes.',tom:'Reflexivo, íntimo, direto, levemente provocativo. Nunca motivacional.',proibidos:['Desbloqueie','Seja sua melhor versão','Transforme','Coach','Sucesso'],pilares:['Construção pessoal','Estratégia de vida','Estética de vida real','Marca pessoal'],publicoAlvo:'Mulheres 25-38 anos construindo identidade profissional e vida própria',cta:'Salva pra reler quando esquecer disso. Me diz nos comentários se fez sentido.',referencias:['Sofia Coppola','Lo-fi diary aesthetic','Candid editorial'],tiposConteudo:['lofi','carrossel','video_curto','video_medio','frase','dump','bastidores'],observacoes:'Não é coach, não é guru.'}};}
-function renderManualProfileSwitcher(){const el=document.getElementById('manualProfileSwitcher');if(!el)return;const names={pessoal:'Ana Moutinho'};el.innerHTML=Object.keys(manualProfileData).map(id=>{const p=manualProfileData[id];const label=p.nome||names[id]||id;const active=id===manualCurrentProfile?'active':'';return`<button class="manual-ps-btn ${active}" onclick="loadManualProfile('${id}')"><div class="manual-ps-dot"></div><span>${label}</span><span style="font-size:.68rem;color:var(--mid);">${p.handle||''}</span></button>`;}).join('');}
-function loadManualProfile(profileId){manualCurrentProfile=profileId;manualDirty=false;renderManualProfileSwitcher();const p=manualProfileData[profileId];if(!p)return;setVal('manualNome',p.nome||'');setVal('manualHandle',p.handle||'');setVal('manualNiche',p.niche||'');setVal('manualBio',p.bio||'');setVal('manualPublico',p.publicoAlvo||'');setVal('manualManifesto',p.manifesto||'');setVal('manualInimigoComum',p.inimigoComum||'');setVal('manualTom',p.tom||'');setVal('manualCta',p.cta||'');setVal('manualObservacoes',p.observacoes||'');setManualTipoUI(p.tipo||'pessoal');renderManualTags('manualPilaresContainer',p.pilares||[],'pilar',removeManualPilar);renderManualTags('manualProibidosContainer',p.proibidos||[],'proibido',removeManualProibido);renderManualTags('manualRefContainer',p.referencias||[],'ref',removeManualRef);renderTiposGrid(p.tipo||'pessoal',p.tiposConteudo||[]);if(p.pdfUploadedAt){const zone=document.getElementById('manualPdfZone');const txt=document.getElementById('manualPdfText');if(zone)zone.classList.add('has-file');if(txt)txt.textContent='✅ PDF carregado';}updateManualSaveStatus(p.updatedAt?`Salvo em ${new Date(p.updatedAt).toLocaleString('pt-PT')}`:'Nunca salvo');setTimeout(attachManualDirtyListeners,100);}
-function setVal(id,val){const el=document.getElementById(id);if(el)el.value=val;}
-function setManualTipo(tipo){setManualTipoUI(tipo);markManualDirty();const p=manualProfileData[manualCurrentProfile];renderTiposGrid(tipo,p?.tiposConteudo||[]);}
-function setManualTipoUI(tipo){document.querySelectorAll('.manual-tipo-btn').forEach(btn=>{btn.classList.toggle('active',btn.dataset.tipo===tipo);});const badge=document.getElementById('manualTipoBadge');if(badge){badge.className=`manual-tipo-badge ${tipo}`;badge.textContent=tipo==='pessoal'?'👤 Marca Pessoal':'🏢 Marca Corporativa';}}
-function renderTiposGrid(tipoMarca,selected){const grid=document.getElementById('manualTiposGrid');const legend=document.getElementById('manualTiposLegend');if(!grid)return;grid.innerHTML=ALL_CONTENT_TYPES.map(t=>{const isSelected=selected.includes(t.id);const isRecommended=t.tipos.includes(tipoMarca);return`<button class="manual-tipo-check ${isSelected?'active':''}" data-tipo-id="${t.id}" onclick="toggleTipoConteudo('${t.id}',this)"><div class="manual-tipo-check-dot"></div><span>${t.emoji} ${t.label}</span>${!isRecommended?'<span style="font-size:.6rem;opacity:.4;margin-left:auto;">↗</span>':''}</button>`;}).join('');if(legend){const recCount=ALL_CONTENT_TYPES.filter(t=>t.tipos.includes(tipoMarca)).length;legend.textContent=`${selected.length} tipos activos · ${recCount} recomendados para ${tipoMarca==='pessoal'?'marca pessoal':'marca corporativa'}`;}}
-function toggleTipoConteudo(tipoId,btn){btn.classList.toggle('active');markManualDirty();}
-function getSelectedTipos(){return Array.from(document.querySelectorAll('.manual-tipo-check.active')).map(b=>b.dataset.tipoId);}
-function renderManualTags(containerId,items,className,removeFn){const container=document.getElementById(containerId);if(!container)return;container.innerHTML=items.map((item,i)=>`<span class="manual-tag ${className}">${item}<button class="manual-tag-remove" onclick="${removeFn.name}(${i})">×</button></span>`).join('');}
-function getTagsFromContainer(containerId){return Array.from(document.querySelectorAll(`#${containerId} .manual-tag`)).map(el=>el.textContent.replace('×','').trim()).filter(Boolean);}
-function addManualPilar(){const input=document.getElementById('manualPilarInput');if(!input?.value.trim())return;const current=getTagsFromContainer('manualPilaresContainer');current.push(input.value.trim());renderManualTags('manualPilaresContainer',current,'pilar',removeManualPilar);input.value='';markManualDirty();}
-function removeManualPilar(idx){const items=getTagsFromContainer('manualPilaresContainer');items.splice(idx,1);renderManualTags('manualPilaresContainer',items,'pilar',removeManualPilar);markManualDirty();}
-function addManualProibido(){const input=document.getElementById('manualProibidoInput');if(!input?.value.trim())return;const current=getTagsFromContainer('manualProibidosContainer');current.push(input.value.trim());renderManualTags('manualProibidosContainer',current,'proibido',removeManualProibido);input.value='';markManualDirty();}
-function removeManualProibido(idx){const items=getTagsFromContainer('manualProibidosContainer');items.splice(idx,1);renderManualTags('manualProibidosContainer',items,'proibido',removeManualProibido);markManualDirty();}
-function addManualRef(){const input=document.getElementById('manualRefInput');if(!input?.value.trim())return;const current=getTagsFromContainer('manualRefContainer');current.push(input.value.trim());renderManualTags('manualRefContainer',current,'ref',removeManualRef);input.value='';markManualDirty();}
-function removeManualRef(idx){const items=getTagsFromContainer('manualRefContainer');items.splice(idx,1);renderManualTags('manualRefContainer',items,'ref',removeManualRef);markManualDirty();}
-function attachManualDirtyListeners(){['manualNome','manualHandle','manualNiche','manualBio','manualPublico','manualManifesto','manualInimigoComum','manualTom','manualCta','manualObservacoes'].forEach(id=>{const el=document.getElementById(id);if(el)el.addEventListener('input',markManualDirty);});}
-function markManualDirty(){if(!manualDirty){manualDirty=true;updateManualSaveStatus('● Alterações não salvas');}}
-function updateManualSaveStatus(msg){const el=document.getElementById('manualSaveStatus');if(el)el.textContent=msg;}
-async function saveManualProfile(){const btn=document.getElementById('btnSaveManual');btn.disabled=true;btn.textContent='⏳ Salvando...';const tipoBtn=document.querySelector('.manual-tipo-btn.active');const tipo=tipoBtn?.dataset.tipo||'pessoal';const updated={tipo,nome:document.getElementById('manualNome')?.value.trim()||'',handle:document.getElementById('manualHandle')?.value.trim()||'',niche:document.getElementById('manualNiche')?.value.trim()||'',bio:document.getElementById('manualBio')?.value.trim()||'',publicoAlvo:document.getElementById('manualPublico')?.value.trim()||'',manifesto:document.getElementById('manualManifesto')?.value.trim()||'',inimigoComum:document.getElementById('manualInimigoComum')?.value.trim()||'',tom:document.getElementById('manualTom')?.value.trim()||'',cta:document.getElementById('manualCta')?.value.trim()||'',observacoes:document.getElementById('manualObservacoes')?.value.trim()||'',pilares:getTagsFromContainer('manualPilaresContainer'),proibidos:getTagsFromContainer('manualProibidosContainer'),referencias:getTagsFromContainer('manualRefContainer'),tiposConteudo:getSelectedTipos()};manualProfileData[manualCurrentProfile]={...manualProfileData[manualCurrentProfile],...updated,updatedAt:new Date().toISOString()};try{const r=await fetch(`/api/profiles/${manualCurrentProfile}`,{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify(updated)});const d=await r.json();if(d.error)throw new Error(d.error);manualDirty=false;updateManualSaveStatus(`✅ Salvo em ${new Date().toLocaleString('pt-PT')}`);toast('Manual salvo! A IA usa isso na próxima geração.','success');}catch(e){manualDirty=false;updateManualSaveStatus('✅ Salvo localmente');toast('Salvo localmente.','info');}finally{btn.disabled=false;btn.textContent='💾 Salvar manual';}}
-function resetManualForm(){if(!manualDirty)return;if(!confirm('Descartar todas as alterações não salvas?'))return;loadManualProfile(manualCurrentProfile);}
-async function uploadManualFromProfile(event){const file=event.target.files[0];if(!file)return;const zone=document.getElementById('manualPdfZone');const txtEl=document.getElementById('manualPdfText');const statusEl=document.getElementById('manualPdfStatus');if(txtEl)txtEl.textContent='⏳ A carregar...';const fd=new FormData();fd.append('pdf',file);fd.append('profile',manualCurrentProfile);try{const r=await fetch('/api/manual/upload',{method:'POST',body:fd});const d=await r.json();if(d.error)throw new Error(d.error);if(zone)zone.classList.add('has-file');if(txtEl)txtEl.textContent=`✅ ${file.name}`;if(statusEl)statusEl.innerHTML='<span style="color:#065F46;">PDF disponível para a IA</span>';if(manualProfileData[manualCurrentProfile])manualProfileData[manualCurrentProfile].pdfUploadedAt=new Date().toISOString();toast('PDF do manual carregado! ✅','success');}catch(e){if(txtEl)txtEl.textContent='Clica para carregar o PDF do cliente';if(statusEl)statusEl.innerHTML=`<span style="color:#EF4444;">Erro: ${e.message}</span>`;toast('Erro ao carregar PDF: '+e.message,'error');}}
 
 /* ── CANVA INTEGRATION ── */
 let canvaTemplates=[],canvaSelectedContent=null,canvaCurrentTemplateUrl=null,canvaCurrentClipboardText="";
