@@ -95,7 +95,7 @@ router.post('/api/image/carousel-slide', async (req, res) => {
     // das coleções da Ana). Sem template, cai no fallback editorial que usa as
     // cores reais da identidade da marca (creme/terracota) em vez de um
     // gradiente escuro genérico.
-    const fallbackOverlayTokens = { bg: brand.bgLight || '#EFEBE1', accent: brand.accent || '#B33A2B', text: brand.textOnLight || '#1F1B17', kicker: 'ana moutinho' };
+    const fallbackOverlayTokens = { bg: brand.bgLight || '#F3F0E8', accent: brand.accent || '#A92E1D', text: brand.textOnLight || '#292725', kicker: 'ana moutinho' };
     const overlayStyle  = matchedTemplate?.overlayStyle  || 'lista';
     const overlayTokens = matchedTemplate?.overlayTokens || fallbackOverlayTokens;
     const designMeta = { heading: heading||'', body: body||'', accent: brand.accent||'#C8A020', bgDark: brand.bgDark||'#0A0A0A', bgLight: brand.bgLight||'#F5F4F0', handle: brand.handle||account.handle, overlayStyle, overlayTokens, slideNumber, totalSlides, funcao: funcao||(slideNumber===1?'CAPA':slideNumber===totalSlides?'ASSINATURA':'CONTEUDO'), templateId: matchedTemplate?.id || null, templateName: matchedTemplate?.name || null };

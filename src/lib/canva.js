@@ -20,10 +20,10 @@ const { askOpenAI, MODEL_FAST } = require('./ai');
 const IDENTIDADE = 'v2-editorial-vintage';
 
 const PAPEL_BASE = `BASE MATERIAL (comum a toda a identidade da Ana):
-— Fundo de papel bege #EFEBE1 ou kraft #E5DDCD com grão visível — nunca branco puro nem cinza frio
+— Fundo de papel bege #F3F0E8 ou kraft #EAE6DC com grão visível — nunca branco puro nem cinza frio
 — Composição de moodboard: recortes colados com fita adesiva translúcida em ângulo leve
 — Fotos entram como polaroid — moldura branca grossa, leve rotação, sombra quente suave
-— Acentos desenhados à mão em terracota #B33A2B: círculo à volta de uma palavra, seta curva, sublinhado
+— Acentos desenhados à mão em terracota #A92E1D: círculo à volta de uma palavra, seta curva, sublinhado
 — Fotografia de trabalho real em luz natural quente com grain analógico: mesa, caderno anotado, tela do computador, print de campanha, café ao lado do teclado; pessoas sempre parciais ou anónimas
 — PROIBIDO: cor saturada vibrante dominando a peça, mockup 3D, brilho digital, sombra dura, estética corporativa ou de coach`;
 
@@ -39,7 +39,7 @@ ESTILO DESTE TEMPLATE (Capa Moodboard — abertura de carrossel):
 — Fundo de papel bege ocupando quase tudo; UM recorte fotográfico colado no canto superior, em ângulo, com fita adesiva
 — O título entra por overlay em serifada editorial terracota, grande, ocupando o terço inferior — a metade de baixo do fundo deve ficar limpa
 — Sensação: alguém abriu a pasta de referências na mesa e começou a explicar`,
-    overlayStyle: 'capa', overlayTokens: { bg: '#EFEBE1', text: '#B33A2B', realce: '#F3C9B6', hand: '#1F1B17' },
+    overlayStyle: 'capa', overlayTokens: { bg: '#F3F0E8', text: '#A92E1D', realce: '#E8B7B0', hand: '#292725' },
     slideCount: 1, canvaUrl: null, profile: 'pessoal',
   },
   {
@@ -48,11 +48,11 @@ ESTILO DESTE TEMPLATE (Capa Moodboard — abertura de carrossel):
     contentTypes: ['autoral', 'frase'],
     aesthetic: 'Bloco sólido terracota sobre papel + frase serifada creme — para hooks, verdades e citações',
     visualDNA: `ESTILO DESTE TEMPLATE (Cartão Sólido — citação/hook isolado):
-— Bloco de cor sólida terracota #B33A2B (ou vinho #5C1620) ocupando quase todo o slide, com margem de papel bege à volta
+— Bloco de cor sólida terracota #A92E1D (ou vinho #7F2117) ocupando quase todo o slide, com margem de papel bege à volta
 — Textura sutil de papel dentro do bloco; SEM fotografia
 — A frase entra por overlay em serifada editorial creme, grande e centrada verticalmente
 — Sensação: um cartão impresso colado na página`,
-    overlayStyle: 'cartao', overlayTokens: { bg: '#B33A2B', text: '#F7F3EA' },
+    overlayStyle: 'cartao', overlayTokens: { bg: '#A92E1D', text: '#F8F7F2' },
     slideCount: 1, canvaUrl: null, profile: 'pessoal',
   },
   {
@@ -61,10 +61,10 @@ ESTILO DESTE TEMPLATE (Capa Moodboard — abertura de carrossel):
     contentTypes: ['autoral', 'frase'],
     aesthetic: 'Bloco sólido vinho profundo + frase serifada creme — para as dores que ninguém fala',
     visualDNA: `ESTILO DESTE TEMPLATE (Cartão Vinho — conteúdo de mais peso emocional):
-— Igual ao Cartão Terracota, mas em vinho profundo #5C1620 — reservado para solidão, medo, exaustão, decisões difíceis
+— Igual ao Cartão Terracota, mas em vinho profundo #7F2117 — reservado para solidão, medo, exaustão, decisões difíceis
 — SEM fotografia; textura de papel subtil dentro do bloco
 — Sensação: baixar o tom de voz`,
-    overlayStyle: 'cartao', overlayTokens: { bg: '#5C1620', text: '#F7F3EA' },
+    overlayStyle: 'cartao', overlayTokens: { bg: '#7F2117', text: '#F8F7F2' },
     slideCount: 1, canvaUrl: null, profile: 'pessoal',
   },
   {
@@ -78,7 +78,7 @@ ESTILO DESTE TEMPLATE (Lista Editorial — telas de conteúdo, tendências, exem
 — Layout REPETIDO em todas as telas: rótulo fixo no topo, título, corpo, e um recorte visual centrado na metade inferior
 — Fundo de papel bege liso na metade superior (é onde entra o texto) e o recorte fotográfico colado abaixo
 — Sensação: página de revista com o mesmo grid tela após tela`,
-    overlayStyle: 'lista', overlayTokens: { bg: '#EFEBE1', accent: '#B33A2B', text: '#1F1B17', kicker: 'ana moutinho' },
+    overlayStyle: 'lista', overlayTokens: { bg: '#F3F0E8', accent: '#A92E1D', text: '#292725', kicker: 'ana moutinho' },
     slideCount: 1, canvaUrl: null, profile: 'pessoal',
   },
   {
@@ -89,9 +89,9 @@ ESTILO DESTE TEMPLATE (Lista Editorial — telas de conteúdo, tendências, exem
     visualDNA: `${PAPEL_BASE}
 
 ESTILO DESTE TEMPLATE (Lista Kraft):
-— Idêntico à Lista Editorial, em papel kraft #E5DDCD para alternar telas e dar ritmo ao carrossel
+— Idêntico à Lista Editorial, em papel kraft #EAE6DC para alternar telas e dar ritmo ao carrossel
 — Mantém o mesmo grid: rótulo no topo, título, corpo, recorte abaixo`,
-    overlayStyle: 'lista', overlayTokens: { bg: '#E5DDCD', accent: '#8E2A20', text: '#1F1B17', kicker: 'ana moutinho' },
+    overlayStyle: 'lista', overlayTokens: { bg: '#EAE6DC', accent: '#7F2117', text: '#292725', kicker: 'ana moutinho' },
     slideCount: 1, canvaUrl: null, profile: 'pessoal',
   },
   {
@@ -105,7 +105,7 @@ ESTILO DESTE TEMPLATE (Lista Sálvia):
 — Mesma estrutura editorial, mas com os acentos em verde-sálvia/oliva #7C8A6E
 — A fotografia deve puxar para verdes naturais quentes: planta na mesa, luz de janela com folhagem, tecido oliva
 — Usar quando o carrossel anterior já foi vermelho`,
-    overlayStyle: 'lista', overlayTokens: { bg: '#EFEBE1', accent: '#7C8A6E', text: '#1F1B17', kicker: 'ana moutinho' },
+    overlayStyle: 'lista', overlayTokens: { bg: '#F3F0E8', accent: '#7C8A6E', text: '#292725', kicker: 'ana moutinho' },
     slideCount: 1, canvaUrl: null, profile: 'pessoal',
   },
   {
@@ -119,7 +119,7 @@ ESTILO DESTE TEMPLATE (Nota Colada — comentário sobre um exemplo, bastidor, a
 — UM recorte fotográfico central colado com fita adesiva bem visível, em ângulo
 — Papel bege à volta com bastante respiro em cima e em baixo — é onde entram o rótulo em marcador e a anotação manuscrita
 — Sensação: alguém colou um print e escreveu ao lado o que achou`,
-    overlayStyle: 'nota', overlayTokens: { bg: '#EFEBE1', accent: '#B33A2B', text: '#1F1B17', label: 'o ponto' },
+    overlayStyle: 'nota', overlayTokens: { bg: '#F3F0E8', accent: '#A92E1D', text: '#292725', label: 'o ponto' },
     slideCount: 1, canvaUrl: null, profile: 'pessoal',
   },
   {
@@ -128,12 +128,12 @@ ESTILO DESTE TEMPLATE (Nota Colada — comentário sobre um exemplo, bastidor, a
     contentTypes: ['frase'],
     aesthetic: 'Gradiente vinho profundo + frase serifada creme com palavra destacada + assinatura no rodapé',
     visualDNA: `ESTILO DESTE TEMPLATE (Post Estático Vinho — o template que a Ana já usa e funciona):
-— Fundo em gradiente vinho profundo #5C1620 com variação de luz no canto superior — profundidade, nunca cor chapada
+— Fundo em gradiente vinho profundo #7F2117 com variação de luz no canto superior — profundidade, nunca cor chapada
 — Textura de papel muito subtil por cima
 — SEM fotografia; o protagonismo é da tipografia
 — A frase entra por overlay em serifada editorial creme centrada, com uma palavra-chave em tom mais claro
 — Sensação: statement calmo e definitivo`,
-    overlayStyle: 'estatico', overlayTokens: { bg: '#5C1620', bgTopo: '#7E2029', text: '#F7F3EA', destaque: '#F3C9B6' },
+    overlayStyle: 'estatico', overlayTokens: { bg: '#7F2117', bgTopo: '#A92E1D', text: '#F8F7F2', destaque: '#E8B7B0' },
     slideCount: 1, canvaUrl: null, profile: 'pessoal',
   },
   {
@@ -147,7 +147,7 @@ ESTILO DESTE TEMPLATE (Nota Colada — comentário sobre um exemplo, bastidor, a
 — Zona central calma — é onde entra a frase
 — A frase entra por overlay em serifada editorial branca com uma palavra em tom mais claro
 — Sensação: intimista, luz de fim de tarde, pausa`,
-    overlayStyle: 'estatico', overlayTokens: { veil: 'rgba(38,30,20,.52)', text: '#F7F3EA', destaque: '#C9D2BC' },
+    overlayStyle: 'estatico', overlayTokens: { veil: 'rgba(38,30,20,.52)', text: '#F8F7F2', destaque: '#C9D2BC' },
     slideCount: 1, canvaUrl: null, profile: 'pessoal',
   },
   {
@@ -156,11 +156,11 @@ ESTILO DESTE TEMPLATE (Nota Colada — comentário sobre um exemplo, bastidor, a
     contentTypes: ['cultural', 'tese', 'autoral', 'oferta'],
     aesthetic: 'Bloco quase-preto ou terracota + frase serifada + CTA em pill salmão — última tela do carrossel',
     visualDNA: `ESTILO DESTE TEMPLATE (Fechamento de carrossel):
-— Fundo de cor sólida quase-preto quente #1F1B17 (ou terracota) com textura de papel muito subtil
+— Fundo de cor sólida quase-preto quente #292725 (ou terracota) com textura de papel muito subtil
 — SEM fotografia — contraste máximo para fechar
 — A frase de impacto entra em serifada creme e o CTA num botão arredondado salmão
 — Sensação: ponto final com convite`,
-    overlayStyle: 'fechamento', overlayTokens: { bg: '#1F1B17', text: '#F7F3EA', accent: '#F3C9B6' },
+    overlayStyle: 'fechamento', overlayTokens: { bg: '#292725', text: '#F8F7F2', accent: '#E8B7B0' },
     slideCount: 1, canvaUrl: null, profile: 'pessoal',
   },
 ];

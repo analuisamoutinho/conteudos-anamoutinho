@@ -6,7 +6,7 @@
 <title>Máquina de Conteúdo</title>
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,400&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600;1,700&family=Inter:wght@300;400;500;600&family=Caveat:wght@400;500;600;700&family=Permanent+Marker&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,400&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600;1,700&family=Inter:wght@300;400;500;600&family=Caveat:wght@400;500;600;700&family=Permanent+Marker&family=Courier+Prime:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet" />
 <style>
 :root {
   --purple:    #160728;
@@ -142,7 +142,7 @@ body{font-family:var(--font-body);background:var(--pale);color:var(--dark);min-h
 /* Slide já renderizado com a tipografia da marca: nada por cima. */
 .slide-card.has-img::before{display:none;}
 .slide-card.has-img .slide-img{object-fit:contain;background:#EFEBE1;}
-.slide-card.has-img .slide-number{background:rgba(31,27,23,.72);color:#F7F3EA;padding:3px 8px;border-radius:99px;display:inline-block;}
+.slide-card.has-img .slide-number{background:rgba(41,39,37,.72);color:#F7F3EA;padding:3px 8px;border-radius:99px;display:inline-block;}
 .slide-card .slide-img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;border-radius:var(--radius);z-index:0;}
 .slide-card-content{position:relative;z-index:2;}
 .slide-heading-ro{font-family:var(--font-head);font-size:.78rem;font-weight:700;color:#fff;line-height:1.25;margin-top:4px;text-shadow:0 2px 6px rgba(0,0,0,.7);display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;}
@@ -1230,8 +1230,11 @@ const SlideRenderer={
   // nunca é branco chapado: as referências todas partem de papel bege.
   PAPER:'data:image/png;base64,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',
   // ── Paleta da marca ─────────────────────────────────────────────────────
-  C:{terracota:'#B33A2B',terracotaEsc:'#8E2A20',vinho:'#5C1620',salvia:'#7C8A6E',
-     bege:'#EFEBE1',kraft:'#E5DDCD',creme:'#F7F3EA',tinta:'#1F1B17',realce:'#F3C9B6'},
+  // Paleta do design system Editorial Scrapbook: 70-80% papel, 10-20%
+  // vermelho editorial (assinatura), 5-10% apoio (rosa/azul/amarelo).
+  C:{terracota:'#A92E1D',terracotaEsc:'#7F2117',vinho:'#7F2117',salvia:'#7C8A6E',
+     bege:'#F3F0E8',kraft:'#EAE6DC',creme:'#F8F7F2',tinta:'#292725',cinza:'#77736C',
+     realce:'#E8B7B0',amarelo:'#E6C84F',azul:'#AFC4D1'},
 
   _esc(t){return String(t==null?'':t).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');},
   // Variação determinística por slide: o número do slide semeia escolhas de
@@ -1242,11 +1245,12 @@ const SlideRenderer={
     const seed=((m.slideNumber||1)*31+(m.totalSlides||1)*7)>>>0;
     const pick=(arr,salt)=>arr[(seed+salt)%arr.length];
     const FITAS=[
-      {cor:'rgba(243,201,182,.72)'},
-      {cor:'rgba(179,58,43,.30)',xadrez:true},
-      {cor:'rgba(124,138,110,.42)'},
-      {cor:'rgba(151,178,203,.48)',xadrez:true},
-      {cor:'rgba(233,196,106,.5)'},
+      {cor:'rgba(232,183,176,.75)'},
+      {cor:'rgba(232,183,176,.6)',xadrez:true},
+      {cor:'rgba(175,196,209,.7)'},
+      {cor:'rgba(175,196,209,.55)',xadrez:true},
+      {cor:'rgba(230,200,79,.5)'},
+      {cor:'rgba(234,230,220,.9)'},
     ];
     return{
       pick,
@@ -1335,7 +1339,17 @@ const SlideRenderer={
   },
   _counter(n,total,color){
     if(!n||!total||total<2)return'';
-    return`<div style="position:absolute;top:58px;right:74px;font-family:'Inter',sans-serif;font-size:19px;font-weight:500;letter-spacing:.1em;color:${color};opacity:.55;z-index:4;">${n}/${total}</div>`;
+    const p=x=>String(x).padStart(2,'0');
+    return`<div style="position:absolute;top:60px;right:74px;font-family:'Courier Prime',monospace;font-size:22px;letter-spacing:.14em;color:${color};opacity:.6;z-index:4;">${p(n)} — ${p(total)}</div>`;
+  },
+  // Microtexto de classificação de arquivo (§4 família mono): "NOTA #04"
+  _classificacao(m,tk){
+    const txt=tk.classificacao||('NOTA #'+String(m.slideNumber||1).padStart(2,'0'));
+    return`<div style="position:absolute;top:64px;left:88px;z-index:4;font-family:'Courier Prime',monospace;font-size:22px;letter-spacing:.2em;color:${this.C.cinza};">${this._esc(txt)}</div>`;
+  },
+  // Selo de arquivo (§9): "CASE STUDY", "NÃO PULE" — moldura fina, mono
+  _selo(txt,cor,style,rot){
+    return`<div style="position:absolute;${style};z-index:5;transform:rotate(${rot==null?-3:rot}deg);font-family:'Courier Prime',monospace;font-size:21px;font-weight:700;letter-spacing:.16em;color:${cor};border:1.5px solid ${cor};padding:8px 18px;opacity:.85;">${this._esc(txt)}</div>`;
   },
 
   // ── CAPA: display serifado terracota, frase circulada à mão, recortes ───
@@ -1345,7 +1359,7 @@ const SlideRenderer={
     return`<div style="position:absolute;inset:0;background:${bg};z-index:0;"></div>${this._paper()}
 ${this._recorte(photoUrl,{pos:v.lado?'top:-40px;right:-56px;':'top:-40px;left:-56px;',w:'44%',h:'30%',rot:v.rot(v.lado?4:-4,1),z:2})}
 ${this._fita({pos:v.lado?'top:14px;right:16%;':'top:14px;left:16%;',w:150,h:46,rot:v.rot(-14,2),z:3,...v.fita1})}
-${this._recorte(null,{pos:v.lado?'bottom:-52px;left:-60px;':'bottom:-52px;right:-60px;',w:'30%',h:'22%',rot:v.rot(-6,3),z:2,fallback:'#E8DFC9'})}
+${this._recorte(null,{pos:v.lado?'bottom:-52px;left:-60px;':'bottom:-52px;right:-60px;',w:'30%',h:'22%',rot:v.rot(-6,3),z:2,fallback:'#EAE6DC'})}
 ${this._fita({pos:v.lado?'bottom:150px;left:14%;':'bottom:150px;right:14%;',w:130,h:42,rot:v.rot(9,4),z:3,...v.fita2})}
 <div style="position:absolute;inset:0;z-index:5;padding:130px 92px;display:flex;flex-direction:column;justify-content:center;">
 <div style="font-family:'Playfair Display',serif;font-weight:700;font-size:${size}px;line-height:1.04;letter-spacing:-.02em;color:${tint};">${this._esc(m.heading)}</div>
@@ -1355,7 +1369,7 @@ ${this._circulo(tint)}
 </div>`:`<div style="font-family:'Caveat',cursive;font-size:44px;font-weight:500;line-height:1.34;color:${this.C.tinta};margin-top:44px;max-width:780px;">${this._esc(m.body)}</div>`):''}
 ${this._rabisco(tint,'bottom:118px;right:96px;width:180px;height:48px;')}
 </div>
-<div style="position:absolute;bottom:62px;left:92px;z-index:6;">${this._assinatura(m.handle,'rgba(31,27,23,.5)','left')}</div>
+<div style="position:absolute;bottom:62px;left:92px;z-index:6;">${this._assinatura(m.handle,'rgba(41,39,37,.5)','left')}</div>
 <div style="position:absolute;bottom:62px;right:92px;z-index:6;font-family:'Caveat',cursive;font-size:38px;color:${tint};">arrasta →</div>`;
   },
 
@@ -1386,7 +1400,7 @@ ${this._counter(m.slideNumber,m.totalSlides,ink)}
 <div style="font-family:'Playfair Display',serif;font-weight:600;font-size:${size}px;line-height:1.14;color:${ink};">${this._emphasize(m.heading,'color',tint)}</div>
 ${m.body?`<div style="font-family:'Inter',sans-serif;font-size:30px;font-weight:300;line-height:1.66;color:${ink};opacity:.82;margin-top:34px;">${this._esc(m.body)}</div>`:''}
 </div>
-<div style="position:absolute;bottom:64px;left:88px;z-index:3;">${this._assinatura(m.handle,'rgba(31,27,23,.45)','left')}</div>`;
+<div style="position:absolute;bottom:64px;left:88px;z-index:3;">${this._assinatura(m.handle,'rgba(41,39,37,.45)','left')}</div>`;
   },
 
   // ── NOTA: a estrutura exata da referência ───────────────────────────────
@@ -1407,7 +1421,43 @@ ${v.lado?this._seta(tint,'top:965px;right:120px;width:120px;height:130px;',true)
 <div style="font-family:'Permanent Marker',cursive;font-size:46px;letter-spacing:.06em;color:${tint};margin-bottom:24px;">${this._esc(tk.label||'o ponto')}</div>
 ${m.body?`<div style="font-family:'Caveat',cursive;font-size:44px;font-weight:500;line-height:1.36;color:${ink};opacity:.92;">${this._esc(m.body)}</div>`:''}
 </div>
-<div style="position:absolute;bottom:62px;left:0;right:0;z-index:6;">${this._assinatura(m.handle,'rgba(31,27,23,.42)','center')}</div>`;
+<div style="position:absolute;bottom:62px;left:0;right:0;z-index:6;">${this._assinatura(m.handle,'rgba(41,39,37,.42)','center')}</div>`;
+  },
+
+  // ── IMPACTO (Módulo A do design system): headline dramática, muito ar ───
+  // Hierarquia dramática (§5): a frase pode ocupar 30-50% do slide.
+  _styleImpacto(photoUrl,m,tk){
+    const C=this.C,bg=tk.bg||C.bege,tint=tk.accent||C.terracota,ink=tk.text||C.tinta,v=this._variante(m);
+    const size=this._fit(m.heading,[[26,132],[44,110],[64,92],[90,76],[999,62]]);
+    return`<div style="position:absolute;inset:0;background:${bg};z-index:0;"></div>${this._paper()}
+${this._classificacao(m,tk)}
+${this._counter(m.slideNumber,m.totalSlides,ink)}
+<div style="position:absolute;top:0;bottom:0;left:88px;right:110px;z-index:4;display:flex;flex-direction:column;justify-content:center;">
+<div style="font-family:'Playfair Display',serif;font-weight:700;font-size:${size}px;line-height:1.06;letter-spacing:-.015em;color:${(m.slideNumber%2)?ink:tint};max-width:90%;">${this._esc(m.heading)}</div>
+${m.body?`<div style="font-family:'Inter',sans-serif;font-size:30px;font-weight:300;line-height:1.6;color:${C.cinza};margin-top:42px;max-width:640px;${v.lado?'':'align-self:flex-end;text-align:right;'}">${this._esc(m.body)}</div>`:''}
+</div>
+${this._rabisco(tint,v.lado?'bottom:180px;right:110px;width:170px;height:46px;':'top:200px;right:110px;width:170px;height:46px;')}
+<div style="position:absolute;bottom:62px;left:88px;z-index:6;">${this._assinatura(m.handle,'rgba(41,39,37,.45)','left')}</div>`;
+  },
+
+  // ── DOCUMENTO (Módulo E): bloco tipo Notes/ficha — título colorido +
+  // texto preto, fita prendendo, seta apontando ─────────────────────────
+  _styleDocumento(photoUrl,m,tk){
+    const C=this.C,bg=tk.bg||C.bege,tint=tk.accent||C.terracota,v=this._variante(m);
+    const size=this._fit(m.heading,[[30,58],[50,50],[80,44],[999,38]]);
+    return`<div style="position:absolute;inset:0;background:${bg};z-index:0;"></div>${this._paper()}
+${this._classificacao(m,tk)}
+${this._counter(m.slideNumber,m.totalSlides,C.tinta)}
+<div style="position:absolute;top:220px;left:96px;right:96px;bottom:240px;z-index:3;background:${C.creme};border:1px solid rgba(41,39,37,.14);box-shadow:0 18px 44px rgba(40,32,20,.14);transform:rotate(${(v.lado?0.5:-0.5)}deg);">
+<div style="padding:58px 62px;">
+<div style="font-family:'Courier Prime',monospace;font-size:22px;letter-spacing:.18em;color:${C.cinza};margin-bottom:28px;">NOTAS</div>
+<div style="font-family:'Playfair Display',serif;font-weight:600;font-size:${size}px;line-height:1.18;color:${tint};margin-bottom:32px;">${this._esc(m.heading)}</div>
+${m.body?`<div style="font-family:'Inter',sans-serif;font-size:29px;font-weight:400;line-height:1.72;color:${C.tinta};">${this._esc(m.body)}</div>`:''}
+</div>
+</div>
+${this._fita({pos:v.lado?'top:196px;left:42%;':'top:196px;right:12%;',w:170,h:50,rot:v.rot(v.lado?-4:8,2),z:4,...v.fita1})}
+${this._seta(tint,v.lado?'bottom:140px;right:120px;width:110px;height:120px;':'bottom:140px;left:110px;width:110px;height:120px;',v.lado)}
+<div style="position:absolute;bottom:62px;left:0;right:0;z-index:6;">${this._assinatura(m.handle,'rgba(41,39,37,.42)','center')}</div>`;
   },
 
   // ── ESTÁTICO: gradiente/foto + frase serifada + assinatura (refs 3 e 4) ─
@@ -1431,7 +1481,7 @@ ${m.body?`<div style="font-family:'Inter',sans-serif;font-size:29px;font-weight:
     const C=this.C,bg=tk.bg||C.bege,tint=tk.accent||C.terracota,ink=tk.text||C.terracota,v=this._variante(m);
     const size=this._fit(m.heading,[[34,96],[56,80],[80,66],[999,56]]);
     return`<div style="position:absolute;inset:0;background:${bg};z-index:0;"></div>${this._paper()}
-${this._recorte(null,{pos:v.lado?'top:-30px;left:-52px;':'top:-30px;right:-52px;',w:'26%',h:'20%',rot:v.rot(-7,1),z:2,fallback:'#E8DFC9'})}
+${this._recorte(null,{pos:v.lado?'top:-30px;left:-52px;':'top:-30px;right:-52px;',w:'26%',h:'20%',rot:v.rot(-7,1),z:2,fallback:'#EAE6DC'})}
 ${this._recorte(photoUrl,{pos:v.lado?'bottom:-46px;right:-56px;':'bottom:-46px;left:-56px;',w:'34%',h:'24%',rot:v.rot(5,2),z:2})}
 ${this._fita({pos:v.lado?'top:96px;left:12%;':'top:96px;right:12%;',w:140,h:44,rot:v.rot(11,3),z:3,...v.fita1})}
 <div style="position:absolute;inset:0;z-index:5;display:flex;flex-direction:column;justify-content:center;align-items:center;padding:150px 96px;text-align:center;">
@@ -1441,16 +1491,28 @@ ${m.body?`<div style="position:relative;display:inline-block;margin-top:56px;">
 ${this._sublinhado(tint)}
 </div>`:''}
 </div>
-<div style="position:absolute;bottom:64px;left:0;right:0;z-index:6;">${this._assinatura(m.handle,'rgba(31,27,23,.45)','center')}</div>`;
+<div style="position:absolute;bottom:64px;left:0;right:0;z-index:6;">${this._assinatura(m.handle,'rgba(41,39,37,.45)','center')}</div>`;
   },
 
   _buildSlideHTML(photoUrl,designMeta){
     const m={...designMeta};
     m.handle=m.handle||'@analuisa.moutinho';
-    const builders={capa:'_styleCapa',cartao:'_styleCartao',lista:'_styleLista',nota:'_styleNota',estatico:'_styleEstatico',fechamento:'_styleFechamento'};
-    // A função do slide manda quando o template não fixa um estilo.
+    const builders={capa:'_styleCapa',cartao:'_styleCartao',lista:'_styleLista',nota:'_styleNota',impacto:'_styleImpacto',documento:'_styleDocumento',estatico:'_styleEstatico',fechamento:'_styleFechamento'};
     const porFuncao={CAPA:'capa',CTA:'fechamento',ASSINATURA:'fechamento'};
-    const style=m.overlayStyle||porFuncao[m.funcao]||'lista';
+    let style=m.overlayStyle||porFuncao[m.funcao]||'lista';
+    // Ritmo editorial (design system §15): o carrossel é uma sequência de
+    // páginas da mesma publicação — capa forte, módulos alternando no meio,
+    // fechamento editorial. Nunca o mesmo layout em todos os slides.
+    const familiaPapel=['capa','lista','nota','impacto','documento','fechamento'];
+    const total=m.totalSlides||1;
+    if(familiaPapel.includes(style)&&total>1){
+      if(m.funcao==='CAPA'||m.slideNumber===1)style='capa';
+      else if(m.funcao==='CTA'||m.funcao==='ASSINATURA'||m.slideNumber===total)style='fechamento';
+      else if(total>=5){
+        const seq=['nota','impacto','documento','lista','impacto','nota','lista','documento'];
+        style=seq[(m.slideNumber-2)%seq.length];
+      }
+    }
     const fn=builders[style]||builders.lista;
     const tk=m.overlayTokens||{};
     const inner=this[fn](photoUrl,m,tk);

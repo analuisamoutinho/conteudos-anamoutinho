@@ -25,45 +25,36 @@ const BRAND_IDENTITIES = {
   pessoal: {
     // Paleta: terracota (marca) · vinho (impacto) · sálvia (variação)
     // sobre base bege texturizada. Nunca branco frio, nunca saturado.
-    accent:'#B33A2B',accentAlt:'#8E2A20',accentFem:'#F3C9B6',bgDark:'#5C1620',bgLight:'#EFEBE1',
-    bgMid:'#E5DDCD',bgBrand:'#F7F3EA',textOnDark:'#F7F3EA',textOnLight:'#1F1B17',
-    salvia:'#7C8A6E',tinta:'#1F1B17',
+    // Design system Editorial Scrapbook: 70-80% papel, 10-20% vermelho
+    // editorial (assinatura), 5-10% apoio (rosa fita, azul fita, amarelo).
+    accent:'#A92E1D',accentAlt:'#7F2117',accentFem:'#E8B7B0',bgDark:'#7F2117',bgLight:'#F3F0E8',
+    bgMid:'#EAE6DC',bgBrand:'#F8F7F2',textOnDark:'#F8F7F2',textOnLight:'#292725',
+    salvia:'#7C8A6E',tinta:'#292725',cinza:'#77736C',amarelo:'#E6C84F',azulFita:'#AFC4D1',
     handle:'@analuisa.moutinho',name:'Ana Moutinho',
-    aestheticDNA:`IDENTIDADE: editorial-vintage brasileiro — moodboard de quem trabalha com marketing e pensa negócio. Papel, recorte, fita adesiva, anotação à mão. Feito por uma pessoa, não por um departamento de branding.
+    aestheticDNA:`IDENTIDADE: editorial-scrapbook — revista independente + caderno de referências + arquivo de copywriting. A sensação final: "alguém muito inteligente reuniu referências, fez anotações e transformou aquilo numa publicação" — nunca "uma agência criou um carrossel bonito".
 
-CONCEITO VISUAL: colagem editorial sobre papel. Como a mesa de trabalho de alguém que recorta anúncios, cola referências e escreve observações à mão na margem. Inteligente e caloroso — nunca corporativo, nunca minimalismo frio de agência.
+CONCEITO VISUAL: página de publicação independente sobre papel. Colagem analógica, anotação à mão, material colecionável. Palavras-chave: editorial, scrapbook, analog, independent magazine, copywriting notebook, creative archive, paper texture, collage, handwritten annotations.
 
-PALETA CROMÁTICA OBRIGATÓRIA:
-— Base dominante: bege papel #EFEBE1 e kraft #E5DDCD (60-75% da composição) — SEMPRE com textura de papel visível, nunca branco chapado nem cinza frio
-— Cor de marca: vermelho-terracota/tijolo #B33A2B — títulos, acentos, elementos desenhados à mão
-— Vermelho profundo: vinho #5C1620 — só para peças de mais peso emocional (post estático, abertura)
-— Segunda cor: verde-sálvia/oliva #7C8A6E — alternativa ao vermelho, mesma sensação de calor e sofisticação
-— Realce: salmão claro #F3C9B6 — marca-texto e fitas adesivas
-— Texto e contraste máximo: quase-preto quente #1F1B17
-— NUNCA: vermelho saturado vivo como cor dominante, azul-céu vibrante, neon, branco clínico, cinza corporativo, gradiente colorido artificial
+PALETA CROMÁTICA OBRIGATÓRIA (regra 70-80% papel · 10-20% vermelho · 5-10% apoio):
+— Fundo dominante: papel off-white #F3F0E8 e papel secundário #EAE6DC — SEMPRE com textura de papel reciclado, grain fotográfico sutil e pequenas irregularidades; nunca fundo liso digital
+— Cor de assinatura: vermelho editorial #A92E1D e vermelho escuro #7F2117
+— Texto: preto suave #292725 e cinza manuscrito #77736C; branco papel #F8F7F2
+— Apoio ocasional (5-10% no máximo): amarelo marca-texto #E6C84F, rosa fita #E8B7B0, azul fita #AFC4D1
+— NUNCA: neon, gradiente forte, combinação saturada
 
-TEXTURA E MATERIALIDADE (essencial, não decorativo):
-— Papel com grão visível em toda a composição — bege, kraft, papel de carta
-— Recortes com borda de fita adesiva translúcida (lisa, xadrez ou washi) presos em ângulo leve
-— Fotos como polaroid: moldura branca grossa, leve rotação, sombra suave projetada
-— Elementos desenhados à mão em terracota: círculos à volta de palavras, setas curvas, sublinhados, asteriscos
-— Sombra sempre suave e quente — nunca sombra dura ou brilho digital
+FOTOGRAFIA (a foto entra como RECORTE colado na composição, nunca fundo full-bleed):
+— flash direto, granulação, enquadramento imperfeito, tom documental
+— objetos cotidianos, mesa de trabalho, caderno anotado, print de campanha, screenshot, material de arquivo
+— levemente dessaturada, contraste moderado, temperatura levemente quente
+— NUNCA banco de imagens corporativo, nunca sorriso posado
 
-FOTOGRAFIA:
-— Luz natural quente, grain analógico, cenas reais de trabalho: mesa, caderno com anotação, tela de computador, print de campanha, reunião, café ao lado do teclado
-— Pessoas parciais ou anónimas — mãos, costas, silhueta. Nunca sorriso posado de banco de imagens
-— A foto entra como RECORTE colado na composição, não como fundo full-bleed que ocupa tudo
+COMPOSIÇÃO: assimétrica e propositalmente imperfeita — blocos deslocados, sobreposição, elementos cortados pela margem, imagens inclinadas, MUITO espaço negativo. O conteúdo deve parecer montado, não diagramado. Sombras suaves e difusas ("várias folhas sobre uma mesa"). Bordas finas 1px em cinza/preto de baixa intensidade.
 
-DIREÇÃO DE COMPOSIÇÃO:
-— Assimetria de moodboard: recorte num canto, texto grande noutro, anotação à mão ligando os dois
-— Muito espaço de papel respirando — a composição não preenche tudo
-— Hierarquia clara: uma ideia por peça
+VOCABULÁRIO GRÁFICO: fita adesiva translúcida (rosa, azul, bege, amarela), setas finas desenhadas à mão, círculos imperfeitos à volta de palavras, sublinhado manual, rabiscos pontuais, selos de arquivo ("CASE STUDY", "OBSERVAÇÃO", "NÃO PULE"), papel rasgado, recortes sobrepostos, microtexto de classificação ("NOTA #03", "ARQUIVO 004").
 
-SENSAÇÃO: alguém inteligente mostrando o que descobriu, com o material espalhado na mesa. Autoridade sem distância. Caloroso, direto, brasileiro.
+RITMO: cada slide é uma página diferente da mesma publicação — alterna impacto (uma frase enorme), aprofundamento (texto + imagem + anotação), referência (print/documento) e respiro (área vazia + uma frase). Consistência de paleta e textura, variação de composição.
 
-TOM VISUAL: editorial · colagem · papel · terracota · anotado à mão · analógico · quente · inteligente
-
-PROIBIDO ABSOLUTAMENTE: fundo branco puro ou cinza frio, cores saturadas vibrantes dominando a peça, mockup 3D, elementos corporativos, ícones genéricos de banco, gradiente colorido artificial, estética de coach ou LinkedIn, brilho digital, sombra dura.`,
+PROIBIDO ABSOLUTAMENTE: gradiente moderno, glassmorphism, 3D corporativo, ícones genéricos, emojis, cards arredondados demais, excesso de sombras, fundo totalmente liso, tipografia futurista, mockup tecnológico, simetria perfeita em todos os slides, aparência de PowerPoint ou template de Canva.`,
     copyDNA:`COPY PARA ANA MOUTINHO
 PÚBLICO: dono de negócio que já vende e agora precisa fazer a empresa crescer sem carregar tudo sozinho. Nunca falar com quem "quer abrir um negócio".
 IDEIA CENTRAL DA MARCA: como construir empresas maiores sem construir uma vida menor.
