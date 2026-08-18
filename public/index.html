@@ -141,7 +141,7 @@ body{font-family:var(--font-body);background:var(--pale);color:var(--dark);min-h
 .slide-card::before{content:'';position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,.72) 0%,rgba(0,0,0,.2) 55%,rgba(0,0,0,.05) 100%);z-index:1;pointer-events:none;}
 /* Slide já renderizado com a tipografia da marca: nada por cima. */
 .slide-card.has-img::before{display:none;}
-.slide-card.has-img .slide-img{object-fit:contain;background:#EFEBE1;}
+.slide-card.has-img .slide-img{object-fit:contain;background:#F1F1EC;}
 .slide-card.has-img .slide-number{background:rgba(41,39,37,.72);color:#F7F3EA;padding:3px 8px;border-radius:99px;display:inline-block;}
 .slide-card .slide-img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;border-radius:var(--radius);z-index:0;}
 .slide-card-content{position:relative;z-index:2;}
@@ -1210,7 +1210,7 @@ function selectCarouselTemplate(templateId) {
 /* ── LIGHTBOX ── */
 function openLightbox(index){lbCurrentIndex=index;document.getElementById('slideLightbox').classList.add('visible');lbRenderSlide();lbBuildStrip();}
 function closeLightbox(){document.getElementById('slideLightbox').classList.remove('visible');if(lbSlides.length)renderSlidesPreview(lbSlides);}
-function lbRenderSlide(){const i=lbCurrentIndex,slide=lbSlides[i],img=currentCarouselImages[i],total=lbSlides.length;document.getElementById('lbSlideNum').textContent=`Slide ${i+1} / ${total}`;document.getElementById('lbSlideHeading').textContent=slide?.heading||'–';document.getElementById('lbSlideBody').textContent=slide?.body||'';const wrap=document.getElementById('lbImageWrap');const h=(slide?.heading||'').replace(/</g,'&lt;');const b=(slide?.body||'').replace(/</g,'&lt;');if(img){/* a imagem já vem renderizada com a tipografia da marca — não sobrepor overlay */wrap.innerHTML=`<img src="${img}" style="width:100%;height:100%;object-fit:contain;display:block;background:${SlideRenderer.C.bege};"/>`;}else{wrap.innerHTML=`<div class="lb-image-placeholder"><div class="ph-icon">🖼️</div><div>Slide ${i+1} — imagem não gerada</div></div>`;}document.getElementById('lbPrevBtn').disabled=(i===0);document.getElementById('lbNextBtn').disabled=(i===total-1);const status=lbStatusStore[i]||'pendente';document.getElementById('lbBtnApprove').classList.toggle('active',status==='aprovado');document.getElementById('lbBtnChange').classList.toggle('active',status==='alteracao');lbRenderComments(i);lbUpdateStrip();}
+function lbRenderSlide(){const i=lbCurrentIndex,slide=lbSlides[i],img=currentCarouselImages[i],total=lbSlides.length;document.getElementById('lbSlideNum').textContent=`Slide ${i+1} / ${total}`;document.getElementById('lbSlideHeading').textContent=slide?.heading||'–';document.getElementById('lbSlideBody').textContent=slide?.body||'';const wrap=document.getElementById('lbImageWrap');const h=(slide?.heading||'').replace(/</g,'&lt;');const b=(slide?.body||'').replace(/</g,'&lt;');if(img){/* a imagem já vem renderizada com a tipografia da marca — não sobrepor overlay */wrap.innerHTML=`<img src="${img}" style="width:100%;height:100%;object-fit:contain;display:block;background:${SlideRenderer.C.papel};"/>`;}else{wrap.innerHTML=`<div class="lb-image-placeholder"><div class="ph-icon">🖼️</div><div>Slide ${i+1} — imagem não gerada</div></div>`;}document.getElementById('lbPrevBtn').disabled=(i===0);document.getElementById('lbNextBtn').disabled=(i===total-1);const status=lbStatusStore[i]||'pendente';document.getElementById('lbBtnApprove').classList.toggle('active',status==='aprovado');document.getElementById('lbBtnChange').classList.toggle('active',status==='alteracao');lbRenderComments(i);lbUpdateStrip();}
 // Baixa o slide que está aberto no lightbox.
 async function lbBaixarSlide(){
   const img=currentCarouselImages[lbCurrentIndex];
@@ -1238,299 +1238,382 @@ const BRAND_ACCENT={pessoal:{accent:'#8B7355',bg:'#1A1612',handle:'@analuisa.mou
 
 /* ── SlideRenderer ── */
 const SlideRenderer={
-  // Textura de papel (grão fino, 128px, embutida) — a base neutra da marca
-  // nunca é branco chapado: as referências todas partem de papel bege.
+  // Textura de impressão (grão 128px embutido). O papel é NEUTRO levemente
+  // acinzentado — não bege de marca de arquitetura (design system V2 §4).
   PAPER:'data:image/png;base64,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',
-  // ── Paleta da marca ─────────────────────────────────────────────────────
-  // Paleta do design system Editorial Scrapbook: 70-80% papel, 10-20%
-  // vermelho editorial (assinatura), 5-10% apoio (rosa/azul/amarelo).
-  C:{terracota:'#A92E1D',terracotaEsc:'#7F2117',vinho:'#7F2117',salvia:'#7C8A6E',
-     bege:'#F3F0E8',kraft:'#EAE6DC',creme:'#F8F7F2',tinta:'#292725',cinza:'#77736C',
-     realce:'#E8B7B0',amarelo:'#E6C84F',azul:'#AFC4D1'},
+
+  // ── Paleta V2 ───────────────────────────────────────────────────────────
+  // O vermelho precisa aparecer em TODOS os slides, nem que seja num detalhe.
+  // Máximo duas cores de apoio por slide. Marrom e cobre não são cores.
+  C:{papel:'#F1F1EC',papelQuente:'#E9E5DA',recorte:'#FAF9F4',
+     vermelho:'#B32616',vermelhoEsc:'#811F16',tinta:'#242321',cinza:'#67645F',
+     amarelo:'#E3C44A',rosa:'#E8B8B2',azul:'#AFC6D3',
+     // aliases mantidos para os tokens já gravados nos templates
+     terracota:'#B32616',terracotaEsc:'#811F16',vinho:'#811F16',
+     bege:'#F1F1EC',kraft:'#E9E5DA',creme:'#FAF9F4',realce:'#E8B8B2',salvia:'#7C8A6E'},
 
   _esc(t){return String(t==null?'':t).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');},
-  // Variação determinística por slide: o número do slide semeia escolhas de
-  // fita, rotação e lado dos elementos. Mesmo slide → sempre igual (re-render
-  // estável); slides diferentes → composições diferentes, como um designer
-  // alternando a colagem ao longo do carrossel — em vez de um template clonado.
+  _palavras(t){return String(t||'').trim().split(/\s+/).filter(Boolean).length;},
+
+  // Variação determinística por slide (mesmo slide → sempre igual).
   _variante(m){
     const seed=((m.slideNumber||1)*31+(m.totalSlides||1)*7)>>>0;
     const pick=(arr,salt)=>arr[(seed+salt)%arr.length];
     const FITAS=[
-      {cor:'rgba(232,183,176,.75)'},
-      {cor:'rgba(232,183,176,.6)',xadrez:true},
-      {cor:'rgba(175,196,209,.7)'},
-      {cor:'rgba(175,196,209,.55)',xadrez:true},
-      {cor:'rgba(230,200,79,.5)'},
-      {cor:'rgba(234,230,220,.9)'},
+      {cor:'rgba(232,184,178,.78)'},
+      {cor:'rgba(175,198,211,.72)'},
+      {cor:'rgba(227,196,74,.55)'},
+      {cor:'rgba(233,229,218,.92)'},
+      {cor:'rgba(232,184,178,.6)',xadrez:true},
+      {cor:'rgba(175,198,211,.55)',xadrez:true},
     ];
-    return{
-      pick,
-      rot:(base,salt)=>base+(((seed+salt)%5)-2),
-      fita1:pick(FITAS,0),
-      fita2:pick(FITAS,2),
-      lado:(seed%2)===0,
-    };
+    return{pick,rot:(base,salt)=>base+(((seed+salt)%5)-2),fita1:pick(FITAS,0),fita2:pick(FITAS,3),lado:(seed%2)===0,seed};
   },
+
   _fit(text,sizes){const len=(text||'').length;for(const[max,size]of sizes){if(len<=max)return size;}return sizes[sizes.length-1][1];},
-  _paper(op){return`<div style="position:absolute;inset:0;z-index:1;background-image:url('${this.PAPER}');background-repeat:repeat;background-size:128px 128px;opacity:${op==null?.55:op};"></div>`;},
+  _paper(op){return`<div style="position:absolute;inset:0;z-index:1;background-image:url('${this.PAPER}');background-repeat:repeat;background-size:128px 128px;opacity:${op==null?.5:op};"></div>`;},
 
-  // Destaca as últimas palavras: itálico serifado, marca-texto salmão ou
-  // círculo desenhado à mão — os três acentos que aparecem nas referências.
-  _emphasize(text,mode,color){
+  // ── Tipografia ──────────────────────────────────────────────────────────
+  // REGRA DURA (V2 §5): manuscrita só em intervenção de até 12 palavras.
+  // Acima disso vira sans funcional — anotação humana, nunca fonte decorativa.
+  LIMITE_MANUSCRITA:12,
+  _anotacao(txt,cor,size,style){
+    if(!txt)return'';
+    const t=this._esc(txt);
+    if(this._palavras(txt)<=this.LIMITE_MANUSCRITA)
+      return`<span style="font-family:'Caveat',cursive;font-size:${size||44}px;font-weight:600;line-height:1.3;color:${cor};${style||''}">${t}</span>`;
+    return`<span style="font-family:'Inter',sans-serif;font-size:${Math.round((size||44)*.62)}px;font-weight:400;line-height:1.6;color:${cor};${style||''}">${t}</span>`;
+  },
+  _serif(txt,size,cor,peso,extra){
+    return`<span style="font-family:'Playfair Display',serif;font-weight:${peso||700};font-size:${size}px;line-height:1.06;letter-spacing:-.018em;color:${cor};${extra||''}">${txt}</span>`;
+  },
+  _sans(txt,size,cor,extra){
+    return`<span style="font-family:'Inter',sans-serif;font-size:${size}px;font-weight:400;line-height:1.6;color:${cor};${extra||''}">${this._esc(txt)}</span>`;
+  },
+  _mono(txt,cor,size){
+    return`<span style="font-family:'Courier Prime',monospace;font-size:${size||22}px;letter-spacing:.18em;color:${cor};">${this._esc(txt)}</span>`;
+  },
+  // Uma palavra em vermelho dentro da headline (V2 §10, composição 03)
+  _destaque(text,cor){
     const t=this._esc(text);
-    if(!t||mode==='none')return t;
-    const words=t.split(/\s+/);
-    if(words.length<4)return t;
-    const n=Math.min(3,Math.max(1,Math.round(words.length/5)));
-    const head=words.slice(0,words.length-n).join(' ');
-    const tail=words.slice(words.length-n).join(' ');
-    if(mode==='marker')return`${head} <span style="background:${color||this.C.realce};padding:0 .14em;white-space:nowrap;box-decoration-break:clone;-webkit-box-decoration-break:clone;">${tail}</span>`;
-    if(mode==='color')return`${head} <span style="color:${color||this.C.terracota};">${tail}</span>`;
-    return`${head} <em style="font-style:italic;font-weight:inherit;">${tail}</em>`;
+    const w=t.split(/\s+/);
+    if(w.length<3)return t;
+    const i=w.length-1-((w.length>6)?1:0);
+    w[i]=`<span style="color:${cor};">${w[i]}</span>`;
+    return w.join(' ');
   },
 
-  // Elipse desenhada à mão à volta de uma palavra (ref 1 e ref 4)
-  _circulo(color){
-    return`<svg viewBox="0 0 400 130" preserveAspectRatio="none" style="position:absolute;inset:-18px -34px;width:calc(100% + 68px);height:calc(100% + 36px);">
-<path d="M200 12 C 96 10, 20 36, 16 66 C 12 98, 108 120, 206 118 C 306 116, 388 96, 386 64 C 384 34, 300 12, 188 14" fill="none" stroke="${color}" stroke-width="3.2" stroke-linecap="round" opacity=".85"/>
-</svg>`;
+  // ── Assinatura: alterna posição (V2 §12) — nunca centralizada em todas ──
+  _assinatura(m,cor){
+    const n=String(m.slideNumber||1).padStart(2,'0'),t=String(m.totalSlides||1).padStart(2,'0');
+    const arq=`ANA MOUTINHO / ARCHIVE ${String(100+(m.totalSlides||8)).slice(-3)}`;
+    const s=(m.slideNumber||1)%4;
+    const base=`font-family:'Courier Prime',monospace;font-size:20px;letter-spacing:.16em;color:${cor};z-index:7;`;
+    if(m.funcao==='CAPA'||m.slideNumber===1)
+      return`<div style="position:absolute;bottom:64px;left:92px;${base}">${arq}</div>`;
+    if(s===1)return`<div style="position:absolute;bottom:60px;left:92px;${base}">@analuisa.moutinho · ${n}—${t}</div>`;
+    if(s===2)return`<div style="position:absolute;top:64px;right:92px;${base}">${n} — ${t}</div>`;
+    if(s===3)return`<div style="position:absolute;bottom:60px;right:92px;${base}">@analuisa.moutinho · ${n}—${t}</div>`;
+    return`<div style="position:absolute;top:50%;left:44px;transform:rotate(-90deg) translateY(-50%);transform-origin:left center;${base}">ARCHIVE · ${n}—${t}</div>`;
   },
-  // ── Elementos de colagem ────────────────────────────────────────────────
-  // Fita adesiva: lisa, xadrez (gingham) ou washi translúcida, sempre torta.
-  _fita(op){
-    const o = op || {};
-    const cor = o.cor || 'rgba(243,201,182,.72)';
-    const w = o.w || 190, h = o.h || 54, rot = o.rot == null ? -7 : o.rot;
-    const xadrez = o.xadrez
-      ? `background-image:linear-gradient(${cor} 50%,transparent 50%),linear-gradient(90deg,${cor} 50%,transparent 50%);background-size:14px 14px;background-color:rgba(255,255,255,.55);`
+  _classificacao(txt,cor){
+    return`<div style="position:absolute;top:64px;left:92px;z-index:6;">${this._mono(txt,cor)}</div>`;
+  },
+
+  // ── Elementos analógicos (V2 §7) ────────────────────────────────────────
+  // REGRA: cada intervenção tem função. Fita só existe presa a um objeto;
+  // seta só existe apontando algo e vem com nota curta; círculo só destaca
+  // palavra ou dado. Nada de decoração flutuante.
+
+  // Artefato = a evidência: anúncio, print, documento, recorte, foto.
+  // `estilo` muda a materialidade (nem todo recorte é polaroid).
+  _artefato(photoUrl,o){
+    const C=this.C,e=o.estilo||'polaroid',rot=o.rot==null?2:o.rot;
+    const conteudo=photoUrl
+      ?`<img class="sr-photo" src="${photoUrl}" style="inset:0;width:100%;height:100%;object-fit:cover;" crossorigin="anonymous"/>`
+      :`<div style="position:absolute;inset:0;background:${o.fallback||C.papelQuente};"></div>`;
+    const molduras={
+      polaroid:`background:${C.recorte};padding:${o.borda||16}px ${o.borda||16}px ${(o.borda||16)*2.4}px;box-shadow:0 16px 40px rgba(36,35,33,.20);`,
+      pagina:`background:${C.recorte};padding:10px;border:1px solid rgba(36,35,33,.16);box-shadow:0 10px 26px rgba(36,35,33,.14);`,
+      rasgado:`background:${C.recorte};padding:14px;box-shadow:0 12px 30px rgba(36,35,33,.16);clip-path:polygon(0 2%,4% 0,52% 3%,100% 0,98% 48%,100% 98%,46% 100%,2% 97%);`,
+      cru:`box-shadow:0 12px 30px rgba(36,35,33,.22);`,
+    };
+    return`<div style="position:absolute;${o.pos};width:${o.w};height:${o.h};transform:rotate(${rot}deg);z-index:${o.z||3};${molduras[e]||molduras.polaroid}">
+<div style="position:relative;width:100%;height:100%;overflow:hidden;">${conteudo}</div></div>`;
+  },
+
+  // Fita — só chamar junto de um artefato (nunca solta)
+  _fita(o){
+    const cor=o.cor||'rgba(232,184,178,.78)',w=o.w||180,h=o.h||46,rot=o.rot==null?-8:o.rot;
+    const fundo=o.xadrez
+      ? `background-image:linear-gradient(${cor} 50%,transparent 50%),linear-gradient(90deg,${cor} 50%,transparent 50%);background-size:13px 13px;background-color:rgba(255,255,255,.5);`
       : `background:${cor};`;
-    return`<div style="position:absolute;${o.pos||'top:0;left:0;'}width:${w}px;height:${h}px;${xadrez}transform:rotate(${rot}deg);z-index:${o.z||4};box-shadow:0 2px 6px rgba(40,26,20,.10);"></div>`;
+    return`<div style="position:absolute;${o.pos}width:${w}px;height:${h}px;${fundo}transform:rotate(${rot}deg);z-index:${o.z||5};box-shadow:0 2px 5px rgba(36,35,33,.10);"></div>`;
   },
-  // Seta curva desenhada à mão.
-  // ATENÇÃO — duas armadilhas do html2canvas com SVG, testadas e confirmadas:
-  // 1) posição em percentagem nunca é desenhada (fica invisível no PNG final).
-  // 2) `right:` combinado com um tamanho diferente do viewBox nativo também
-  //    fica invisível — por isso o posicionamento (incluindo right) vai sempre
-  //    num <div> wrapper, e o <svg> interno ocupa 100% dele a partir de 0,0.
-  _seta(cor,style,flip){
-    return`<div style="position:absolute;${style};z-index:4;">
-<svg viewBox="0 0 200 220" style="position:absolute;top:0;left:0;width:100%;height:100%;${flip?'transform:scaleX(-1);':''}">
-<path d="M28 16 C 96 22, 150 62, 138 118 C 130 158, 84 176, 62 152 C 44 132, 66 106, 92 118 C 122 132, 128 176, 96 200" fill="none" stroke="${cor}" stroke-width="4" stroke-linecap="round" opacity=".9"/>
-<path d="M96 200 L 74 186 M96 200 L 108 176" fill="none" stroke="${cor}" stroke-width="4" stroke-linecap="round" opacity=".9"/>
-</svg></div>`;
+
+  // O html2canvas só desenha SVG posicionado por top/left em pixels: com
+  // bottom/right ou percentagem, o elemento existe no DOM mas sai em branco
+  // no PNG. Este helper converte para top/left antes de desenhar.
+  _svgPos(style,w,h){
+    const S=1024,A=1536;
+    const num=(re)=>{const m=String(style).match(re);return m?parseFloat(m[1]):null;};
+    const bottom=num(/bottom:\s*(-?[\d.]+)px/), right=num(/right:\s*(-?[\d.]+)px/);
+    let out=String(style).replace(/bottom:\s*-?[\d.]+px;?/,'').replace(/right:\s*-?[\d.]+px;?/,'');
+    if(bottom!=null)out+=`top:${A-bottom-(h||120)}px;`;
+    if(right!=null)out+=`left:${S-right-(w||110)}px;`;
+    return out;
   },
-  // Rabisco/squiggle curto
-  _rabisco(cor,style){
-    return`<div style="position:absolute;${style};z-index:4;">
-<svg viewBox="0 0 220 60" style="position:absolute;top:0;left:0;width:100%;height:100%;">
-<path d="M6 40 C 40 6, 62 6, 84 34 C 106 62, 130 62, 152 34 C 172 8, 196 8, 214 30" fill="none" stroke="${cor}" stroke-width="3.4" stroke-linecap="round" opacity=".85"/>
-</svg></div>`;
+  // Seta + nota: assinatura obrigatoriamente acompanhada (V2 §7)
+  _setaNota(cor,nota,o){
+    const dir=o.dir==='esq';
+    // O html2canvas não desenha SVG que seja filho absoluto direto do slide;
+    // dentro de um div posicionado, desenha. Por isso o envelope.
+    const seta=`<div style="position:absolute;${this._svgPos(o.setaPos,o.setaW||110,o.setaH||124)}width:${o.setaW||110}px;height:${o.setaH||124}px;z-index:6;${dir?'transform:scaleX(-1);':''}">
+<svg viewBox="0 0 160 180" style="width:100%;height:100%;display:block;overflow:visible;">
+<path d="M22 14 C 84 20, 128 58, 116 108 C 108 146, 68 160, 50 138 C 36 120, 56 98, 78 108 C 104 120, 108 156, 82 176" fill="none" stroke="${cor}" stroke-width="4" stroke-linecap="round" opacity=".92"/>
+<path d="M82 176 L 62 164 M82 176 L 92 154" fill="none" stroke="${cor}" stroke-width="4" stroke-linecap="round" opacity=".92"/></svg></div>`;
+    const txt=nota?`<div style="position:absolute;${o.notaPos}max-width:${o.notaW||300}px;z-index:6;">${this._anotacao(nota,cor,38)}</div>`:'';
+    return seta+txt;
   },
-  // Sublinhado à mão, por baixo de uma palavra
+
+  // Círculo à mão — só à volta de palavra/dado (V2 §7)
+  _circulo(cor){
+    return`<svg viewBox="0 0 400 130" preserveAspectRatio="none" style="position:absolute;inset:-16px -32px;width:calc(100% + 64px);height:calc(100% + 32px);overflow:visible;">
+<path d="M200 12 C 96 10, 20 36, 16 66 C 12 98, 108 120, 206 118 C 306 116, 388 96, 386 64 C 384 34, 300 12, 188 14" fill="none" stroke="${cor}" stroke-width="3.4" stroke-linecap="round" opacity=".9"/></svg>`;
+  },
   _sublinhado(cor){
-    return`<div style="position:absolute;left:-6px;right:-6px;bottom:-14px;height:22px;z-index:3;">
-<svg viewBox="0 0 300 26" preserveAspectRatio="none" style="position:absolute;top:0;left:0;width:100%;height:100%;">
-<path d="M4 14 C 70 4, 150 22, 296 8" fill="none" stroke="${cor}" stroke-width="5" stroke-linecap="round" opacity=".9"/>
-</svg></div>`;
+    return`<svg viewBox="0 0 300 26" preserveAspectRatio="none" style="position:absolute;left:-6px;right:-6px;bottom:-16px;width:calc(100% + 12px);height:22px;overflow:visible;">
+<path d="M4 14 C 70 4, 150 22, 296 8" fill="none" stroke="${cor}" stroke-width="5" stroke-linecap="round" opacity=".92"/></svg>`;
   },
-  // Recorte de jornal/print colado, saindo pela borda
-  _recorte(photoUrl,o){
-    const rot = o.rot == null ? 3 : o.rot;
-    const fundo = photoUrl
-      ? `<img class="sr-photo" src="${photoUrl}" style="inset:0;width:100%;height:100%;object-fit:cover;" crossorigin="anonymous"/>`
-      : `<div style="position:absolute;inset:0;background:${o.fallback||'#D9D2C4'};"></div>`;
-    return`<div style="position:absolute;${o.pos};width:${o.w};height:${o.h};transform:rotate(${rot}deg);z-index:${o.z||2};background:#FFF;padding:${o.borda||14}px;box-shadow:0 14px 38px rgba(40,26,20,.20);">
-<div style="position:relative;width:100%;height:100%;overflow:hidden;">${fundo}</div></div>`;
-  },
-  _kicker(txt,color){
-    return`<div style="font-family:'Inter',sans-serif;font-size:20px;font-weight:600;letter-spacing:.24em;text-transform:uppercase;color:${color};">${this._esc(txt)}</div>`;
-  },
-  _assinatura(handle,color,align){
-    return`<div style="font-family:'Inter',sans-serif;font-size:21px;font-weight:400;letter-spacing:.2em;color:${color};text-align:${align||'left'};">${this._esc(handle)}</div>`;
-  },
-  _counter(n,total,color){
-    if(!n||!total||total<2)return'';
-    const p=x=>String(x).padStart(2,'0');
-    return`<div style="position:absolute;top:60px;right:74px;font-family:'Courier Prime',monospace;font-size:22px;letter-spacing:.14em;color:${color};opacity:.6;z-index:4;">${p(n)} — ${p(total)}</div>`;
-  },
-  // Microtexto de classificação de arquivo (§4 família mono): "NOTA #04"
-  _classificacao(m,tk){
-    const txt=tk.classificacao||('NOTA #'+String(m.slideNumber||1).padStart(2,'0'));
-    return`<div style="position:absolute;top:64px;left:88px;z-index:4;font-family:'Courier Prime',monospace;font-size:22px;letter-spacing:.2em;color:${this.C.cinza};">${this._esc(txt)}</div>`;
-  },
-  // Selo de arquivo (§9): "CASE STUDY", "NÃO PULE" — moldura fina, mono
   _selo(txt,cor,style,rot){
-    return`<div style="position:absolute;${style};z-index:5;transform:rotate(${rot==null?-3:rot}deg);font-family:'Courier Prime',monospace;font-size:21px;font-weight:700;letter-spacing:.16em;color:${cor};border:1.5px solid ${cor};padding:8px 18px;opacity:.85;">${this._esc(txt)}</div>`;
+    return`<div style="position:absolute;${style}z-index:6;transform:rotate(${rot==null?-4:rot}deg);font-family:'Courier Prime',monospace;font-size:20px;font-weight:700;letter-spacing:.16em;color:${cor};border:1.5px solid ${cor};padding:7px 16px;opacity:.9;">${this._esc(txt)}</div>`;
   },
 
-  // ── CAPA: display serifado terracota, frase circulada à mão, recortes ───
-  _styleCapa(photoUrl,m,tk){
-    const C=this.C,bg=tk.bg||C.bege,tint=tk.text||C.terracota,v=this._variante(m);
-    const size=this._fit(m.heading,[[30,124],[48,104],[70,86],[999,70]]);
-    return`<div style="position:absolute;inset:0;background:${bg};z-index:0;"></div>${this._paper()}
-${this._recorte(photoUrl,{pos:v.lado?'top:-40px;right:-56px;':'top:-40px;left:-56px;',w:'44%',h:'30%',rot:v.rot(v.lado?4:-4,1),z:2})}
-${this._fita({pos:v.lado?'top:14px;right:16%;':'top:14px;left:16%;',w:150,h:46,rot:v.rot(-14,2),z:3,...v.fita1})}
-${this._recorte(null,{pos:v.lado?'bottom:-52px;left:-60px;':'bottom:-52px;right:-60px;',w:'30%',h:'22%',rot:v.rot(-6,3),z:2,fallback:'#EAE6DC'})}
-${this._fita({pos:v.lado?'bottom:150px;left:14%;':'bottom:150px;right:14%;',w:130,h:42,rot:v.rot(9,4),z:3,...v.fita2})}
-<div style="position:absolute;inset:0;z-index:5;padding:130px 92px;display:flex;flex-direction:column;justify-content:center;">
-<div style="font-family:'Playfair Display',serif;font-weight:700;font-size:${size}px;line-height:1.04;letter-spacing:-.02em;color:${tint};">${this._esc(m.heading)}</div>
-${m.body?((m.body.length<=42)?`<div style="position:relative;display:inline-block;align-self:flex-start;margin-top:52px;padding:10px 26px;">
+  // ═══ BIBLIOTECA DE COMPOSIÇÕES (V2 §10) ═══════════════════════════════
+  // Cada composição tem estrutura própria. Densidade alvo 55-80% em slides
+  // de desenvolvimento; nenhuma área vazia contínua acima de ~30%.
+
+  // 01 — CAPA-MANIFESTO: headline dominante, artefato saindo da margem,
+  // anotação curta, sem subtítulo longo.
+  _cCapa(photoUrl,m,tk){
+    const C=this.C,v=this._variante(m),tint=tk.text||C.vermelho;
+    const size=this._fit(m.heading,[[28,140],[44,118],[62,98],[84,84],[999,70]]);
+    return`<div style="position:absolute;inset:0;background:${tk.bg||C.papel};z-index:0;"></div>${this._paper()}
+${this._artefato(photoUrl,{pos:v.lado?'top:-56px;right:-70px;':'top:-56px;left:-70px;',w:'46%',h:'27%',rot:v.rot(v.lado?4:-4,1),z:3,estilo:'pagina'})}
+${this._fita({pos:v.lado?'top:112px;right:6%;':'top:112px;left:6%;',w:160,h:44,rot:v.rot(v.lado?-13:13,2),z:5,...v.fita1})}
+${this._artefato(null,{pos:v.lado?'bottom:-40px;left:-52px;':'bottom:-40px;right:-52px;',w:'26%',h:'17%',rot:v.rot(-7,3),z:2,estilo:'rasgado',fallback:C.papelQuente})}
+<div style="position:absolute;top:290px;bottom:200px;left:92px;right:96px;z-index:6;display:flex;flex-direction:column;justify-content:flex-start;">
+${this._serif(this._destaque(m.heading,tint),size,C.tinta,700)}
+${m.body?`<div style="margin-top:64px;align-self:flex-start;"><div style="position:relative;display:inline-block;padding:10px 26px;">${this._circulo(tint)}${this._anotacao(m.body,tint,46)}</div></div>`:''}
+</div>
+${this._selo('ARRASTA →',tint,'bottom:150px;right:96px;',-3)}
+${this._assinatura(m,C.cinza)}`;
+  },
+
+  // 02 — ARTEFATO CENTRAL: a evidência ocupa 45-65%, título pequeno acima,
+  // seta apontando um detalhe, comentário curto abaixo.
+  _cArtefato(photoUrl,m,tk){
+    const C=this.C,v=this._variante(m),tint=tk.accent||C.vermelho;
+    const size=this._fit(m.heading,[[34,58],[56,50],[999,42]]);
+    return`<div style="position:absolute;inset:0;background:${tk.bg||C.papel};z-index:0;"></div>${this._paper()}
+${this._classificacao(tk.classificacao||('EVIDÊNCIA '+String(m.slideNumber||1).padStart(2,'0')),C.cinza)}
+<div style="position:absolute;top:150px;left:92px;right:200px;z-index:6;">
+${this._serif(this._destaque(m.heading,tint),size,C.tinta,600)}
+</div>
+${this._artefato(photoUrl,{pos:'top:300px;left:96px;',w:'62%',h:'46%',rot:v.rot(v.lado?-2:2,1),z:3,estilo:v.lado?'polaroid':'pagina'})}
+${this._fita({pos:v.lado?'top:282px;left:20%;':'top:282px;left:52%;',w:170,h:48,rot:v.rot(v.lado?-10:9,2),z:5,...v.fita1})}
+${this._setaNota(tint,tk.nota||'olha esse detalhe',{setaPos:'top:560px;right:110px;',dir:v.lado?'dir':'esq',notaPos:'top:700px;right:96px;text-align:right;',notaW:280})}
+${m.body?`<div style="position:absolute;bottom:150px;left:96px;right:300px;z-index:6;">${this._sans(m.body,29,C.cinza)}</div>`:''}
+${this._assinatura(m,C.cinza)}`;
+  },
+
+  // 03 — FRASE BRUTAL: duas escalas tipográficas, uma palavra vermelha,
+  // microtexto lateral. Sem fotografia obrigatória.
+  _cFrase(photoUrl,m,tk){
+    const C=this.C,v=this._variante(m),tint=tk.accent||C.vermelho;
+    const size=this._fit(m.heading,[[24,156],[40,128],[58,104],[80,86],[999,70]]);
+    return`<div style="position:absolute;inset:0;background:${tk.bg||C.papel};z-index:0;"></div>${this._paper()}
+${this._classificacao(tk.classificacao||('NOTA '+String(m.slideNumber||1).padStart(2,'0')),C.cinza)}
+<div style="position:absolute;top:0;bottom:0;left:92px;right:150px;z-index:6;display:flex;flex-direction:column;justify-content:center;">
+${this._serif(this._destaque(m.heading,tint),size,C.tinta,700)}
+${m.body?`<div style="margin-top:44px;max-width:620px;${v.lado?'':'align-self:flex-end;text-align:right;'}">${this._sans(m.body,30,C.cinza)}</div>`:''}
+</div>
+<div style="position:absolute;top:50%;right:52px;transform:rotate(90deg) translateY(-50%);transform-origin:right center;z-index:6;">${this._mono(tk.lateral||'PENSE NISSO ANTES DA PRÓXIMA DECISÃO',C.cinza,19)}</div>
+<div style="position:absolute;bottom:120px;left:92px;width:180px;height:4px;background:${tint};z-index:6;"></div>
+${this._assinatura(m,C.cinza)}`;
+  },
+
+  // 04 — PÁGINA ANALISADA: artefato inclinado + 2-3 marcações + conclusão sans
+  _cAnalise(photoUrl,m,tk){
+    const C=this.C,v=this._variante(m),tint=tk.accent||C.vermelho;
+    const size=this._fit(m.heading,[[30,56],[52,48],[999,40]]);
+    return`<div style="position:absolute;inset:0;background:${tk.bg||C.papel};z-index:0;"></div>${this._paper()}
+${this._classificacao(tk.classificacao||'PÁGINA ANALISADA',C.cinza)}
+<div style="position:absolute;top:150px;left:92px;right:${v.lado?'260px':'92px'};z-index:6;">
+${this._serif(this._destaque(m.heading,tint),size,C.tinta,600)}
+${m.body?`<div style="margin-top:26px;max-width:660px;">${this._sans(m.body,28,C.cinza)}</div>`:''}
+</div>
+${this._artefato(photoUrl,{pos:v.lado?'bottom:150px;left:70px;':'bottom:150px;right:70px;',w:'60%',h:'44%',rot:v.rot(v.lado?-3.5:3.5,1),z:3,estilo:'pagina'})}
+${this._fita({pos:v.lado?'bottom:610px;left:9%;':'bottom:610px;right:9%;',w:186,h:50,rot:v.rot(v.lado?-12:12,2),z:5,...v.fita1})}
+${this._selo(tk.selo||'IMPORTANTE',tint,v.lado?'bottom:520px;right:88px;':'bottom:520px;left:88px;',v.lado?5:-5)}
+${this._setaNota(tint,tk.nota||'o detalhe está aqui',{setaPos:v.lado?'bottom:300px;right:120px;':'bottom:300px;left:120px;',dir:v.lado?'dir':'esq',setaW:96,setaH:110,notaPos:v.lado?'bottom:210px;right:80px;text-align:right;':'bottom:210px;left:80px;',notaW:250})}
+${this._assinatura(m,C.cinza)}`;
+  },
+
+  // 05 — LISTA EDITORIAL: número enorme, itens curtos, elemento pela borda
+  _cLista(photoUrl,m,tk){
+    const C=this.C,v=this._variante(m),tint=tk.accent||C.vermelho;
+    const num=String(m.slideNumber||1).padStart(2,'0');
+    const size=this._fit(m.heading,[[34,72],[56,62],[80,52],[999,44]]);
+    return`<div style="position:absolute;inset:0;background:${tk.bg||C.papel};z-index:0;"></div>${this._paper()}
+${this._artefato(photoUrl,{pos:v.lado?'bottom:-60px;right:-80px;':'top:-60px;right:-80px;',w:'34%',h:'26%',rot:v.rot(v.lado?6:-6,1),z:2,estilo:'cru'})}
+<div style="position:absolute;top:118px;left:88px;z-index:6;font-family:'Playfair Display',serif;font-weight:700;font-size:210px;line-height:.82;color:${tint};">${num}</div>
+<div style="position:absolute;top:340px;left:92px;right:300px;z-index:6;">
+${this._serif(this._destaque(m.heading,tint),size,C.tinta,600)}
+</div>
+${m.body?`<div style="position:absolute;top:${340+Math.round(size*2.2)}px;left:92px;right:320px;z-index:6;">${this._sans(m.body,29,C.cinza)}</div>`:''}
+<div style="position:absolute;top:300px;left:92px;width:120px;height:3px;background:${tint};z-index:6;"></div>
+${this._assinatura(m,C.cinza)}`;
+  },
+
+  // 06 — DOCUMENTO FUNCIONAL: ficha com conteúdo suficiente para justificar
+  // o papel (nunca documento quase vazio), selo e marcação.
+  _cDocumento(photoUrl,m,tk){
+    const C=this.C,v=this._variante(m),tint=tk.accent||C.vermelho;
+    const size=this._fit(m.heading,[[32,52],[56,44],[999,38]]);
+    const corpo=m.body||'';
+    return`<div style="position:absolute;inset:0;background:${tk.bg||C.papel};z-index:0;"></div>${this._paper()}
+${this._classificacao(tk.classificacao||('DOC / '+String(m.slideNumber||1).padStart(2,'0')),C.cinza)}
+<div style="position:absolute;top:180px;left:88px;right:88px;${(tk.itens&&tk.itens.length)||this._itensDoCorpo(corpo).length?'bottom:170px;':''}z-index:3;background:${C.recorte};border:1px solid rgba(36,35,33,.18);box-shadow:0 16px 40px rgba(36,35,33,.14);transform:rotate(${v.lado?.5:-.5}deg);">
+<div style="padding:44px 52px;border-bottom:1px solid rgba(36,35,33,.12);display:flex;justify-content:space-between;align-items:center;">
+${this._mono(tk.docLabel||'NOTAS DE TRABALHO',C.cinza,21)}
+${this._mono(String(m.slideNumber||1).padStart(2,'0'),tint,21)}
+</div>
+<div style="padding:40px 52px;">
+${this._serif(this._destaque(m.heading,tint),size,tint,600,'line-height:1.16;')}
+${corpo?`<div style="margin-top:30px;">${this._sans(corpo,28,C.tinta,'line-height:1.72;')}</div>`:''}
+${(tk.itens&&tk.itens.length?tk.itens:this._itensDoCorpo(corpo)).length?`<div style="margin-top:34px;border-top:1px solid rgba(36,35,33,.10);padding-top:26px;">${(tk.itens&&tk.itens.length?tk.itens:this._itensDoCorpo(corpo)).map((it,i)=>`<div style="display:flex;gap:18px;margin-bottom:18px;align-items:baseline;">${this._mono(String(i+1).padStart(2,'0'),tint,20)}<span style="flex:1;">${this._sans(it,26,C.tinta)}</span></div>`).join('')}</div>`:''}
+</div>
+</div>
+${this._fita({pos:v.lado?'top:158px;left:34%;':'top:158px;right:14%;',w:176,h:48,rot:v.rot(v.lado?-5:7,2),z:5,...v.fita1})}
+${this._selo(tk.selo||'NÃO PULE',tint,v.lado?'bottom:96px;right:96px;':'bottom:96px;left:96px;',v.lado?-4:4)}
+${(tk.itens&&tk.itens.length)||this._itensDoCorpo(corpo).length?'':this._artefato(photoUrl,{pos:v.lado?'bottom:-70px;left:-60px;':'bottom:-70px;right:-60px;',w:'40%',h:'26%',rot:v.rot(v.lado?-6:6,3),z:2,estilo:'cru'})}
+${this._assinatura(m,C.cinza)}`;
+  },
+
+  // Um documento não pode nascer quase vazio (V2 §10): sem itens definidos,
+  // o corpo vira linhas de ficha para justificar o papel.
+  _itensDoCorpo(txt){
+    if(!txt)return[];
+    const partes=String(txt).split(/(?<=[.!?])\s+/).map(t=>t.trim()).filter(t=>t.length>12);
+    return partes.length>=2?partes.slice(0,4):[];
+  },
+
+  // 07 — COMPARAÇÃO: dois recortes em tensão + anotação da diferença
+  _cComparacao(photoUrl,m,tk){
+    const C=this.C,v=this._variante(m),tint=tk.accent||C.vermelho;
+    const size=this._fit(m.heading,[[34,56],[56,48],[999,40]]);
+    return`<div style="position:absolute;inset:0;background:${tk.bg||C.papel};z-index:0;"></div>${this._paper()}
+${this._classificacao(tk.classificacao||'ANTES / DEPOIS',C.cinza)}
+<div style="position:absolute;top:150px;left:92px;right:150px;z-index:6;">
+${this._serif(this._destaque(m.heading,tint),size,C.tinta,600)}
+</div>
+${this._artefato(photoUrl,{pos:'top:340px;left:80px;',w:'40%',h:'32%',rot:v.rot(-4,1),z:3,estilo:'polaroid'})}
+${this._artefato(null,{pos:'top:430px;right:80px;',w:'40%',h:'32%',rot:v.rot(5,2),z:4,estilo:'rasgado',fallback:C.papelQuente})}
+${this._fita({pos:'top:322px;left:16%;',w:150,h:44,rot:v.rot(-11,3),z:5,...v.fita1})}
+${this._fita({pos:'top:412px;right:16%;',w:150,h:44,rot:v.rot(10,4),z:5,...v.fita2})}
+<div style="position:absolute;top:690px;left:50%;transform:translateX(-50%);z-index:7;font-family:'Playfair Display',serif;font-size:76px;color:${tint};">×</div>
+${m.body?`<div style="position:absolute;bottom:140px;left:92px;right:120px;z-index:6;">${this._sans(m.body,29,C.cinza)}</div>`:''}
+${this._assinatura(m,C.cinza)}`;
+  },
+
+  // 08 — FOTOGRAFIA DOCUMENTAL: corte expressivo + legenda editorial
+  _cFoto(photoUrl,m,tk){
+    const C=this.C,v=this._variante(m),tint=tk.accent||C.vermelho;
+    const size=this._fit(m.heading,[[34,60],[56,52],[999,44]]);
+    return`<div style="position:absolute;inset:0;background:${tk.bg||C.papel};z-index:0;"></div>${this._paper()}
+${this._artefato(photoUrl,{pos:v.lado?'top:0;left:0;':'top:0;right:0;',w:'72%',h:'54%',rot:0,z:2,estilo:'cru'})}
+<div style="position:absolute;top:${Math.round(1536*.54)+38}px;left:92px;right:120px;z-index:6;">
+${this._mono(tk.legenda||('FIG. '+String(m.slideNumber||1).padStart(2,'0')),tint,21)}
+<div style="margin-top:22px;">${this._serif(this._destaque(m.heading,tint),size,C.tinta,600,'line-height:1.14;')}</div>
+${m.body?`<div style="margin-top:26px;max-width:760px;">${this._sans(m.body,28,C.cinza)}</div>`:''}
+</div>
+${this._selo(tk.selo||'ARQUIVO',tint,v.lado?'top:640px;right:92px;':'top:640px;left:92px;',v.lado?4:-4)}
+${this._assinatura(m,C.cinza)}`;
+  },
+
+  // 10 — DADO OU DESCOBERTA: número grande, contexto sans, círculo, mini artefato
+  _cDado(photoUrl,m,tk){
+    const C=this.C,v=this._variante(m),tint=tk.accent||C.vermelho;
+    const dado=tk.dado||(m.heading.match(/\d+[%xX]?|\d+\.\d+/)||['?'])[0];
+    const size=this._fit(m.heading,[[40,54],[64,46],[999,40]]);
+    return`<div style="position:absolute;inset:0;background:${tk.bg||C.papel};z-index:0;"></div>${this._paper()}
+${this._classificacao(tk.classificacao||'DESCOBERTA',C.cinza)}
+<div style="position:absolute;top:230px;left:92px;z-index:6;">
+<div style="position:relative;display:inline-block;padding:10px 30px;">
 ${this._circulo(tint)}
-<span style="position:relative;font-family:'Permanent Marker',cursive;font-size:44px;letter-spacing:.05em;color:${tint};">${this._esc(m.body)}</span>
-</div>`:`<div style="font-family:'Caveat',cursive;font-size:44px;font-weight:500;line-height:1.34;color:${this.C.tinta};margin-top:44px;max-width:780px;">${this._esc(m.body)}</div>`):''}
-${this._rabisco(tint,'bottom:118px;right:96px;width:180px;height:48px;')}
+<span style="font-family:'Playfair Display',serif;font-weight:700;font-size:248px;line-height:.85;color:${tint};">${this._esc(dado)}</span>
 </div>
-<div style="position:absolute;bottom:62px;left:92px;z-index:6;">${this._assinatura(m.handle,'rgba(41,39,37,.5)','left')}</div>
-<div style="position:absolute;bottom:62px;right:92px;z-index:6;font-family:'Caveat',cursive;font-size:38px;color:${tint};">arrasta →</div>`;
+</div>
+<div style="position:absolute;top:600px;left:92px;right:230px;z-index:6;">
+${this._serif(this._destaque(m.heading,tint),size,C.tinta,600,'line-height:1.15;')}
+${m.body?`<div style="margin-top:28px;">${this._sans(m.body,29,C.cinza)}</div>`:''}
+</div>
+${this._artefato(photoUrl,{pos:'bottom:120px;right:-40px;',w:'32%',h:'22%',rot:v.rot(5,1),z:3,estilo:'pagina'})}
+${this._fita({pos:'bottom:300px;right:14%;',w:140,h:42,rot:v.rot(-9,2),z:5,...v.fita1})}
+${this._assinatura(m,C.cinza)}`;
   },
 
-  // ── CARTÃO: bloco de cor sólida, frase serifada creme (modelo A) ────────
-  _styleCartao(photoUrl,m,tk){
-    const C=this.C,bg=tk.bg||C.terracota,text=tk.text||C.creme;
-    const size=this._fit(m.heading,[[40,88],[70,74],[110,62],[999,52]]);
-    return`<div style="position:absolute;inset:0;background:${C.bege};z-index:0;"></div>${this._paper(.5)}
-<div style="position:absolute;inset:56px;background:${bg};z-index:2;"></div>
-${this._counter(m.slideNumber,m.totalSlides,text)}
-<div style="position:absolute;inset:56px;z-index:3;padding:100px 82px;display:flex;flex-direction:column;justify-content:center;">
-<div style="font-family:'Playfair Display',serif;font-weight:600;font-size:${size}px;line-height:1.16;color:${text};">${this._emphasize(m.heading,'italic')}</div>
-${m.body?`<div style="font-family:'Inter',sans-serif;font-size:30px;font-weight:300;line-height:1.62;color:${text};opacity:.86;margin-top:38px;max-width:780px;">${this._esc(m.body)}</div>`:''}
-<div style="margin-top:56px;">${this._assinatura(m.handle,text,'left')}</div>
-</div>`;
+  // 12 — CTA EDITORIAL: conclusão + ação específica + nota curta
+  _cCta(photoUrl,m,tk){
+    const C=this.C,v=this._variante(m),tint=tk.accent||C.vermelho;
+    const size=this._fit(m.heading,[[30,104],[50,86],[72,72],[999,60]]);
+    return`<div style="position:absolute;inset:0;background:${tk.bg||C.papel};z-index:0;"></div>${this._paper()}
+${this._artefato(photoUrl,{pos:v.lado?'top:-50px;right:-64px;':'top:-50px;left:-64px;',w:'34%',h:'22%',rot:v.rot(v.lado?5:-5,1),z:2,estilo:'pagina'})}
+${this._fita({pos:v.lado?'top:110px;right:8%;':'top:110px;left:8%;',w:150,h:44,rot:v.rot(v.lado?-12:12,2),z:5,...v.fita1})}
+<div style="position:absolute;top:400px;left:92px;right:110px;z-index:6;">
+${this._serif(this._destaque(m.heading,tint),size,C.tinta,700)}
+</div>
+<div style="position:absolute;bottom:230px;left:92px;right:110px;z-index:6;">
+${m.body?`<div style="position:relative;display:inline-block;">${this._anotacao(m.body,tint,50)}${this._palavras(m.body)<=this.LIMITE_MANUSCRITA?this._sublinhado(tint):''}</div>`:''}
+</div>
+${this._selo(tk.selo||'FIM / ARCHIVE',tint,'bottom:150px;right:96px;',-3)}
+${this._assinatura(m,C.cinza)}`;
   },
 
-  // ── LISTA: kicker fixo + serifada + corpo sans (modelo B) ───────────────
-  _styleLista(photoUrl,m,tk){
-    const C=this.C,bg=tk.bg||C.bege,tint=tk.accent||C.terracota,ink=tk.text||C.tinta,v=this._variante(m);
-    const size=this._fit(m.heading,[[40,74],[70,64],[110,54],[999,46]]);
-    const foto=photoUrl?`<img class="sr-photo" src="${photoUrl}" style="bottom:118px;left:50%;transform:translateX(calc(-50% + ${v.lado?28:-28}px)) rotate(${v.rot(v.lado?-1.4:1.6,1)}deg);width:56%;height:30%;object-fit:cover;z-index:2;border:13px solid #FFF;box-shadow:0 12px 34px rgba(40,26,20,.2);" crossorigin="anonymous"/>`:'';
-    const fitaFoto=photoUrl?this._fita({pos:v.lado?'bottom:562px;left:24%;':'bottom:562px;right:24%;',w:150,h:46,rot:v.rot(v.lado?-9:10,2),z:3,...v.fita1}):'';
-    return`<div style="position:absolute;inset:0;background:${bg};z-index:0;"></div>${this._paper()}${foto}${fitaFoto}
-<div style="position:absolute;top:74px;left:88px;right:88px;z-index:3;">${this._kicker(tk.kicker||m.handle.replace('@','').replace(/\./g,' '),tint)}</div>
-${this._counter(m.slideNumber,m.totalSlides,ink)}
-<div style="position:absolute;top:170px;left:88px;right:88px;z-index:3;">
-<div style="font-family:'Playfair Display',serif;font-weight:600;font-size:${size}px;line-height:1.14;color:${ink};">${this._emphasize(m.heading,'color',tint)}</div>
-${m.body?`<div style="font-family:'Inter',sans-serif;font-size:30px;font-weight:300;line-height:1.66;color:${ink};opacity:.82;margin-top:34px;">${this._esc(m.body)}</div>`:''}
-</div>
-<div style="position:absolute;bottom:64px;left:88px;z-index:3;">${this._assinatura(m.handle,'rgba(41,39,37,.45)','left')}</div>`;
+  // ── Roteador: ritmo editorial (V2 §11) ──────────────────────────────────
+  // Nunca repetir a mesma composição em slides consecutivos. A tabela do
+  // design system define a função de cada posição no carrossel de oito.
+  COMPOSICOES:{
+    capa:'_cCapa', artefato:'_cArtefato', frase:'_cFrase', analise:'_cAnalise',
+    lista:'_cLista', documento:'_cDocumento', comparacao:'_cComparacao',
+    foto:'_cFoto', dado:'_cDado', cta:'_cCta',
+    // aliases dos nomes antigos gravados nos templates
+    nota:'_cAnalise', impacto:'_cFrase', cartao:'_cFrase',
+    estatico:'_cFrase', fechamento:'_cCta',
   },
+  // Sequência da tabela §11, estendida para carrosséis mais longos.
+  RITMO:['artefato','frase','analise','documento','foto','dado','lista','comparacao','frase','artefato','analise','foto'],
 
-  // ── NOTA: a estrutura exata da referência ───────────────────────────────
-  // kicker itálico → citação serifada → recorte com fita → rótulo em
-  // marcador → comentário manuscrito
-  _styleNota(photoUrl,m,tk){
-    const C=this.C,bg=tk.bg||C.bege,tint=tk.accent||C.terracota,ink=tk.text||C.tinta,v=this._variante(m);
-    const size=this._fit(m.heading,[[30,74],[50,62],[75,52],[999,44]]);
-    return`<div style="position:absolute;inset:0;background:${bg};z-index:0;"></div>${this._paper()}
-${tk.kicker?`<div style="position:absolute;top:70px;left:0;right:0;z-index:5;text-align:center;font-family:'Inter',sans-serif;font-style:italic;font-weight:600;font-size:30px;color:${tint};">${this._esc(tk.kicker)}</div>`:''}
-<div style="position:absolute;top:${tk.kicker?'128px':'92px'};left:76px;right:76px;z-index:5;text-align:center;">
-<div style="font-family:'Playfair Display',serif;font-weight:600;font-size:${size}px;line-height:1.16;color:${tint};">“${this._esc(m.heading)}”</div>
-</div>
-${this._recorte(photoUrl,{pos:v.lado?'top:38%;left:12%;':'top:38%;left:26%;',w:'62%',h:'27%',rot:v.rot(v.lado?-1.6:1.8,1),z:2})}
-${this._fita({pos:v.lado?'top:36.5%;left:9%;':'top:36.5%;right:9%;',w:180,h:52,rot:v.rot(v.lado?-11:12,2),z:3,...v.fita1})}
-${v.lado?this._seta(tint,'top:965px;right:120px;width:120px;height:130px;',true):this._seta(tint,'top:965px;left:110px;width:120px;height:130px;',false)}
-<div style="position:absolute;bottom:150px;left:82px;right:82px;z-index:5;">
-<div style="font-family:'Permanent Marker',cursive;font-size:46px;letter-spacing:.06em;color:${tint};margin-bottom:24px;">${this._esc(tk.label||'o ponto')}</div>
-${m.body?`<div style="font-family:'Caveat',cursive;font-size:44px;font-weight:500;line-height:1.36;color:${ink};opacity:.92;">${this._esc(m.body)}</div>`:''}
-</div>
-<div style="position:absolute;bottom:62px;left:0;right:0;z-index:6;">${this._assinatura(m.handle,'rgba(41,39,37,.42)','center')}</div>`;
-  },
-
-  // ── IMPACTO (Módulo A do design system): headline dramática, muito ar ───
-  // Hierarquia dramática (§5): a frase pode ocupar 30-50% do slide.
-  _styleImpacto(photoUrl,m,tk){
-    const C=this.C,bg=tk.bg||C.bege,tint=tk.accent||C.terracota,ink=tk.text||C.tinta,v=this._variante(m);
-    const size=this._fit(m.heading,[[26,132],[44,110],[64,92],[90,76],[999,62]]);
-    return`<div style="position:absolute;inset:0;background:${bg};z-index:0;"></div>${this._paper()}
-${this._classificacao(m,tk)}
-${this._counter(m.slideNumber,m.totalSlides,ink)}
-<div style="position:absolute;top:0;bottom:0;left:88px;right:110px;z-index:4;display:flex;flex-direction:column;justify-content:center;">
-<div style="font-family:'Playfair Display',serif;font-weight:700;font-size:${size}px;line-height:1.06;letter-spacing:-.015em;color:${(m.slideNumber%2)?ink:tint};max-width:90%;">${this._esc(m.heading)}</div>
-${m.body?`<div style="font-family:'Inter',sans-serif;font-size:30px;font-weight:300;line-height:1.6;color:${C.cinza};margin-top:42px;max-width:640px;${v.lado?'':'align-self:flex-end;text-align:right;'}">${this._esc(m.body)}</div>`:''}
-</div>
-${this._rabisco(tint,v.lado?'bottom:180px;right:110px;width:170px;height:46px;':'top:200px;right:110px;width:170px;height:46px;')}
-<div style="position:absolute;bottom:62px;left:88px;z-index:6;">${this._assinatura(m.handle,'rgba(41,39,37,.45)','left')}</div>`;
-  },
-
-  // ── DOCUMENTO (Módulo E): bloco tipo Notes/ficha — título colorido +
-  // texto preto, fita prendendo, seta apontando ─────────────────────────
-  _styleDocumento(photoUrl,m,tk){
-    const C=this.C,bg=tk.bg||C.bege,tint=tk.accent||C.terracota,v=this._variante(m);
-    const size=this._fit(m.heading,[[30,58],[50,50],[80,44],[999,38]]);
-    return`<div style="position:absolute;inset:0;background:${bg};z-index:0;"></div>${this._paper()}
-${this._classificacao(m,tk)}
-${this._counter(m.slideNumber,m.totalSlides,C.tinta)}
-<div style="position:absolute;top:220px;left:96px;right:96px;bottom:240px;z-index:3;background:${C.creme};border:1px solid rgba(41,39,37,.14);box-shadow:0 18px 44px rgba(40,32,20,.14);transform:rotate(${(v.lado?0.5:-0.5)}deg);">
-<div style="padding:58px 62px;">
-<div style="font-family:'Courier Prime',monospace;font-size:22px;letter-spacing:.18em;color:${C.cinza};margin-bottom:28px;">NOTAS</div>
-<div style="font-family:'Playfair Display',serif;font-weight:600;font-size:${size}px;line-height:1.18;color:${tint};margin-bottom:32px;">${this._esc(m.heading)}</div>
-${m.body?`<div style="font-family:'Inter',sans-serif;font-size:29px;font-weight:400;line-height:1.72;color:${C.tinta};">${this._esc(m.body)}</div>`:''}
-</div>
-</div>
-${this._fita({pos:v.lado?'top:196px;left:42%;':'top:196px;right:12%;',w:170,h:50,rot:v.rot(v.lado?-4:8,2),z:4,...v.fita1})}
-${this._seta(tint,v.lado?'bottom:140px;right:120px;width:110px;height:120px;':'bottom:140px;left:110px;width:110px;height:120px;',v.lado)}
-<div style="position:absolute;bottom:62px;left:0;right:0;z-index:6;">${this._assinatura(m.handle,'rgba(41,39,37,.42)','center')}</div>`;
-  },
-
-  // ── ESTÁTICO: gradiente/foto + frase serifada + assinatura (refs 3 e 4) ─
-  _styleEstatico(photoUrl,m,tk){
-    const C=this.C,text=tk.text||C.creme,dest=tk.destaque||C.realce;
-    const size=this._fit(m.heading,[[40,94],[70,80],[110,66],[999,56]]);
-    const base=tk.bg||C.vinho;
-    const fundo=photoUrl
-      ?`<img class="sr-bg" src="${photoUrl}" crossorigin="anonymous"/><div style="position:absolute;inset:0;z-index:1;background:${tk.veil||'rgba(35,14,16,.5)'};"></div>`
-      :`<div style="position:absolute;inset:0;z-index:0;background:radial-gradient(130% 100% at 25% 8%, ${tk.bgTopo||'#7E2029'} 0%, ${base} 62%);"></div>`;
-    return`${fundo}${this._paper(.28)}
-<div style="position:absolute;inset:0;z-index:3;display:flex;flex-direction:column;justify-content:center;align-items:center;padding:150px 104px;text-align:center;">
-<div style="font-family:'Playfair Display',serif;font-weight:500;font-size:${size}px;line-height:1.2;color:${text};">${this._emphasize(m.heading,'color',dest)}</div>
-${m.body?`<div style="font-family:'Inter',sans-serif;font-size:29px;font-weight:300;line-height:1.62;color:${text};opacity:.8;margin-top:40px;max-width:740px;">${this._esc(m.body)}</div>`:''}
-</div>
-<div style="position:absolute;bottom:86px;left:0;right:0;z-index:3;">${this._assinatura(m.handle,'rgba(247,243,234,.6)','center')}</div>`;
-  },
-
-  // ── FECHAMENTO: frase serifada com sublinhado à mão + CTA manuscrito ────
-  _styleFechamento(photoUrl,m,tk){
-    const C=this.C,bg=tk.bg||C.bege,tint=tk.accent||C.terracota,ink=tk.text||C.terracota,v=this._variante(m);
-    const size=this._fit(m.heading,[[34,96],[56,80],[80,66],[999,56]]);
-    return`<div style="position:absolute;inset:0;background:${bg};z-index:0;"></div>${this._paper()}
-${this._recorte(null,{pos:v.lado?'top:-30px;left:-52px;':'top:-30px;right:-52px;',w:'26%',h:'20%',rot:v.rot(-7,1),z:2,fallback:'#EAE6DC'})}
-${this._recorte(photoUrl,{pos:v.lado?'bottom:-46px;right:-56px;':'bottom:-46px;left:-56px;',w:'34%',h:'24%',rot:v.rot(5,2),z:2})}
-${this._fita({pos:v.lado?'top:96px;left:12%;':'top:96px;right:12%;',w:140,h:44,rot:v.rot(11,3),z:3,...v.fita1})}
-<div style="position:absolute;inset:0;z-index:5;display:flex;flex-direction:column;justify-content:center;align-items:center;padding:150px 96px;text-align:center;">
-<div style="font-family:'Playfair Display',serif;font-weight:700;font-size:${size}px;line-height:1.1;color:${ink};">${this._esc(m.heading)}</div>
-${m.body?`<div style="position:relative;display:inline-block;margin-top:56px;">
-<span style="font-family:'Caveat',cursive;font-size:52px;font-weight:600;color:${tint};">${this._esc(m.body)}</span>
-${this._sublinhado(tint)}
-</div>`:''}
-</div>
-<div style="position:absolute;bottom:64px;left:0;right:0;z-index:6;">${this._assinatura(m.handle,'rgba(41,39,37,.45)','center')}</div>`;
+  _escolherComposicao(m){
+    const total=m.totalSlides||1,n=m.slideNumber||1;
+    if(m.funcao==='CAPA'||n===1)return'capa';
+    if(m.funcao==='CTA'||m.funcao==='ASSINATURA'||n===total)return'cta';
+    // Slide sem corpo e com frase curta pede respiro (§10 composição 11),
+    // mas no máximo um a cada quatro slides.
+    if(!m.body&&this._palavras(m.heading)<=9&&(n%4===3))return'frase';
+    return this.RITMO[(n-2)%this.RITMO.length];
   },
 
   _buildSlideHTML(photoUrl,designMeta){
     const m={...designMeta};
     m.handle=m.handle||'@analuisa.moutinho';
-    const builders={capa:'_styleCapa',cartao:'_styleCartao',lista:'_styleLista',nota:'_styleNota',impacto:'_styleImpacto',documento:'_styleDocumento',estatico:'_styleEstatico',fechamento:'_styleFechamento'};
-    const porFuncao={CAPA:'capa',CTA:'fechamento',ASSINATURA:'fechamento'};
-    let style=m.overlayStyle||porFuncao[m.funcao]||'lista';
-    // Ritmo editorial (design system §15): o carrossel é uma sequência de
-    // páginas da mesma publicação — capa forte, módulos alternando no meio,
-    // fechamento editorial. Nunca o mesmo layout em todos os slides.
-    const familiaPapel=['capa','lista','nota','impacto','documento','fechamento'];
-    const total=m.totalSlides||1;
-    if(familiaPapel.includes(style)&&total>1){
-      if(m.funcao==='CAPA'||m.slideNumber===1)style='capa';
-      else if(m.funcao==='CTA'||m.funcao==='ASSINATURA'||m.slideNumber===total)style='fechamento';
-      else if(total>=5){
-        const seq=['nota','impacto','documento','lista','impacto','nota','lista','documento'];
-        style=seq[(m.slideNumber-2)%seq.length];
-      }
-    }
-    const fn=builders[style]||builders.lista;
     const tk=m.overlayTokens||{};
+    // O template pode fixar uma composição; sem isso, manda o ritmo editorial.
+    const nome=(m.forcarComposicao||(m.totalSlides>1?this._escolherComposicao(m):(m.overlayStyle||'frase')));
+    const fn=this.COMPOSICOES[nome]||this.COMPOSICOES[m.overlayStyle]||'_cFrase';
     const inner=this[fn](photoUrl,m,tk);
-    const escuro=style==='estatico'||style==='fechamento'||style==='cartao';
-    const base=escuro?(tk.bg||(style==='fechamento'?this.C.tinta:this.C.vinho)):(tk.bg||this.C.bege);
-    return`<div class="sr-slide-wrapper" style="background:${base};">${inner}</div>`;
+    return`<div class="sr-slide-wrapper" style="background:${tk.bg||this.C.papel};">${inner}</div>`;
   },
   async renderSlide(photoUrl,designMeta){
     const container=document.getElementById('sr-render-container');
@@ -1552,7 +1635,7 @@ ${this._sublinhado(tint)}
       const canvas=await html2canvas(slideEl,{
         width:1024,height:1536,scale:2,
         useCORS:true,allowTaint:false,
-        backgroundColor:tk.bg||SlideRenderer.C.bege,
+        backgroundColor:tk.bg||SlideRenderer.C.papel,
         logging:false,imageTimeout:10000,
       });
       const pngB64=canvas.toDataURL('image/png',1.0).split(',')[1];

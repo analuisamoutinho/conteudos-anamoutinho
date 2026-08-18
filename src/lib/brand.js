@@ -27,34 +27,40 @@ const BRAND_IDENTITIES = {
     // sobre base bege texturizada. Nunca branco frio, nunca saturado.
     // Design system Editorial Scrapbook: 70-80% papel, 10-20% vermelho
     // editorial (assinatura), 5-10% apoio (rosa fita, azul fita, amarelo).
-    accent:'#A92E1D',accentAlt:'#7F2117',accentFem:'#E8B7B0',bgDark:'#7F2117',bgLight:'#F3F0E8',
-    bgMid:'#EAE6DC',bgBrand:'#F8F7F2',textOnDark:'#F8F7F2',textOnLight:'#292725',
-    salvia:'#7C8A6E',tinta:'#292725',cinza:'#77736C',amarelo:'#E6C84F',azulFita:'#AFC4D1',
+    accent:'#B32616',accentAlt:'#811F16',accentFem:'#E8B8B2',bgDark:'#811F16',bgLight:'#F1F1EC',
+    bgMid:'#E9E5DA',bgBrand:'#FAF9F4',textOnDark:'#FAF9F4',textOnLight:'#242321',
+    salvia:'#7C8A6E',tinta:'#242321',cinza:'#67645F',amarelo:'#E3C44A',azulFita:'#AFC6D3',
     handle:'@analuisa.moutinho',name:'Ana Moutinho',
-    aestheticDNA:`IDENTIDADE: editorial-scrapbook — revista independente + caderno de referências + arquivo de copywriting. A sensação final: "alguém muito inteligente reuniu referências, fez anotações e transformou aquilo numa publicação" — nunca "uma agência criou um carrossel bonito".
+    aestheticDNA:`IDENTIDADE: publicação editorial independente, gráfica, densa e espirituosa, construída a partir de evidências, recortes, referências e anotações. A sensação: "alguém pesquisou, selecionou, imprimiu, marcou e transformou o material numa pequena publicação autoral" — NUNCA "uma marca pessoal elegante criou um carrossel bege".
 
-CONCEITO VISUAL: página de publicação independente sobre papel. Colagem analógica, anotação à mão, material colecionável. Palavras-chave: editorial, scrapbook, analog, independent magazine, copywriting notebook, creative archive, paper texture, collage, handwritten annotations.
+REGRA CENTRAL: isto é um scrapbook DE EVIDÊNCIAS, não um scrapbook decorativo. A composição nasce do conteúdo: o assunto fornece o elemento visual. Um anúncio vira o centro da página porque está sendo analisado. Nunca criar layout primeiro e preencher com foto genérica depois.
 
-PALETA CROMÁTICA OBRIGATÓRIA (regra 70-80% papel · 10-20% vermelho · 5-10% apoio):
-— Fundo dominante: papel off-white #F3F0E8 e papel secundário #EAE6DC — SEMPRE com textura de papel reciclado, grain fotográfico sutil e pequenas irregularidades; nunca fundo liso digital
-— Cor de assinatura: vermelho editorial #A92E1D e vermelho escuro #7F2117
-— Texto: preto suave #292725 e cinza manuscrito #77736C; branco papel #F8F7F2
-— Apoio ocasional (5-10% no máximo): amarelo marca-texto #E6C84F, rosa fita #E8B7B0, azul fita #AFC4D1
-— NUNCA: neon, gradiente forte, combinação saturada
+O QUE A IMAGEM DEVE SER (ordem de preferência):
+1. Anúncio, peça ou documento relacionado ao argumento
+2. Print de interface, página, campanha ou relatório
+3. Produto ou objeto que represente a ideia
+4. Fotografia documental real
+5. Imagem de arquivo incomum
+A imagem entra como artefato colado na composição — recorte, página impressa, print, fragmento — nunca como fundo decorativo full-bleed.
 
-FOTOGRAFIA (a foto entra como RECORTE colado na composição, nunca fundo full-bleed):
-— flash direto, granulação, enquadramento imperfeito, tom documental
-— objetos cotidianos, mesa de trabalho, caderno anotado, print de campanha, screenshot, material de arquivo
-— levemente dessaturada, contraste moderado, temperatura levemente quente
-— NUNCA banco de imagens corporativo, nunca sorriso posado
+PROIBIDO NA IMAGEM: pessoas sorrindo em reunião genérica, escritório terracota, aperto de mão, grupo corporativo artificial, pessoa olhando notebook, fotografia aspiracional sem função, tratamento cinematográfico uniforme, sépia, qualquer imagem criada apenas para preencher espaço.
 
-COMPOSIÇÃO: assimétrica e propositalmente imperfeita — blocos deslocados, sobreposição, elementos cortados pela margem, imagens inclinadas, MUITO espaço negativo. O conteúdo deve parecer montado, não diagramado. Sombras suaves e difusas ("várias folhas sobre uma mesa"). Bordas finas 1px em cinza/preto de baixa intensidade.
+TRATAMENTO: flash direto, grão, contraste de impressão, preto e branco ocasional, recorte brusco, enquadramento imperfeito, textura de impressão offset. A fotografia pode ser pequena — não precisa ser hero.
 
-VOCABULÁRIO GRÁFICO: fita adesiva translúcida (rosa, azul, bege, amarela), setas finas desenhadas à mão, círculos imperfeitos à volta de palavras, sublinhado manual, rabiscos pontuais, selos de arquivo ("CASE STUDY", "OBSERVAÇÃO", "NÃO PULE"), papel rasgado, recortes sobrepostos, microtexto de classificação ("NOTA #03", "ARQUIVO 004").
+PALETA (papel NEUTRO levemente acinzentado, nunca bege dominante):
+— Papel principal #F1F1EC, papel quente secundário #E9E5DA, branco de recorte #FAF9F4
+— Vermelho assinatura #B32616 (precisa aparecer em todo slide, nem que num detalhe) e vermelho profundo #811F16
+— Preto editorial #242321, cinza de texto #67645F
+— Apoio pontual, no máximo dois por slide: amarelo marcador #E3C44A, rosa fita #E8B8B2, azul fita #AFC6D3
+— Marrom, cobre e terracota NÃO são cores da marca. Nada de paleta de escritório de arquitetura.
 
-RITMO: cada slide é uma página diferente da mesma publicação — alterna impacto (uma frase enorme), aprofundamento (texto + imagem + anotação), referência (print/documento) e respiro (área vazia + uma frase). Consistência de paleta e textura, variação de composição.
+DENSIDADE: espaço negativo controlado e TENSIONADO, nunca página vazia. O conteúdo ocupa 55-80% do slide de desenvolvimento; nenhuma área vazia contínua acima de 30%; todo vazio grande precisa ser equilibrado por elemento de borda, microtexto ou tensão tipográfica.
 
-PROIBIDO ABSOLUTAMENTE: gradiente moderno, glassmorphism, 3D corporativo, ícones genéricos, emojis, cards arredondados demais, excesso de sombras, fundo totalmente liso, tipografia futurista, mockup tecnológico, simetria perfeita em todos os slides, aparência de PowerPoint ou template de Canva.`,
+INTERVENÇÕES ANALÓGICAS COM FUNÇÃO: fita só existe prendendo algo (nunca flutuando), seta só existe apontando um detalhe e vem com nota curta, círculo e sublinhado só destacam palavra ou dado. De uma a três intervenções por slide — o scrapbook é editado, não acumulado. Papéis com gramaturas e bordas diferentes; nem todo recorte tem moldura branca de foto.
+
+COMPOSIÇÃO: assimétrica, densa, tensionada. Elementos ultrapassam margens, inclinam, sobrepõem, são cortados. Cada página tem estrutura própria — alternar capa-manifesto, artefato central, frase de impacto, página analisada, lista editorial, documento, comparação, fotografia documental, colagem, dado e CTA editorial.
+
+PROIBIDO: luxo minimalista, estética de coaching, template de Canva, apresentação empresarial, infográfico, layout centralizado, bordas arredondadas, ícones genéricos, gradiente, 3D, glassmorphism, simetria perfeita, decoração que pode ser removida sem alterar o significado.`,
     copyDNA:`COPY PARA ANA MOUTINHO
 PÚBLICO: dono de negócio que já vende e agora precisa fazer a empresa crescer sem carregar tudo sozinho. Nunca falar com quem "quer abrir um negócio".
 IDEIA CENTRAL DA MARCA: como construir empresas maiores sem construir uma vida menor.
