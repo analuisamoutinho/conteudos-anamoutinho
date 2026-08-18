@@ -31,7 +31,7 @@ const DEFAULT_CANVA_TEMPLATES = [
   {
     id: 'tmpl_v2_capa', createdAt: '2026-08-18T00:00:00.000Z', identidade: IDENTIDADE,
     name: 'Capa — Moodboard Terracota',
-    contentTypes: ['carrossel', 'lista'],
+    contentTypes: ['cultural', 'tese', 'autoral', 'oferta'],
     aesthetic: 'Papel bege texturizado + título serifado terracota com marca-texto salmão + recorte colado com fita — abertura de carrossel',
     visualDNA: `${PAPEL_BASE}
 
@@ -45,7 +45,7 @@ ESTILO DESTE TEMPLATE (Capa Moodboard — abertura de carrossel):
   {
     id: 'tmpl_v2_cartao', createdAt: '2026-08-18T00:00:00.000Z', identidade: IDENTIDADE,
     name: 'Cartão Terracota — Frase de Impacto',
-    contentTypes: ['carrossel', 'frase'],
+    contentTypes: ['autoral', 'frase'],
     aesthetic: 'Bloco sólido terracota sobre papel + frase serifada creme — para hooks, verdades e citações',
     visualDNA: `ESTILO DESTE TEMPLATE (Cartão Sólido — citação/hook isolado):
 — Bloco de cor sólida terracota #B33A2B (ou vinho #5C1620) ocupando quase todo o slide, com margem de papel bege à volta
@@ -58,7 +58,7 @@ ESTILO DESTE TEMPLATE (Capa Moodboard — abertura de carrossel):
   {
     id: 'tmpl_v2_cartao_vinho', createdAt: '2026-08-18T00:00:00.000Z', identidade: IDENTIDADE,
     name: 'Cartão Vinho — Peso Emocional',
-    contentTypes: ['carrossel', 'frase'],
+    contentTypes: ['autoral', 'frase'],
     aesthetic: 'Bloco sólido vinho profundo + frase serifada creme — para as dores que ninguém fala',
     visualDNA: `ESTILO DESTE TEMPLATE (Cartão Vinho — conteúdo de mais peso emocional):
 — Igual ao Cartão Terracota, mas em vinho profundo #5C1620 — reservado para solidão, medo, exaustão, decisões difíceis
@@ -70,7 +70,7 @@ ESTILO DESTE TEMPLATE (Capa Moodboard — abertura de carrossel):
   {
     id: 'tmpl_v2_lista', createdAt: '2026-08-18T00:00:00.000Z', identidade: IDENTIDADE,
     name: 'Lista Editorial — Kicker + Serifada',
-    contentTypes: ['carrossel', 'lista'],
+    contentTypes: ['cultural', 'tese', 'autoral', 'oferta'],
     aesthetic: 'Papel bege + kicker fixo em caixa-alta + título serifado com palavra em terracota + exemplo visual colado',
     visualDNA: `${PAPEL_BASE}
 
@@ -84,7 +84,7 @@ ESTILO DESTE TEMPLATE (Lista Editorial — telas de conteúdo, tendências, exem
   {
     id: 'tmpl_v2_lista_kraft', createdAt: '2026-08-18T00:00:00.000Z', identidade: IDENTIDADE,
     name: 'Lista Kraft — Variação Quente',
-    contentTypes: ['carrossel', 'lista'],
+    contentTypes: ['cultural', 'tese', 'autoral', 'oferta'],
     aesthetic: 'Mesma estrutura da Lista Editorial em papel kraft mais quente — alterna com a versão bege dentro do carrossel',
     visualDNA: `${PAPEL_BASE}
 
@@ -97,7 +97,7 @@ ESTILO DESTE TEMPLATE (Lista Kraft):
   {
     id: 'tmpl_v2_lista_salvia', createdAt: '2026-08-18T00:00:00.000Z', identidade: IDENTIDADE,
     name: 'Lista Sálvia — Variação sem Vermelho',
-    contentTypes: ['carrossel', 'lista'],
+    contentTypes: ['cultural', 'tese', 'autoral', 'oferta'],
     aesthetic: 'Estrutura de lista com acento verde-sálvia em vez de terracota — para não repetir vermelho em todo post',
     visualDNA: `${PAPEL_BASE}
 
@@ -111,7 +111,7 @@ ESTILO DESTE TEMPLATE (Lista Sálvia):
   {
     id: 'tmpl_v2_nota', createdAt: '2026-08-18T00:00:00.000Z', identidade: IDENTIDADE,
     name: 'Nota Colada — Recorte + Manuscrita',
-    contentTypes: ['carrossel', 'bastidores', 'dump'],
+    contentTypes: ['cultural', 'tese', 'autoral'],
     aesthetic: 'Recorte com fita adesiva + rótulo em marcador + observação manuscrita — o formato "o ponto disso é"',
     visualDNA: `${PAPEL_BASE}
 
@@ -139,7 +139,7 @@ ESTILO DESTE TEMPLATE (Nota Colada — comentário sobre um exemplo, bastidor, a
   {
     id: 'tmpl_v2_estatico_foto', createdAt: '2026-08-18T00:00:00.000Z', identidade: IDENTIDADE,
     name: 'Estático Foto — Luz Natural',
-    contentTypes: ['frase', 'lofi'],
+    contentTypes: ['frase'],
     aesthetic: 'Fundo fotográfico com luz natural e sombra de persiana + frase serifada branca + assinatura',
     visualDNA: `ESTILO DESTE TEMPLATE (Post Estático Fotográfico):
 — Fotografia full-bleed de cena real com luz natural forte e sombra desenhada (persiana, janela, folhagem) atravessando o enquadramento
@@ -153,7 +153,7 @@ ESTILO DESTE TEMPLATE (Nota Colada — comentário sobre um exemplo, bastidor, a
   {
     id: 'tmpl_v2_fechamento', createdAt: '2026-08-18T00:00:00.000Z', identidade: IDENTIDADE,
     name: 'Fechamento — Bloco Sólido + CTA',
-    contentTypes: ['carrossel', 'lista'],
+    contentTypes: ['cultural', 'tese', 'autoral', 'oferta'],
     aesthetic: 'Bloco quase-preto ou terracota + frase serifada + CTA em pill salmão — última tela do carrossel',
     visualDNA: `ESTILO DESTE TEMPLATE (Fechamento de carrossel):
 — Fundo de cor sólida quase-preto quente #1F1B17 (ou terracota) com textura de papel muito subtil
@@ -197,7 +197,7 @@ const matchCache = {};
 
 function templateStyle(t) { return t.visualDNA || t.aesthetic || ''; }
 
-async function matchBestTemplate({ tipo = 'carrossel', tema = '', slides = [], profile = 'pessoal', cacheKey = null }) {
+async function matchBestTemplate({ tipo = 'autoral', tema = '', slides = [], profile = 'pessoal', cacheKey = null }) {
   const key = cacheKey || [profile, tipo, tema].join('|').slice(0, 200);
   const hit = matchCache[key];
   if (hit && Date.now() - hit.at < MATCH_TTL) return hit.template;
