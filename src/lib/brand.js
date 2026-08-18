@@ -23,62 +23,47 @@ function getManualText(profile) {
 // ═══════════════════════════════════════════════════════════════════════════
 const BRAND_IDENTITIES = {
   pessoal: {
-    accent:'#8B7355',accentAlt:'#C4A882',accentFem:'#C17B6F',bgDark:'#3D3530',bgLight:'#FAF8F5',
-    bgMid:'#EDEAE4',bgBrand:'#F5F2EE',textOnDark:'#F5F2EE',textOnLight:'#2C2420',
+    // Paleta: terracota (marca) · vinho (impacto) · sálvia (variação)
+    // sobre base bege texturizada. Nunca branco frio, nunca saturado.
+    accent:'#B33A2B',accentAlt:'#8E2A20',accentFem:'#F3C9B6',bgDark:'#5C1620',bgLight:'#EFEBE1',
+    bgMid:'#E5DDCD',bgBrand:'#F7F3EA',textOnDark:'#F7F3EA',textOnLight:'#1F1B17',
+    salvia:'#7C8A6E',tinta:'#1F1B17',
     handle:'@analuisa.moutinho',name:'Ana Moutinho',
-    moods:['DIARIO_EDITORIAL','TYPE_CREME','COLAGEM_REAL','FRASE_IMPACTO','HERO_LOFI','DIARIO_EDITORIAL','TYPE_CREME','VIRADA','CTA_INTIMO'],
-    aestheticDNA:`IDENTIDADE: "Ana mais real" — diário visual de quem está dentro da operação: marketing, negócios e decisões para quem está construindo uma empresa de verdade. Não é influencer nem palestrante. É quem vive o problema junto com o empresário.
+    aestheticDNA:`IDENTIDADE: editorial-vintage brasileiro — moodboard de quem trabalha com marketing e pensa negócio. Papel, recorte, fita adesiva, anotação à mão. Feito por uma pessoa, não por um departamento de branding.
 
-CONCEITO VISUAL: editorial humano e inteligente — feito por uma pessoa, não por um departamento de branding. Como as páginas de um livro bonito encontradas com a estética de um feed de fotógrafo documental europeu. Sofisticação sem ostentação. Profundidade sem heaviness.
+CONCEITO VISUAL: colagem editorial sobre papel. Como a mesa de trabalho de alguém que recorta anúncios, cola referências e escreve observações à mão na margem. Inteligente e caloroso — nunca corporativo, nunca minimalismo frio de agência.
 
 PALETA CROMÁTICA OBRIGATÓRIA:
-— Fundo primário dominante: off-white creme #FAF8F5 (ocupa 65-75% da composição) — nunca branco puro, nunca cinza frio
-— Fundo secundário: bege claro aconchegante #EDEAE4
-— Acento principal: marrom café aquecido #8B7355 — para bordas finas, linhas divisórias, detalhes pontuais
-— Acento feminino pontual: rosa queimado terracota #C17B6F — apenas em detalhes muito sutis, como sublinhados ou pequenos elementos gráficos
-— Texto principal: marrom escuro quente #2C2420
-— Texto secundário: marrom médio #8B7355
-— NUNCA: preto puro, fundos escuros, azul, verde, cinza frio, branco clínico
+— Base dominante: bege papel #EFEBE1 e kraft #E5DDCD (60-75% da composição) — SEMPRE com textura de papel visível, nunca branco chapado nem cinza frio
+— Cor de marca: vermelho-terracota/tijolo #B33A2B — títulos, acentos, elementos desenhados à mão
+— Vermelho profundo: vinho #5C1620 — só para peças de mais peso emocional (post estático, abertura)
+— Segunda cor: verde-sálvia/oliva #7C8A6E — alternativa ao vermelho, mesma sensação de calor e sofisticação
+— Realce: salmão claro #F3C9B6 — marca-texto e fitas adesivas
+— Texto e contraste máximo: quase-preto quente #1F1B17
+— NUNCA: vermelho saturado vivo como cor dominante, azul-céu vibrante, neon, branco clínico, cinza corporativo, gradiente colorido artificial
 
-TIPOGRAFIA — REGRAS ABSOLUTAS:
-— Títulos: serifada editorial ou sans-serif geométrica leve, peso 300-400 para frases longas ou 700-800 para statements de impacto curtos
-— Frases de impacto: letra grande, ocupando boa parte da composição, quase sem margens — editorial, não de blog
-— Subtítulos e legendas: sans-serif clean em peso 400, espaçamento generoso
-— Nunca fontes decorativas, scripts cursivos exagerados ou tipografias de coach/LinkedIn
+TEXTURA E MATERIALIDADE (essencial, não decorativo):
+— Papel com grão visível em toda a composição — bege, kraft, papel de carta
+— Recortes com borda de fita adesiva translúcida (lisa, xadrez ou washi) presos em ângulo leve
+— Fotos como polaroid: moldura branca grossa, leve rotação, sombra suave projetada
+— Elementos desenhados à mão em terracota: círculos à volta de palavras, setas curvas, sublinhados, asteriscos
+— Sombra sempre suave e quente — nunca sombra dura ou brilho digital
 
-ATMOSFERA E LUZ:
-— Luz natural difusa, como entrada de janela em dia nublado ou manhã tranquila
-— Granulação fotográfica sutil sobre qualquer elemento fotográfico (grain de filme analógico leve)
-— Profundidade com sombras muito suaves e translúcidas — nunca sombra dura
-— Textura de fundo: papel aquarela, linho fine art, ou papel de algodão — nunca digital liso
-
-ELEMENTOS GRÁFICOS (usar com extrema contenção):
-— Linhas finíssimas horizontais em marrom #8B7355 como separadores
-— Formas geométricas simples — retângulos de borda fina como enquadramentos
-— Manchas de cor muito suaves e translúcidas como elementos de fundo
-— NUNCA: ícones decorativos, florinhas, estrelas, ornamentos, stickers, clip art
+FOTOGRAFIA:
+— Luz natural quente, grain analógico, cenas reais de trabalho: mesa, caderno com anotação, tela de computador, print de campanha, reunião, café ao lado do teclado
+— Pessoas parciais ou anónimas — mãos, costas, silhueta. Nunca sorriso posado de banco de imagens
+— A foto entra como RECORTE colado na composição, não como fundo full-bleed que ocupa tudo
 
 DIREÇÃO DE COMPOSIÇÃO:
-— Layout editorial com respiração ampla — muito espaço vazio intencional
-— Regra dos terços para posicionamento do texto principal
-— Assimetria elegante — não tudo centralizado (exceto frases de impacto)
-— Como a página de um livro do Penguin Classics ou editorial da Vogue Portugal
-— Sensação: você está lendo algo que vale a pena ler
+— Assimetria de moodboard: recorte num canto, texto grande noutro, anotação à mão ligando os dois
+— Muito espaço de papel respirando — a composição não preenche tudo
+— Hierarquia clara: uma ideia por peça
 
-SENSAÇÃO E ATMOSFERA:
-— Real sem ser crua. Sofisticada sem ser fria. Íntima sem ser vulgar.
-— Como um ensaio fotográfico de alguém muito bem-resolvida sendo vista em seu habitat natural
-— Transmite: inteligência, intencionalidade, disciplina, profundidade, vida real construída com propósito
+SENSAÇÃO: alguém inteligente mostrando o que descobriu, com o material espalhado na mesa. Autoridade sem distância. Caloroso, direto, brasileiro.
 
-TOM VISUAL: editorial · humano · espontâneo · inteligente · brasileiro · arejado · granulado · creme · direto
+TOM VISUAL: editorial · colagem · papel · terracota · anotado à mão · analógico · quente · inteligente
 
-FEITO POR PESSOA, NÃO POR DEPARTAMENTO DE BRANDING:
-— O post não pode parecer apresentação corporativa nem portfólio de agência premium: perfeição excessiva, grids impecáveis, mockups e elementos 3D transmitem distância
-— Preferir: fotos reais (reunião, mesa de trabalho, caderno, tela do computador), prints, anotações, escrita à mão pontual, textura visível
-— Tipografia com personalidade e texto grande — frase que parece escrita para uma pessoa específica
-— A sensação a transmitir é "eu sei exatamente o que você está vivendo", não "olha como minha marca é sofisticada"
-
-PROIBIDO ABSOLUTAMENTE: fundos escuros, preto, neon, gradientes coloridos, elementos decorativos infantis, estética de coach, LinkedIn, motivacional, citações com fontes script floreadas, fotos de banco de imagens com sorriso forçado, emojis gráficos.`,
+PROIBIDO ABSOLUTAMENTE: fundo branco puro ou cinza frio, cores saturadas vibrantes dominando a peça, mockup 3D, elementos corporativos, ícones genéricos de banco, gradiente colorido artificial, estética de coach ou LinkedIn, brilho digital, sombra dura.`,
     copyDNA:`COPY PARA ANA MOUTINHO
 PÚBLICO: dono de negócio que já vende e agora precisa fazer a empresa crescer sem carregar tudo sozinho. Nunca falar com quem "quer abrir um negócio".
 IDEIA CENTRAL DA MARCA: como construir empresas maiores sem construir uma vida menor.
