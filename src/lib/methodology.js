@@ -61,7 +61,7 @@ PILAR 6 — ARRANCAR CONCORDES:
   produtoEMentalidade: `
 PILAR 7 — PRODUTO NASCE DA AUDIÊNCIA / MENTALIDADE RR:
 - O conteúdo vem antes do produto: primeiro entende o que o público pede, o produto (se houver) nasce disso.
-- Repetição é poder: não tenha medo de retomar os mesmos temas centrais (ordem, virtude, corrida, leitura, alicerce) de ângulos diferentes.
+- Repetição é poder: não tenha medo de retomar os mesmos temas centrais (crescer sem virar gargalo, decisão com critério, marketing que gera negócio, delegação, margem, bastidores reais) de ângulos diferentes.
 - Ação antes da perfeição: o conteúdo pode ser imperfeito — autenticidade importa mais que produção polida.
 `,
   estruturaViral: `
