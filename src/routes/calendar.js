@@ -1,5 +1,4 @@
 const express = require('express');
-const fetch   = (...args) => import('node-fetch').then(({ default: f }) => f(...args));
 const router  = express.Router();
 const { GENERATED_FILE, CALENDAR_FILE } = require('../config');
 const { readJSON, writeJSON } = require('../lib/jsonStore');
@@ -7,6 +6,7 @@ const { supabase } = require('../lib/supabase');
 const { getMetodologia, build7PilaresRR } = require('../lib/methodology');
 const { getAccount, getManualText } = require('../lib/brand');
 const { extractJSON, normalizeDays } = require('../lib/util');
+const { askOpenAI, MODEL_SMART } = require('../lib/ai');
 
 // ═══════════════════════════════════════════════════════════════════════════
 // CALENDÁRIO
@@ -32,14 +32,7 @@ router.post('/api/calendar/generate', async (req, res) => {
         ? '[{"time":"09:00","type":"lofi","topic":"Por que a maioria das pessoas sabota o próprio crescimento"}]'
         : '[{"time":"09:00","type":"carrossel","topic":"A mentira que o Instagram vende sobre consistência"},{"time":"18:00","type":"frase","topic":"Você não precisa de motivação, precisa de estrutura"}]';
       const blockPrompt = 'Você é estrategista de conteúdo para Instagram, seguindo a Metodologia RR (Bolha RR, 7 pilares).\n\n' + build7PilaresRR() + '\nCrie o calendário editorial para ' + account.name + ' — ' + month + '/' + year + '.\n\n' + brandContext + '\n' + (manualNote ? 'DIRETRIZES DO PERFIL:\n' + manualNote + '\n\n' : '') + 'TIPOS DISPONÍVEIS: ' + tiposDisponiveis + '\n\nREGRAS DO TOPIC: Topics devem ser específicos e pessoais. Distribua os topics entre as 6 funções do Pilar 4 (Ramificações) ao longo do período — não repita a mesma função em dias seguidos.\nHORÁRIOS: use 09:00 para manhã e 18:00 para tarde/noite.\n\nRESPONDA APENAS COM JSON VÁLIDO, SEM MARKDOWN.\n\nFormato EXATO:\n{\n  "days": [\n    {"day": ' + blockStart + ', "posts": ' + examplePosts + '}\n  ]\n}\n\nGere TODOS os dias de ' + blockStart + ' a ' + blockEnd + ' (total: ' + daysInBlock + ' dias, ' + postsPerDay + ' post(s) por dia).';
-      const blockRes = await fetch('https://api.anthropic.com/v1/messages', {
-        method: 'POST',
-        headers: { 'x-api-key': process.env.ANTHROPIC_API_KEY, 'anthropic-version': '2023-06-01', 'Content-Type': 'application/json' },
-        body: JSON.stringify({ model: 'claude-sonnet-4-6', max_tokens: 4000, messages: [{ role: 'user', content: blockPrompt }] }),
-      });
-      const blockData = await blockRes.json();
-      if (blockData.error) throw new Error('Claude API: ' + blockData.error.message);
-      const rawText = blockData.content[0].text.trim();
+      const rawText = await askOpenAI({ prompt: blockPrompt, model: MODEL_SMART, maxTokens: 4000, json: true });
       let blockDays = [];
       try { const parsed = extractJSON(rawText); blockDays = normalizeDays(parsed); }
       catch(parseErr) { for (let d = blockStart; d <= blockEnd; d++) blockDays.push({ day: d, posts: [] }); }
@@ -89,14 +82,8 @@ router.post('/api/calendar/generate-week', async (req, res) => {
 
     const examplePost = '{"time":"09:00","type":"lofi","topic":"Tema específico aqui"}';
     const prompt = 'Você é estrategista de conteúdo para ' + account.name + ' (' + account.handle + '), seguindo a Metodologia RR (Bolha RR, 7 pilares).\n\n' + build7PilaresRR() + '\n' + (manualNote ? 'DIRETRIZES:\n' + manualNote + '\n\n' : '') + 'TIPOS DISPONÍVEIS: ' + tiposDisponiveis + '\n\nCrie um plano editorial para a semana: ' + daysText + '\n' + postsPerDay + ' post(s) por dia. Topics devem ser específicos e pessoais. Distribua entre as 6 funções do Pilar 4 (Ramificações) ao longo da semana.\n\nRESPONDA APENAS JSON VÁLIDO:\n{"days":[{"date":"2026-06-09","dayOfWeek":"Segunda","posts":[' + examplePost + ']}]}';
-    const r = await fetch('https://api.anthropic.com/v1/messages', {
-      method: 'POST',
-      headers: { 'x-api-key': process.env.ANTHROPIC_API_KEY, 'anthropic-version': '2023-06-01', 'Content-Type': 'application/json' },
-      body: JSON.stringify({ model: 'claude-sonnet-4-6', max_tokens: 3000, messages: [{ role: 'user', content: prompt }] }),
-    });
-    const d = await r.json();
-    if (d.error) throw new Error(d.error.message);
-    const parsed = extractJSON(d.content[0].text.trim());
+    const text = await askOpenAI({ prompt, model: MODEL_SMART, maxTokens: 3000, json: true });
+    const parsed = extractJSON(text);
     const days = parsed.days || [];
     if (!days.length) throw new Error('IA retornou sem dias. Tente novamente.');
     res.json({ week: days, weekStart });

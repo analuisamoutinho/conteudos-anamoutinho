@@ -18,4 +18,16 @@ function normalizeDays(parsed) {
   return days || [];
 }
 
-module.exports = { extractJSON, normalizeDays };
+// ── Chaves de API ─────────────────────────────────────────────────────────
+// Sem esta guarda o erro que chega ao ecrã é "invalid api key", devolvido pela
+// OpenAI — o que não diz a quem lê que a variável simplesmente não foi
+// configurada no ambiente do deploy.
+function requireOpenAIKey() {
+  const key = process.env.OPENAI_API_KEY;
+  if (!key || !key.trim()) {
+    throw new Error('OPENAI_API_KEY não está configurada neste deploy. Adiciona a variável de ambiente (chave da OpenAI, começa por sk-) e faz um novo deploy.');
+  }
+  return key;
+}
+
+module.exports = { extractJSON, normalizeDays, requireOpenAIKey };

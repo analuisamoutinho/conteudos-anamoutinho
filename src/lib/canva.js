@@ -1,6 +1,6 @@
 const fs = require('fs');
-const fetch = (...args) => import('node-fetch').then(({ default: f }) => f(...args));
 const { CANVA_TEMPLATES_FILE } = require('../config');
+const { askOpenAI, MODEL_FAST } = require('./ai');
 
 // ═══════════════════════════════════════════════════════════════════════════
 // CANVA TEMPLATES
@@ -239,7 +239,7 @@ async function matchBestTemplate({ tipo = 'carrossel', tema = '', slides = [], p
     (!tipo || !Array.isArray(t.contentTypes) || !t.contentTypes.length || t.contentTypes.includes(tipo))
   );
   if (!candidates.length) return null;
-  if (candidates.length === 1 || !process.env.ANTHROPIC_API_KEY) {
+  if (candidates.length === 1 || !process.env.OPENAI_API_KEY) {
     matchCache[key] = { at: Date.now(), template: candidates[0] };
     return candidates[0];
   }
@@ -248,14 +248,8 @@ async function matchBestTemplate({ tipo = 'carrossel', tema = '', slides = [], p
     const list = candidates.map((t, i) => `${i + 1}. ID: ${t.id}\n   Nome: ${t.name}\n   Tipos: ${Array.isArray(t.contentTypes) ? t.contentTypes.join(', ') : 'geral'}\n   Estética: ${(t.aesthetic || '').slice(0, 200)}`).join('\n\n');
     const slidesResumo = Array.isArray(slides) ? slides.slice(0, 3).map((s, i) => `  Slide ${i + 1}: "${(s.heading || s.textos?.[0]?.texto || '').slice(0, 60)}"`).join('\n') : '';
     const prompt = `Tipo de conteúdo: ${tipo}\nTema: ${tema}\n${slidesResumo ? 'Slides:\n' + slidesResumo + '\n' : ''}\nTemplates disponíveis:\n${list}\n\nEscolhe O template cuja estética melhor encaixa neste conteúdo específico. Responde APENAS JSON: {"templateId":"tmpl_xxx","reason":"1 frase"}`;
-    const r = await fetch('https://api.anthropic.com/v1/messages', {
-      method: 'POST',
-      headers: { 'x-api-key': process.env.ANTHROPIC_API_KEY, 'anthropic-version': '2023-06-01', 'Content-Type': 'application/json' },
-      body: JSON.stringify({ model: 'claude-haiku-4-5-20251001', max_tokens: 300, messages: [{ role: 'user', content: prompt }] }),
-    });
-    const d = await r.json();
-    if (d.error) throw new Error(d.error.message);
-    const jm = d.content[0].text.trim().match(/\{[\s\S]*\}/);
+    const text = await askOpenAI({ prompt, model: MODEL_FAST, maxTokens: 300, json: true });
+    const jm = text.match(/\{[\s\S]*\}/);
     const parsed = jm ? JSON.parse(jm[0]) : null;
     const best = candidates.find(t => t.id === parsed?.templateId) || candidates[0];
     matchCache[key] = { at: Date.now(), template: best };

@@ -1,4 +1,5 @@
 const fetch = (...args) => import('node-fetch').then(({ default: f }) => f(...args));
+const { askOpenAI, MODEL_FAST } = require('./ai');
 
 // ═══════════════════════════════════════════════════════════════════════════
 // TENDÊNCIAS — Google Trends BR + Reddit BR + Google News BR
@@ -100,9 +101,13 @@ async function getGoogleNewsBR(limit = 15) {
 async function getAITrends() {
   try {
     const month = new Date().toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' });
-    const aiRes = await fetch('https://api.anthropic.com/v1/messages', { method: 'POST', headers: { 'x-api-key': process.env.ANTHROPIC_API_KEY, 'anthropic-version': '2023-06-01', 'Content-Type': 'application/json' }, body: JSON.stringify({ model: 'claude-haiku-4-5-20251001', max_tokens: 900, messages: [{ role: 'user', content: 'Liste 15 assuntos muito comentados no Brasil em ' + month + ' por donos de negócio e empresários. Variedade: economia, gestão, vendas, marketing, tecnologia, IA, mercado de trabalho, comportamento empresarial. SOMENTE JSON array: [{"termo":"nome","volume":"tendencia","fonte":"Estimativa IA"}]' }] }) });
-    const aiData = await aiRes.json();
-    if (aiData.content?.[0]) { const txt = aiData.content[0].text.trim(); const m2 = txt.match(/\[[\s\S]+\]/); if (m2) return JSON.parse(m2[0]).slice(0, 15); }
+    const txt = await askOpenAI({
+      prompt: 'Liste 15 assuntos muito comentados no Brasil em ' + month + ' por donos de negócio e empresários. Variedade: economia, gestão, vendas, marketing, tecnologia, IA, mercado de trabalho, comportamento empresarial. Responda SOMENTE JSON no formato {"itens":[{"termo":"nome","volume":"tendencia","fonte":"Estimativa IA"}]}',
+      model: MODEL_FAST, maxTokens: 900, json: true,
+    });
+    const parsed = JSON.parse(txt);
+    const arr = Array.isArray(parsed) ? parsed : (parsed.itens || parsed.trends || []);
+    return arr.slice(0, 15);
   } catch(e) { console.warn('[Trends] AI fallback failed:', e.message); }
   return [];
 }

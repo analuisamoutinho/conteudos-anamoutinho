@@ -1,4 +1,5 @@
 const express = require('express');
+const { askOpenAI, MODEL_FAST } = require('../lib/ai');
 const fetch   = (...args) => import('node-fetch').then(({ default: f }) => f(...args));
 const router  = express.Router();
 const {
@@ -85,9 +86,7 @@ router.post('/api/gphotos/suggest', async (req, res) => {
     if (!items.length) return res.json({ suggestions: [], message: 'Nenhuma foto encontrada' });
     const photoList = items.slice(0, 50).map((p, i) => (i+1) + '. ID:' + p.id + ' | ' + (p.filename||'') + ' | ' + (p.description||'')).join('\n');
     const aiPrompt = 'Tema: "' + tema + '"\nSlide ' + (slideIndex+1) + ' de ' + totalSlides + '\n\nFotos:\n' + photoList + '\n\nSeleciona ' + limit + ' IDs mais adequados. JSON: {"ids":["id1","id2"]}';
-    const aiRes = await fetch('https://api.anthropic.com/v1/messages', { method: 'POST', headers: { 'x-api-key': process.env.ANTHROPIC_API_KEY, 'anthropic-version': '2023-06-01', 'Content-Type': 'application/json' }, body: JSON.stringify({ model: 'claude-haiku-4-5-20251001', max_tokens: 256, messages: [{ role: 'user', content: aiPrompt }] }) });
-    const aiData = await aiRes.json();
-    const aiTxt = aiData.content?.[0]?.text?.trim() || '{"ids":[]}';
+    const aiTxt = await askOpenAI({ prompt: aiPrompt, model: MODEL_FAST, maxTokens: 256, json: true }).catch(e => { console.warn('[gphotos] sugestão IA falhou:', e.message); return '{"ids":[]}'; });
     const m = aiTxt.match(/\{[\s\S]*\}/);
     const parsed = m ? JSON.parse(m[0]) : { ids: [] };
     const selected = (parsed.ids || []).slice(0, limit).map(id => {
