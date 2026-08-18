@@ -1,12 +1,12 @@
 const express = require('express');
 const fs      = require('fs');
 const path    = require('path');
-const fetch   = (...args) => import('node-fetch').then(({ default: f }) => f(...args));
 const router  = express.Router();
 const { PHOTOS_FILE, PHOTOS_DIR } = require('../config');
 const { readJSON, writeJSON } = require('../lib/jsonStore');
 const { supabase } = require('../lib/supabase');
 const { savePhotoToStorage, loadPhotosMeta, savePhotoMeta, photoUpload } = require('../lib/photos');
+const { askOpenAI, MODEL_FAST } = require('../lib/ai');
 
 router.post('/api/photos/upload', photoUpload.single('photo'), async (req, res) => {
   try {
@@ -52,13 +52,11 @@ router.post('/api/photos/suggest', async (req, res) => {
     const all = await loadPhotosMeta(profile);
     if (!all.length) return res.json({ suggestions: [] });
     const photoList = all.map(p => 'ID: ' + p.id + ' | Tags: ' + (p.tags || []).join(', ') + ' | Descrição: ' + (p.description || '')).join('\n');
-    const r = await fetch('https://api.anthropic.com/v1/messages', {
-      method: 'POST',
-      headers: { 'x-api-key': process.env.ANTHROPIC_API_KEY, 'anthropic-version': '2023-06-01', 'Content-Type': 'application/json' },
-      body: JSON.stringify({ model: 'claude-haiku-4-5-20251001', max_tokens: 512, messages: [{ role: 'user', content: 'Tema: "' + topic + '"\nFotos:\n' + photoList + '\nSeleciona até ' + limit + ' IDs. JSON: {"suggestions":["id1"]}' }] }),
+    const text = await askOpenAI({
+      prompt: 'Tema: "' + topic + '"\nFotos:\n' + photoList + '\nSeleciona até ' + limit + ' IDs. JSON: {"suggestions":["id1"]}',
+      model: MODEL_FAST, maxTokens: 512, json: true,
     });
-    const d = await r.json();
-    const match  = d.content[0].text.match(/\{[\s\S]*\}/);
+    const match = text.match(/\{[\s\S]*\}/);
     const parsed = match ? JSON.parse(match[0]) : { suggestions: [] };
     // Para cada ID sugerido, busca com dataUrl
     const allFull = await Promise.all(parsed.suggestions.slice(0, limit).map(async id => {

@@ -7,11 +7,12 @@ const { UPLOADS_DIR } = require('../config');
 const { supabase } = require('../lib/supabase');
 const { getAccount, BRAND_IDENTITIES } = require('../lib/brand');
 const { buildSystemPromptCarrossel } = require('../lib/methodology');
-const { extractJSON } = require('../lib/util');
+const { extractJSON, requireOpenAIKey } = require('../lib/util');
 const { saveGeneratedContent } = require('../lib/content');
 const { buildCarouselPrompt, cropTo45 } = require('../lib/image');
 const { resolveQuality } = require('../lib/userSettings');
 const { loadCT, matchBestTemplate, templateStyle } = require('../lib/canva');
+const { askOpenAI, MODEL_SMART } = require('../lib/ai');
 
 // ═══════════════════════════════════════════════════════════════════════════
 // CAROUSEL GENERATE AND SAVE
@@ -42,14 +43,8 @@ REGRA CRÍTICA: cada slide DEVE ter body com 2-3 frases de conteúdo real — da
 
 JSON: {"title":"título do carrossel","slideCount":8,"slides":[{"slideNumber":1,"funcao":"CAPA","heading":"gancho de 14-18 palavras","body":"2-3 frases que desenvolvem o gancho com substância. Dado concreto, padrão de mercado real ou consequência.","imagePrompt":"visual scene in english"},{"slideNumber":2,"funcao":"DESENVOLVIMENTO","heading":"título do conceito","body":"2-3 frases explicando o conceito com dado ou exemplo concreto. O leitor deve aprender algo real neste slide.","imagePrompt":"visual scene in english"}],"caption":"legenda completa com emojis e CTA","hashtags":"máximo 4 hashtags específicas ao nicho"}`;
     }
-    const r = await fetch('https://api.anthropic.com/v1/messages', {
-      method: 'POST',
-      headers: { 'x-api-key': process.env.ANTHROPIC_API_KEY, 'anthropic-version': '2023-06-01', 'Content-Type': 'application/json' },
-      body: JSON.stringify({ model: 'claude-sonnet-4-6', max_tokens: 8192, system: systemPrompt, messages: [{ role: 'user', content: prompt }] }),
-    });
-    const d = await r.json();
-    if (d.error) return res.status(500).json({ error: d.error.message });
-    const carouselData = extractJSON(d.content[0].text.trim());
+    const text = await askOpenAI({ prompt, system: systemPrompt, model: MODEL_SMART, maxTokens: 8192, json: true });
+    const carouselData = extractJSON(text);
     function sanitizeCopy(text) { if (!text) return text; return text.replace(/\s*—\s*/g, ' ').replace(/\s*–\s*/g, ' ').replace(/^\s*[–—]\s*/gm, '').trim(); }
     if (carouselData.slides) { carouselData.slides = carouselData.slides.map(s => ({ ...s, heading: sanitizeCopy(s.heading), body: sanitizeCopy(s.body) })); }
     if (carouselData.hashtags) { const tags = carouselData.hashtags.match(/#[\wÀ-ɏ]+/g) || []; carouselData.hashtags = tags.slice(0, 4).join(' '); }
@@ -120,14 +115,14 @@ router.post('/api/image/carousel-slide', async (req, res) => {
       form.append('image', blob, 'photo.png');
       const r = await fetch('https://api.openai.com/v1/images/edits', {
         method: 'POST',
-        headers: { 'Authorization': 'Bearer ' + process.env.OPENAI_API_KEY },
+        headers: { 'Authorization': 'Bearer ' + requireOpenAIKey() },
         body: form,
       });
       const data = await r.json();
       if (data.error) {
         console.warn('[carousel-slide] edits falhou, fallback para generations:', data.error.message);
         // Fallback: gera normalmente sem a foto
-        const r2 = await fetch('https://api.openai.com/v1/images/generations', { method: 'POST', headers: { 'Authorization': 'Bearer ' + process.env.OPENAI_API_KEY, 'Content-Type': 'application/json' }, body: JSON.stringify({ model: 'gpt-image-1', prompt: promptPhoto, n: 1, size: '1024x1536', quality, output_format: 'png' }) });
+        const r2 = await fetch('https://api.openai.com/v1/images/generations', { method: 'POST', headers: { 'Authorization': 'Bearer ' + requireOpenAIKey(), 'Content-Type': 'application/json' }, body: JSON.stringify({ model: 'gpt-image-1', prompt: promptPhoto, n: 1, size: '1024x1536', quality, output_format: 'png' }) });
         const data2 = await r2.json();
         if (data2.error) return res.status(500).json({ error: data2.error.message });
         imageData = data2.data?.[0];
@@ -135,7 +130,7 @@ router.post('/api/image/carousel-slide', async (req, res) => {
         imageData = data.data?.[0];
       }
     } else {
-      const r = await fetch('https://api.openai.com/v1/images/generations', { method: 'POST', headers: { 'Authorization': 'Bearer ' + process.env.OPENAI_API_KEY, 'Content-Type': 'application/json' }, body: JSON.stringify({ model: 'gpt-image-1', prompt: promptPhoto, n: 1, size: '1024x1536', quality, output_format: 'png' }) });
+      const r = await fetch('https://api.openai.com/v1/images/generations', { method: 'POST', headers: { 'Authorization': 'Bearer ' + requireOpenAIKey(), 'Content-Type': 'application/json' }, body: JSON.stringify({ model: 'gpt-image-1', prompt: promptPhoto, n: 1, size: '1024x1536', quality, output_format: 'png' }) });
       const data = await r.json();
       if (data.error) { console.error('[carousel-slide] GPT error:', data.error); return res.status(500).json({ error: data.error.message || JSON.stringify(data.error) }); }
       imageData = data.data?.[0];

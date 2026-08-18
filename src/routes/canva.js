@@ -5,6 +5,8 @@ const { loadCT, saveCT, templateStyle } = require('../lib/canva');
 const { buildCarouselPrompt } = require('../lib/image');
 const { resolveQuality } = require('../lib/userSettings');
 const { BRAND_IDENTITIES } = require('../lib/brand');
+const { askOpenAI, MODEL_FAST } = require('../lib/ai');
+const { requireOpenAIKey } = require('../lib/util');
 
 router.get('/api/canva/templates', (req, res) => { let t = loadCT(); if (req.query.profile) t = t.filter(x => !x.profile || x.profile === req.query.profile || x.profile === 'all'); res.json(t); });
 router.post('/api/canva/templates', (req, res) => { const t = loadCT(); const n = { id: 'tmpl_' + Date.now(), createdAt: new Date().toISOString(), ...req.body }; t.unshift(n); saveCT(t); res.json({ success: true, template: n }); });
@@ -18,9 +20,8 @@ router.post('/api/canva/match', async (req, res) => {
     const templateList = templates.map((t, i) => (i+1) + '. ID: ' + t.id + '\n   Nome: ' + t.name + '\n   Tipos: ' + (Array.isArray(t.contentTypes)?t.contentTypes.join(', '):t.contentTypes||'geral') + '\n   Estetica: ' + (t.aesthetic||'-') + '\n   Slides: ' + (t.slideCount||'?')).join('\n\n');
     const slidesResumo = Array.isArray(slides) ? slides.slice(0,3).map((s,i)=>'  Slide '+(i+1)+' ['+( s.funcao||'')+'] : "'+( s.heading||'').slice(0,60)+'"').join('\n') : '';
     const prompt = 'Perfil: ' + profile + '\nTipo: ' + (tipo||'carrossel') + '\nTema: ' + tema + '\nSlides:\n' + slidesResumo + '\n\nTemplates:\n' + templateList + '\n\nSeleciona os 3 mais adequados. JSON: {"matches":[{"templateId":"tmpl_xxx","score":95,"reason":"1 frase","fitLabel":"Perfeito","fieldMapping":{"headline":"texto slide 1"}}]}';
-    const r = await fetch('https://api.anthropic.com/v1/messages', { method: 'POST', headers: {'x-api-key':process.env.ANTHROPIC_API_KEY,'anthropic-version':'2023-06-01','Content-Type':'application/json'}, body: JSON.stringify({model:'claude-haiku-4-5-20251001',max_tokens:1200,messages:[{role:'user',content:prompt}]}) });
-    const d = await r.json(); if (d.error) throw new Error(d.error.message);
-    const raw = d.content[0].text.trim(); const jm = raw.match(/\{[\s\S]*\}/); const parsed = jm ? JSON.parse(jm[0]) : { matches: [] };
+    const raw = await askOpenAI({ prompt, model: MODEL_FAST, maxTokens: 1200, json: true });
+    const jm = raw.match(/\{[\s\S]*\}/); const parsed = jm ? JSON.parse(jm[0]) : { matches: [] };
     const enriched = (parsed.matches||[]).map(m => { const tmpl = templates.find(t=>t.id===m.templateId); return tmpl ? {...m, template:tmpl} : null; }).filter(Boolean);
     res.json({ matches: enriched });
   } catch(err) { res.status(500).json({ error: err.message }); }
@@ -90,7 +91,7 @@ router.post('/api/canva/generate-slides', async (req, res) => {
         const r = await fetch('https://api.openai.com/v1/images/generations', {
           method: 'POST',
           headers: {
-            'Authorization': 'Bearer ' + process.env.OPENAI_API_KEY,
+            'Authorization': 'Bearer ' + requireOpenAIKey(),
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
