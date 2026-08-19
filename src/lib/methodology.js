@@ -132,6 +132,29 @@ Combinações fortes: nostalgia+identidade · medo+geracional · brasil+identida
 curiosidade+nostalgia · contraste+curiosidade · novidade+alerta
 `,
 
+  anotacoes: `
+ANOTAÇÕES À MÃO — a intervenção precisa ANALISAR, nunca ser placeholder:
+- PROIBIDO: "olha esse detalhe", "o detalhe está aqui", "importante", "veja isso", interrogação solta.
+- A anotação comenta exatamente o que a seta aponta e diz algo que só cabe NAQUELE conteúdo.
+- Bons exemplos: "a operação ainda depende do dono" · "sem margem, não existe expansão" ·
+  "quem decide quando você não está?" · "o caixa precisa suportar os dois endereços".
+- Máximo 12 palavras. Se não houver observação específica a fazer, devolver null — melhor
+  nenhuma anotação do que uma genérica.
+`,
+
+  copy: `
+COPY DOS SLIDES — afiada, não apostila:
+- Evitar rótulo de matéria escolar antes do conteúdo ("Capacidade Atual:", "Gestão de Tempo:",
+  "Cultura Empresarial:"). Ir direto à tensão.
+- Fraco: "Capacidade Atual: Sua primeira unidade é autossuficiente?"
+  Forte: "A primeira unidade funciona sem você?"
+- Fraco: "Gestão de Tempo: Sua rotina suporta uma nova operação?"
+  Forte: "Sua agenda comporta outra unidade — ou nem a primeira?"
+- Fraco: "Cultura Empresarial: Sua equipe compreende e propaga a visão?"
+  Forte: "A cultura continua quando você sai da sala?"
+- O título do slide e o corpo não podem dizer a mesma coisa com outras palavras.
+`,
+
   contratoCapa: `
 CONTRATO DA CAPA (a parte mais importante do carrossel):
 TEXTO 1 — hook principal:
@@ -272,6 +295,8 @@ ${BRANDS_DECODED.estruturaCarrossel}
 ${BRANDS_DECODED.padroesHook}
 ${BRANDS_DECODED.gatilhos}
 ${BRANDS_DECODED.antiPadroes}
+${BRANDS_DECODED.anotacoes}
+${BRANDS_DECODED.copy}
 
 REGRAS OBRIGATÓRIAS:
 - Antes de escrever, escolha internamente qual das 6 funções do Pilar 4 (Ramificações) esta peça cumpre, e construa o conteúdo em torno dela.
@@ -303,6 +328,8 @@ ${tipoInfo.editoria ? BRANDS_DECODED.contratoCapa + '\n' + BRANDS_DECODED.estrut
 ${BRANDS_DECODED.padroesHook}
 ${BRANDS_DECODED.gatilhos}
 ${BRANDS_DECODED.antiPadroes}
+${BRANDS_DECODED.anotacoes}
+${BRANDS_DECODED.copy}
 
 EDITORIA / FORMATO ATUAL: ${tipoInfo.emoji} ${tipoInfo.label}
 INSTRUÇÃO ESPECÍFICA: ${tipoInfo.instrucao}
