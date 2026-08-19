@@ -2761,14 +2761,27 @@ async function gerarSlidesComTemplate() {
   toast(`${ok} slides gerados com sucesso! ✅`, 'success');
 }
 
+// data: URI direto no href do <a download> corrompe em downloads grandes
+// (Safari trunca data URIs grandes silenciosamente) — por isso converte
+// sempre para Blob + object URL, que não tem esse limite.
+function _blobFromDataUrl(dataUrl) {
+  const [header, base64] = dataUrl.split(',');
+  const mime = (header.match(/data:(.*?);base64/) || [])[1] || 'image/png';
+  const binary = atob(base64);
+  const bytes = new Uint8Array(binary.length);
+  for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
+  return new Blob([bytes], { type: mime });
+}
 function baixarSlide(idx, slideNum, dataUrl, topicName) {
   const topic = (topicName || 'slide').toLowerCase().replace(/[^a-z0-9]/g, '_').slice(0, 30);
+  const blobUrl = URL.createObjectURL(_blobFromDataUrl(dataUrl));
   const a = document.createElement('a');
-  a.href     = dataUrl;
+  a.href     = blobUrl;
   a.download = `slide_${String(slideNum).padStart(2, '0')}_${topic}.png`;
   document.body.appendChild(a);
   a.click();
   document.body.removeChild(a);
+  setTimeout(() => URL.revokeObjectURL(blobUrl), 4000);
 }
 
 // Download dos PNGs do carrossel principal (fluxo Criar → Carrossel).
