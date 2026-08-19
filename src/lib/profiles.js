@@ -116,7 +116,7 @@ function getProfileManualContext(profileId) {
   const p = profiles[profileId];
   if (!p) return '';
   return [
-    `TIPO DE MARCA: Marca Pessoal (Metodologia RR)`,
+    `TIPO DE MARCA: Marca Pessoal (metodologia BrandsDecoded)`,
     p.niche        ? `NICHO: ${p.niche}`                      : '',
     p.publicoAlvo  ? `PÚBLICO-ALVO: ${p.publicoAlvo}`        : '',
     p.tom          ? `TOM DE VOZ: ${p.tom}`                   : '',

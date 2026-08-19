@@ -6,7 +6,7 @@ const { DEFAULT_PROFILES, loadProfiles, saveProfiles } = require('../lib/profile
 router.get('/api/tipos-conteudo', (req, res) => {
   const { tipos } = getMetodologia();
   res.json({
-    metodologia: 'rr',
+    metodologia: 'bd',
     tipos: Object.values(tipos).map(t => ({
       id: t.id, emoji: t.emoji, label: t.label,
       categoria: t.categoria || 'Marca Pessoal',

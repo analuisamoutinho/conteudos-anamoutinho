@@ -37,7 +37,7 @@ JSON: {"title":"título do carrossel","slideCount":N,"slides":[{"slideNumber":1,
       prompt = `Perfil: ${account.name} (${account.handle})
 Tema: "${topic}"
 Total: 7-8 slides.
-ESTRUTURA RR: Slide 1 (gancho que nomeia dor/desejo real, com 1-2 concordes) → slides de profundidade cumprindo uma função do Pilar 4 (Ramificações) → conclusão com tese → CTA seguindo o Pilar 5 (permissão, triagem ou filtro).
+ESTRUTURA BRANDSDECODED: Slide 1 (capa = hook de 14-18 palavras + subhook de 8-12 palavras) → slides de desenvolvimento com dado, mecanismo ou exemplo concreto → fechamento real → CTA direto e específico.
 
 REGRA CRÍTICA: cada slide DEVE ter body com 2-3 frases de conteúdo real — dado concreto, explicação do conceito, exemplo prático ou consequência. NUNCA body vazio ou com menos de 2 frases.
 
@@ -50,7 +50,7 @@ JSON: {"title":"título do carrossel","slideCount":8,"slides":[{"slideNumber":1,
     function sanitizeCopy(text) { if (!text) return text; return text.replace(/\s*—\s*/g, ' ').replace(/\s*–\s*/g, ' ').replace(/^\s*[–—]\s*/gm, '').trim(); }
     if (carouselData.slides) { carouselData.slides = carouselData.slides.map(s => ({ ...s, heading: sanitizeCopy(s.heading), body: sanitizeCopy(s.body) })); }
     if (carouselData.hashtags) { const tags = carouselData.hashtags.match(/#[\wÀ-ɏ]+/g) || []; carouselData.hashtags = tags.slice(0, 4).join(' '); }
-    const item = saveGeneratedContent({ id: 'cnt_' + Date.now(), createdAt: new Date().toISOString(), status: 'pendente', type: 'carrossel', mode, profile, feedVariacao, topic: topic || ('Carrossel ' + carouselData.slideCount + ' slides'), caption: caption || carouselData.caption, hashtags: hashtags || carouselData.hashtags, contentMachineType: contentMachineType || null, carouselData, calendarDay: calendarDay || null, calendarMonth: calendarMonth || null, calendarYear: calendarYear || null, imageUrls: [], metodologia: 'rr' });
+    const item = saveGeneratedContent({ id: 'cnt_' + Date.now(), createdAt: new Date().toISOString(), status: 'pendente', type: 'carrossel', mode, profile, feedVariacao, topic: topic || ('Carrossel ' + carouselData.slideCount + ' slides'), caption: caption || carouselData.caption, hashtags: hashtags || carouselData.hashtags, contentMachineType: contentMachineType || null, carouselData, calendarDay: calendarDay || null, calendarMonth: calendarMonth || null, calendarYear: calendarYear || null, imageUrls: [], metodologia: 'bd' });
     res.json({ success: true, contentId: item.id, feedVariacao, ...carouselData });
   } catch(err) { res.status(500).json({ error: err.message }); }
 });
