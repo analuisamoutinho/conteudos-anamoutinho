@@ -1773,21 +1773,26 @@ async function generateCarouselImages(autoPublishConfig=null){
   else{document.getElementById('publishPanel').classList.add('visible');}
 }
 /* ── CONTENT MACHINE ── */
-// As 4 editorias fixas da Brand The Code™ + formatos. Editorias primeiro:
-// são elas que giram no calendário e definem a identidade do perfil.
+// Os 7 tipos de conteúdo da Brand The Code™ (agrupados em 4 categorias de
+// funil: Awareness, Autoridade, Alcance, Conversão) + os formatos estático
+// e vídeo. Os 7 tipos de carrossel são os que giram no calendário e
+// definem a identidade do perfil.
 const CM_TYPES_ALL = {
-  cultural:{label:'Cultural / Trend',emoji:'📡',tag:'Editoria',color:'#A92E1D',metodologia:'bd',desc:'Lê um fenômeno ou mudança de época e conecta a quem tem negócio.'},
-  tese:{label:'Tese de Negócio',emoji:'📊',tag:'Editoria',color:'#7F2117',metodologia:'bd',desc:'Uma afirmação defensável sobre como negócios funcionam, com mecanismo.'},
-  autoral:{label:'Post Autoral',emoji:'✍️',tag:'Editoria',color:'#292725',metodologia:'bd',desc:'Visão de mundo assumida. Não precisa terminar em dica.'},
-  oferta:{label:'Oferta Direta',emoji:'🎯',tag:'Editoria',color:'#7C8A6E',metodologia:'bd',desc:'Convida para algo real, com CTA explícito e específico.'},
+  tendencia:{label:'Análise de Tendência',emoji:'📡',tag:'Awareness',color:'#A92E1D',metodologia:'bd',desc:'Capa nomeia o fenômeno como declaração. Por que acontece, implicações estratégicas, o que muda.'},
+  case:{label:'Case de Sucesso',emoji:'🏆',tag:'Awareness',color:'#B8860B',metodologia:'bd',desc:'Capa como fenômeno cultural. Contexto de mercado, ponto de virada, resultados mensuráveis.'},
+  educativo:{label:'Educativo / Framework',emoji:'📚',tag:'Autoridade',color:'#7F2117',metodologia:'bd',desc:'Capa promete método com nome próprio. Um passo por slide, com exemplo concreto.'},
+  comparacao:{label:'Comparação / Antes & Depois',emoji:'⚖️',tag:'Alcance',color:'#292725',metodologia:'bd',desc:'Capa ativa contraste com dado ou afirmação. Lado A, virada com análise, Lado B com resultado.'},
+  lista:{label:'Lista Valiosa',emoji:'📋',tag:'Alcance',color:'#4B5563',metodologia:'bd',desc:'Capa com número e promessa específica. Um item por slide com profundidade real.'},
+  prova_social:{label:'Prova Social',emoji:'🌟',tag:'Conversão',color:'#7C8A6E',metodologia:'bd',desc:'Capa foca no resultado concreto. Antes, processo decisivo, números e métricas.'},
+  oferta:{label:'Oferta',emoji:'🎯',tag:'Conversão',color:'#B32616',metodologia:'bd',desc:'Capa ativa desejo, não produto. Problema, solução, prova de valor, CTA específico.'},
   frase:{label:'Frase de Impacto',emoji:'💬',tag:'Estático',color:'#6B7280',metodologia:'bd',desc:'Uma verdade em 2-3 linhas. Funciona sozinha, sem contexto.'},
   lofi:{label:'Lo-Fi (câmera ligada)',emoji:'🎥',tag:'Vídeo',color:'#C17B6F',metodologia:'bd',desc:'Liga a câmera e fala direto. Maior ROI para quem tem oratória.'},
   video_curto:{label:'Vídeo Curto (até 13s)',emoji:'⚡',tag:'Vídeo',color:'#D97706',metodologia:'bd',desc:'Uma sacada impactante em segundos. Alto potencial viral.'},
   video_medio:{label:'Vídeo Médio (até 1min)',emoji:'🎬',tag:'Vídeo',color:'#059669',metodologia:'bd',desc:'Equilibra alcance e profundidade. Gancho + desenvolvimento + conclusão.'},
 };
-const CM_TIPOS_BD = ['cultural','tese','autoral','oferta','frase','lofi','video_curto','video_medio'];
+const CM_TIPOS_BD = ['tendencia','case','educativo','comparacao','lista','prova_social','oferta','frase','lofi','video_curto','video_medio'];
 const TIPOS_VIDEO_BD = ['lofi','video_curto','video_medio'];
-const EDITORIAS_BD = ['cultural','tese','autoral','oferta'];
+const TIPOS_CARROSSEL_BD = ['tendencia','case','educativo','comparacao','lista','prova_social','oferta'];
 
 function getCMTiposParaPerfil(){return CM_TIPOS_BD;}
 
@@ -1843,8 +1848,8 @@ function criarEscolherFormato(formato) {
   if (formato === 'carrossel') {
     // Passo 2: mostrar tipos do CM para carrossel
     const grid = document.getElementById('criarTypeGrid');
-    // No carrossel entram as 4 editorias fixas — frase é estático e vídeo tem fluxo próprio.
-    const tiposAtivos = EDITORIAS_BD.slice();
+    // No carrossel entram os 7 tipos da Brand The Code™ — frase é estático e vídeo tem fluxo próprio.
+    const tiposAtivos = TIPOS_CARROSSEL_BD.slice();
     grid.innerHTML = tiposAtivos.map(id => {
       const t = CM_TYPES_ALL[id];
       if (!t) return '';
@@ -2203,7 +2208,7 @@ function loadCMFromHistory(i){const h=cmSessionHistory[i];if(!h)return;cmSelecte
 
 /* ── CANVA INTEGRATION ── */
 let canvaTemplates=[],canvaSelectedContent=null,canvaCurrentTemplateUrl=null,canvaCurrentClipboardText="";
-const CANVA_CT=[{id:"cultural",e:"📡",l:"Cultural"},{id:"tese",e:"📊",l:"Tese"},{id:"autoral",e:"✍️",l:"Autoral"},{id:"oferta",e:"🎯",l:"Oferta"},{id:"frase",e:"💬",l:"Frase"},{id:"lofi",e:"📺",l:"Lo-Fi"},{id:"video_curto",e:"⚡",l:"Vídeo Curto"},{id:"video_medio",e:"🎬",l:"Vídeo Médio"}];
+const CANVA_CT=[{id:"tendencia",e:"📡",l:"Tendência"},{id:"case",e:"🏆",l:"Case"},{id:"educativo",e:"📚",l:"Educativo"},{id:"comparacao",e:"⚖️",l:"Comparação"},{id:"lista",e:"📋",l:"Lista"},{id:"prova_social",e:"🌟",l:"Prova Social"},{id:"oferta",e:"🎯",l:"Oferta"},{id:"frase",e:"💬",l:"Frase"},{id:"lofi",e:"📺",l:"Lo-Fi"},{id:"video_curto",e:"⚡",l:"Vídeo Curto"},{id:"video_medio",e:"🎬",l:"Vídeo Médio"}];
 async function initCanvaSection(){await loadCanvaTemplates();renderCanvaTemplateGrid();await populateCanvaContentSelect();renderCanvaTypesGrid();}
 function canvaTab(t,b){
   document.querySelectorAll(".canva-tab").forEach(x=>x.classList.remove("active"));

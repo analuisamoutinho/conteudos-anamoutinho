@@ -2,13 +2,14 @@ const { BRAND_IDENTITIES, getAccount, getManualText } = require('./brand');
 
 // ═══════════════════════════════════════════════════════════════════════════
 // METODOLOGIA DE CONTEÚDO — BrandsDecoded (Brand The Code™), única metodologia
-// Fonte: material Brand The Code™ (4 editorias fixas), Headline Generator
-// (padrões + gatilhos + anti-padrões) e Content Machine (contrato da capa,
-// estrutura de 18 textos e disciplina de escrita).
+// Fonte: material Brand The Code™ (7 tipos de conteúdo, agrupados em 4
+// categorias de funil), Headline Generator (padrões + gatilhos + anti-padrões)
+// e Content Machine (contrato da capa, estrutura de 18 textos e disciplina
+// de escrita).
 // ═══════════════════════════════════════════════════════════════════════════
 
 const BRANDS_DECODED = {
-  nome: 'BrandsDecoded — Brand The Code™ (4 editorias fixas)',
+  nome: 'BrandsDecoded — Brand The Code™ (7 tipos de conteúdo)',
 
   filosofia: `
 FILOSOFIA BASE (BrandsDecoded):
@@ -18,14 +19,20 @@ FILOSOFIA BASE (BrandsDecoded):
 - Nunca inventar fatos, números, datas ou fontes. Nunca usar buzzword sem substância.
 `,
 
-  editorias: `
-AS 4 EDITORIAS FIXAS (Brand The Code™):
-O algoritmo reconhece padrões. Girar sempre as mesmas 4 editorias treina o algoritmo
-e o público a reconhecerem o perfil. Repetir um padrão funcional é o que gera escala orgânica.
-1. CULTURAL / TREND — lê um fenômeno, comportamento ou mudança de época e conecta ao mundo de quem tem negócio.
-2. TESE DE NEGÓCIO — uma afirmação defensável sobre como negócios funcionam, sustentada por mecanismo e evidência.
-3. POST AUTORAL — visão de mundo. Opinião assumida sobre trabalho, dinheiro, ambição, liderança, tecnologia. Não precisa terminar em dica.
-4. OFERTA DIRETA — conteúdo que convida para algo real (diagnóstico, conversa, material), com CTA explícito.
+  categorias: `
+OS 7 TIPOS DE CONTEÚDO (Brand The Code™), agrupados por categoria de funil:
+AWARENESS (atrai quem ainda não conhece o perfil):
+1. ANÁLISE DE TENDÊNCIA — capa nomeia o fenômeno como declaração. Desenvolvimento: por que acontece, implicações estratégicas, o que muda.
+2. CASE DE SUCESSO — capa como fenômeno cultural. Contexto de mercado. Ponto de virada decisivo. Resultados mensuráveis.
+AUTORIDADE (constrói confiança e referência técnica):
+3. EDUCATIVO / FRAMEWORK — capa promete método com nome próprio. Um passo por slide, com exemplo concreto em cada.
+ALCANCE (formatos com alto potencial de compartilhamento):
+4. COMPARAÇÃO / ANTES & DEPOIS — capa ativa contraste com dado ou afirmação. Lado A detalhado. Virada com análise. Lado B com resultado.
+5. LISTA VALIOSA — capa com número e promessa específica. Um item por slide com profundidade real.
+CONVERSÃO (converte quem já confia em ação):
+6. PROVA SOCIAL — capa foca no resultado concreto. Antes com contexto real. Processo decisivo. Números e métricas.
+7. OFERTA — capa ativa desejo, não produto. Problema real. Solução única. Para quem é. Prova de valor. CTA específico.
+Girar entre as 4 categorias ao longo do calendário treina o algoritmo e o público a reconhecerem o perfil — repetir um padrão funcional é o que gera escala orgânica.
 `,
 
   formula: `
@@ -142,7 +149,7 @@ Se parecer algo que qualquer página escreveria, reescrever.
 function buildBrandsDecodedCore() {
   return [
     BRANDS_DECODED.filosofia,
-    BRANDS_DECODED.editorias,
+    BRANDS_DECODED.categorias,
     BRANDS_DECODED.formula,
     BRANDS_DECODED.padroesHook,
     BRANDS_DECODED.gatilhos,
@@ -151,25 +158,39 @@ function buildBrandsDecodedCore() {
   ].join('\n');
 }
 
-// As 4 editorias fixas da Brand The Code™ + os formatos que as entregam.
-// `formato` separa o QUE o post é (editoria) de COMO é entregue (carrossel,
-// estático, vídeo) — o calendário gira editorias, o vídeo fica fora dele.
+// Os 7 tipos de conteúdo da Brand The Code™, agrupados em 4 categorias de
+// funil (Awareness, Autoridade, Alcance, Conversão), + os formatos estático
+// e vídeo que completam o repertório. `formato` separa o QUE o post é de
+// COMO é entregue (carrossel, estático, vídeo) — o calendário gira os tipos
+// de carrossel, o vídeo fica fora dele.
 const TIPOS_CONTEUDO = {
-  cultural: {
-    id: 'cultural', emoji: '📡', label: 'Cultural / Trend', formato: 'carrossel', editoria: true,
-    instrucao: 'Lê um fenômeno, comportamento ou mudança de época e conecta ao mundo de quem tem negócio. Tratar marca, produto ou case como fenômeno cultural, disputa de status, mudança de hábito ou sinal de época — nunca como release. Priorizar os padrões Brasil, fim/crise, geracional, novidade, investigação, contraste e nome próprio.',
+  tendencia: {
+    id: 'tendencia', emoji: '📡', label: 'Análise de Tendência', formato: 'carrossel', categoria: 'Awareness',
+    instrucao: 'Capa nomeia o fenômeno como declaração. Desenvolvimento: por que acontece, implicações estratégicas, o que muda. Priorizar os padrões Brasil, fim/crise, geracional, novidade, investigação, contraste e nome próprio.',
   },
-  tese: {
-    id: 'tese', emoji: '📊', label: 'Tese de Negócio', formato: 'carrossel', editoria: true,
-    instrucao: 'Uma afirmação defensável sobre como negócios funcionam, sustentada por mecanismo e âncora concreta. A tese precisa ter stake: alguém tem que poder discordar. Mostrar o mecanismo, não só a conclusão.',
+  case: {
+    id: 'case', emoji: '🏆', label: 'Case de Sucesso', formato: 'carrossel', categoria: 'Awareness',
+    instrucao: 'Capa como fenômeno cultural. Contexto de mercado. Ponto de virada decisivo. Resultados mensuráveis.',
   },
-  autoral: {
-    id: 'autoral', emoji: '✍️', label: 'Post Autoral (visão de mundo)', formato: 'carrossel', editoria: true,
-    instrucao: 'Opinião assumida sobre trabalho, dinheiro, ambição, liderança, cultura empresarial ou tecnologia. Não precisa terminar em dica — pode apenas apresentar uma ideia que faz o empresário parar. É o conteúdo mais incopiável do perfil.',
+  educativo: {
+    id: 'educativo', emoji: '📚', label: 'Educativo / Framework', formato: 'carrossel', categoria: 'Autoridade',
+    instrucao: 'Capa promete método com nome próprio. Um passo por slide, com exemplo concreto em cada.',
+  },
+  comparacao: {
+    id: 'comparacao', emoji: '⚖️', label: 'Comparação / Antes & Depois', formato: 'carrossel', categoria: 'Alcance',
+    instrucao: 'Capa ativa contraste com dado ou afirmação. Lado A detalhado. Virada com análise. Lado B com resultado.',
+  },
+  lista: {
+    id: 'lista', emoji: '📋', label: 'Lista Valiosa', formato: 'carrossel', categoria: 'Alcance',
+    instrucao: 'Capa com número e promessa específica. Um item por slide com profundidade real.',
+  },
+  prova_social: {
+    id: 'prova_social', emoji: '🌟', label: 'Prova Social', formato: 'carrossel', categoria: 'Conversão',
+    instrucao: 'Capa foca no resultado concreto. Antes com contexto real. Processo decisivo. Números e métricas.',
   },
   oferta: {
-    id: 'oferta', emoji: '🎯', label: 'Oferta Direta (com CTA)', formato: 'carrossel', editoria: true,
-    instrucao: 'Convida para algo real — diagnóstico, conversa, material, bastidor da Case. Constrói o raciocínio até o convite; o CTA é explícito e específico, nunca insistente. Todo post é uma oferta, mas este assume isso.',
+    id: 'oferta', emoji: '🎯', label: 'Oferta', formato: 'carrossel', categoria: 'Conversão',
+    instrucao: 'Capa ativa desejo, não produto. Problema real. Solução única. Para quem é. Prova de valor. CTA específico.',
   },
   frase: {
     id: 'frase', emoji: '💬', label: 'Frase de Impacto', formato: 'estatico',
@@ -204,7 +225,7 @@ ${BRANDS_DECODED.filosofia}
 ${brand.copyDNA || ''}
 ${manualNote ? `\nDIRETRIZES DO PERFIL:\n${manualNote}` : ''}
 
-${BRANDS_DECODED.editorias}
+${BRANDS_DECODED.categorias}
 ${BRANDS_DECODED.formula}
 ${BRANDS_DECODED.contratoCapa}
 ${BRANDS_DECODED.estruturaCarrossel}
@@ -228,7 +249,7 @@ function buildSystemPromptContentMachine(profile, tipo) {
   const brand   = BRAND_IDENTITIES[profile] || BRAND_IDENTITIES.pessoal;
   const account = getAccount(profile);
   const manualNote = getManualText(profile);
-  const tipoInfo = TIPOS_CONTEUDO[tipo] || TIPOS_CONTEUDO.autoral;
+  const tipoInfo = TIPOS_CONTEUDO[tipo] || TIPOS_CONTEUDO.educativo;
 
   return `Você é o gerador de conteúdo da ${account.name} — metodologia BrandsDecoded (Brand The Code™).
 
@@ -236,8 +257,8 @@ ${BRANDS_DECODED.filosofia}
 ${brand.copyDNA || ''}
 ${manualNote ? `\nDIRETRIZES DO PERFIL:\n${manualNote}` : ''}
 
-${BRANDS_DECODED.editorias}
-${tipoInfo.editoria ? BRANDS_DECODED.contratoCapa + '\n' + BRANDS_DECODED.estruturaCarrossel : ''}
+${BRANDS_DECODED.categorias}
+${tipoInfo.formato === 'carrossel' ? BRANDS_DECODED.contratoCapa + '\n' + BRANDS_DECODED.estruturaCarrossel : ''}
 ${BRANDS_DECODED.padroesHook}
 ${BRANDS_DECODED.gatilhos}
 ${BRANDS_DECODED.antiPadroes}
