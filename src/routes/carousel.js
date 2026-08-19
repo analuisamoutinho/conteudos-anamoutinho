@@ -10,7 +10,7 @@ const { buildSystemPromptCarrossel } = require('../lib/methodology');
 const { extractJSON, requireOpenAIKey } = require('../lib/util');
 const { saveGeneratedContent } = require('../lib/content');
 const { buildCarouselPrompt, cropTo45 } = require('../lib/image');
-const { resolveQuality } = require('../lib/userSettings');
+const { resolveQuality, proximaVariacaoFeed } = require('../lib/userSettings');
 const { loadCT, matchBestTemplate, templateStyle } = require('../lib/canva');
 const { askOpenAI, generateImage, MODEL_SMART, IMAGE_MODEL } = require('../lib/ai');
 
@@ -45,11 +45,13 @@ JSON: {"title":"título do carrossel","slideCount":8,"slides":[{"slideNumber":1,
     }
     const text = await askOpenAI({ prompt, system: systemPrompt, model: MODEL_SMART, maxTokens: 8192, json: true });
     const carouselData = extractJSON(text);
+    // Variação do feed: alterna a cada carrossel para o grid formar xadrez.
+    const feedVariacao = proximaVariacaoFeed();
     function sanitizeCopy(text) { if (!text) return text; return text.replace(/\s*—\s*/g, ' ').replace(/\s*–\s*/g, ' ').replace(/^\s*[–—]\s*/gm, '').trim(); }
     if (carouselData.slides) { carouselData.slides = carouselData.slides.map(s => ({ ...s, heading: sanitizeCopy(s.heading), body: sanitizeCopy(s.body) })); }
     if (carouselData.hashtags) { const tags = carouselData.hashtags.match(/#[\wÀ-ɏ]+/g) || []; carouselData.hashtags = tags.slice(0, 4).join(' '); }
-    const item = saveGeneratedContent({ id: 'cnt_' + Date.now(), createdAt: new Date().toISOString(), status: 'pendente', type: 'carrossel', mode, profile, topic: topic || ('Carrossel ' + carouselData.slideCount + ' slides'), caption: caption || carouselData.caption, hashtags: hashtags || carouselData.hashtags, contentMachineType: contentMachineType || null, carouselData, calendarDay: calendarDay || null, calendarMonth: calendarMonth || null, calendarYear: calendarYear || null, imageUrls: [], metodologia: 'rr' });
-    res.json({ success: true, contentId: item.id, ...carouselData });
+    const item = saveGeneratedContent({ id: 'cnt_' + Date.now(), createdAt: new Date().toISOString(), status: 'pendente', type: 'carrossel', mode, profile, feedVariacao, topic: topic || ('Carrossel ' + carouselData.slideCount + ' slides'), caption: caption || carouselData.caption, hashtags: hashtags || carouselData.hashtags, contentMachineType: contentMachineType || null, carouselData, calendarDay: calendarDay || null, calendarMonth: calendarMonth || null, calendarYear: calendarYear || null, imageUrls: [], metodologia: 'rr' });
+    res.json({ success: true, contentId: item.id, feedVariacao, ...carouselData });
   } catch(err) { res.status(500).json({ error: err.message }); }
 });
 
@@ -97,7 +99,15 @@ router.post('/api/image/carousel-slide', async (req, res) => {
     // gradiente escuro genérico.
     const fallbackOverlayTokens = { bg: brand.bgLight || '#F1F1EC', accent: brand.accent || '#B32616', text: brand.textOnLight || '#242321', kicker: 'ana moutinho' };
     const overlayStyle  = matchedTemplate?.overlayStyle  || 'lista';
-    const overlayTokens = matchedTemplate?.overlayTokens || fallbackOverlayTokens;
+    let overlayTokens = matchedTemplate?.overlayTokens || fallbackOverlayTokens;
+    // Duas variações da MESMA identidade. A capa é o que aparece no grid, por
+    // isso é ela que muda de fundo — o miolo mantém a linguagem em ambas.
+    const ehCapa = (funcao === 'CAPA') || Number(slideNumber) === 1;
+    if (req.body.feedVariacao === 'B') {
+      overlayTokens = ehCapa
+        ? { ...overlayTokens, bg: brand.accent, headline: brand.bgBrand, text: brand.bgBrand, accent: brand.bgBrand, papelSelo: brand.bgBrand }
+        : { ...overlayTokens, bg: brand.bgMid };
+    }
     const designMeta = { heading: heading||'', body: body||'', accent: brand.accent||'#C8A020', bgDark: brand.bgDark||'#0A0A0A', bgLight: brand.bgLight||'#F5F4F0', handle: brand.handle||account.handle, overlayStyle, overlayTokens, slideNumber, totalSlides, funcao: funcao||(slideNumber===1?'CAPA':slideNumber===totalSlides?'ASSINATURA':'CONTEUDO'), templateId: matchedTemplate?.id || null, templateName: matchedTemplate?.name || null };
 
     // A utilizadora anexou a própria imagem para este slide: devolvemos só o

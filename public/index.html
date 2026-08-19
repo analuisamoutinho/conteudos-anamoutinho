@@ -628,37 +628,6 @@ body{font-family:var(--font-body);background:var(--pale);color:var(--dark);min-h
             <div class="form-group"><label class="form-label">Tema / Tópico</label><textarea class="textarea" id="carouselTopic" placeholder="Ex: 5 erros que matam o negócio digital..." rows="4"></textarea></div>
           </div>
           <input type="hidden" id="imageEngine" value="gpt"/>
-          <div class="form-group">
-            <label class="form-label">Qualidade das imagens</label>
-            <div class="quality-selector">
-              <label class="quality-option">
-                <input type="radio" name="imageQuality" value="low" id="qLow" onchange="saveImageQuality(this.value)"/>
-                <div>
-                  <div class="quality-option-name">Low — Mais econômico</div>
-                  <div class="quality-option-desc">Ideal para testes e rascunhos</div>
-                </div>
-              </label>
-              <label class="quality-option">
-                <input type="radio" name="imageQuality" value="medium" id="qMedium" onchange="saveImageQuality(this.value)"/>
-                <div>
-                  <div class="quality-option-name">Medium — Equilibrado</div>
-                  <div class="quality-option-desc">Boa qualidade com custo moderado</div>
-                </div>
-              </label>
-              <label class="quality-option">
-                <input type="radio" name="imageQuality" value="high" id="qHigh" checked onchange="saveImageQuality(this.value)"/>
-                <div>
-                  <div class="quality-option-name">High — Máxima qualidade <span class="quality-badge-default">Padrão</span></div>
-                  <div class="quality-option-desc">Melhor resultado visual, maior custo por slide</div>
-                </div>
-              </label>
-            </div>
-          </div>
-          <div class="form-group" id="carouselTemplatePickerGroup" style="display:none;">
-            <label class="form-label">Templates sugeridos <span style="font-size:.68rem;color:var(--mid);font-weight:400;">(opcional)</span></label>
-            <div id="carouselTemplatePicker"></div>
-            <div class="carousel-tmpl-selected-info" id="carouselTmplSelectedInfo"></div>
-          </div>
 <div class="form-group"><label class="form-label">Legenda personalizada (opcional)</label><textarea class="textarea" id="carouselCaption" placeholder="Deixar em branco para gerar automaticamente..." rows="2"></textarea></div>
           <button class="btn btn-primary" onclick="generateCarousel()" id="btnGenCarousel" style="width:100%">✨ Gerar carrossel</button>
         </div>
@@ -958,8 +927,6 @@ async function loadUserSettings() {
     const r = await fetch('/api/user-settings');
     const d = await r.json();
     currentImageQuality = d.image_quality || 'high';
-    const el = document.querySelector('input[name="imageQuality"][value="' + currentImageQuality + '"]');
-    if (el) el.checked = true;
   } catch(e) { console.warn('loadUserSettings:', e.message); }
 }
 
@@ -970,10 +937,13 @@ async function saveImageQuality(quality) {
   } catch(e) { console.warn('saveImageQuality:', e.message); }
 }
 
-function getSelectedQuality() {
-  const el = document.querySelector('input[name="imageQuality"]:checked');
-  return el ? el.value : (currentImageQuality || 'high');
+// Qualidade fixa por posição: a capa é o que aparece no grid e sustenta o
+// clique, por isso vai em high; os slides de miolo em medium, que é o
+// suficiente para fundo de composição e reduz bastante o custo por carrossel.
+function qualidadeDoSlide(indice, funcao) {
+  return (indice === 0 || funcao === 'CAPA') ? 'high' : 'medium';
 }
+
 
 /* ── DESIGN STYLES ── */
 const DESIGN_STYLES={pessoal:[{id:'lofi_diary',name:'📷 Foto Natural',sub:'Luz suave + tom íntimo + grão de filme',desc:'Gera uma foto com aparência real e íntima — como tirada com iPhone no dia a dia. Luz natural, tons quentes, grão de filme. Ideal para conteúdo pessoal, reflexões e bastidores.',promptStyle:'Lo-fi diary aesthetic. Candid, intimate iPhone-style photo. Natural light, warm tones, slight film grain. Authentic and personal.',overlayStyle:'HERO_LOFI'},{id:'editorial_minimal',name:'✦ Fundo Limpo',sub:'Fundo creme + tipografia elegante + sem foto',desc:'Sem foto — fundo creme ou branco quente com tipografia elegante como elemento central. Visual clean e feminino. Ideal para frases, citações e conteúdo reflexivo onde o texto fala por si.',promptStyle:'Soft editorial minimal. Warm cream or off-white background. Typography as the hero. Clean, feminine, refined.',overlayStyle:'TYPE_CREME'},{id:'colagem_real',name:'🌿 Objetos & Textura',sub:'Detalhes do dia a dia fotografados de perto',desc:'Gera imagens com objetos cotidianos em close — caderno, xícara de café, flores, tecido. Visual aconchegante e autêntico. Ideal para dar contexto visual sem usar foto pessoal.',promptStyle:'Real life collage aesthetic. Everyday objects shot close-up — notebook, coffee, flowers, fabric. Cozy, authentic, warm tones.',overlayStyle:'COLAGEM_REAL'}]};
@@ -1180,64 +1150,13 @@ function updateSlideText(idx, field, value) {
   if (lbSlides?.[idx]) lbSlides[idx][field] = value;
 }
 
-/* ── CAROUSEL TEMPLATE PICKER ── */
+/* ── TEMPLATE DO CARROSSEL ── */
+// Não há mais escolha manual de template: a linguagem visual é uma só e o
+// sistema casa a composição pelo conteúdo. O que alterna entre posts é a
+// variação do feed (A/B), decidida no backend para o grid formar xadrez.
 let currentCarouselTemplate = null;
-
-function renderCarouselTemplatePicker() {
-  const group = document.getElementById('carouselTemplatePickerGroup');
-  const picker = document.getElementById('carouselTemplatePicker');
-  if (!picker || !group) return;
-
-  // Only show for personal profile (Ana Moutinho)
-  if (currentProfile !== 'pessoal') {
-    group.style.display = 'none';
-    selectCarouselTemplate(null);
-    return;
-  }
-
-  const templates = (canvaTemplates || []).slice(0, 3);
-  if (!templates.length) {
-    group.style.display = 'none';
-    return;
-  }
-
-  group.style.display = 'block';
-  picker.innerHTML = templates.map(t => {
-    const thumb = t.thumbnailUrl
-      ? `<img src="${t.thumbnailUrl}" style="width:100%;height:100%;object-fit:cover;border-radius:6px 6px 0 0;"/>`
-      : `<div style="height:56px;display:flex;align-items:center;justify-content:center;font-size:1.6rem;background:var(--pale);border-radius:6px 6px 0 0;">🎨</div>`;
-    return `<div class="ct-suggest-card" id="ctChip_${t.id}" onclick="selectCarouselTemplate('${t.id}')">
-      <div style="height:56px;overflow:hidden;border-radius:6px 6px 0 0;">${thumb}</div>
-      <div style="padding:6px 8px;">
-        <div style="font-size:.72rem;font-weight:700;color:var(--dark);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${t.name}</div>
-        ${t.aesthetic ? `<div style="font-size:.62rem;color:var(--mid);margin-top:2px;">${t.aesthetic}</div>` : ''}
-      </div>
-    </div>`;
-  }).join('');
-
-  // Add "None" option at the end
-  picker.innerHTML += `<div class="ct-suggest-card ct-suggest-none selected" id="ctChip_none" onclick="selectCarouselTemplate(null)" style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;min-height:80px;">
-    <span style="font-size:1.1rem;opacity:.5;">✕</span>
-    <span style="font-size:.65rem;color:var(--mid);">Nenhum</span>
-  </div>`;
-}
-
-function selectCarouselTemplate(templateId) {
-  currentCarouselTemplate = templateId;
-  document.querySelectorAll('.carousel-tmpl-chip, .carousel-tmpl-chip-none, .ct-suggest-card').forEach(el => el.classList.remove('selected'));
-  const target = document.getElementById(templateId ? `ctChip_${templateId}` : 'ctChip_none');
-  if (target) target.classList.add('selected');
-  const info = document.getElementById('carouselTmplSelectedInfo');
-  if (templateId) {
-    const t = (canvaTemplates || []).find(x => x.id === templateId);
-    if (t && info) {
-      info.style.display = 'block';
-      info.textContent = `🎨 ${t.name} · ${t.aesthetic || 'estilo personalizado'}`;
-    }
-  } else {
-    if (info) info.style.display = 'none';
-  }
-}
+function renderCarouselTemplatePicker(){ /* removido: seleção manual não era clara */ }
+function selectCarouselTemplate(){ currentCarouselTemplate = null; }
 
 /* ── LIGHTBOX ── */
 function openLightbox(index){lbCurrentIndex=index;document.getElementById('slideLightbox').classList.add('visible');lbRenderSlide();lbBuildStrip();}
@@ -1455,19 +1374,21 @@ ${this._mono(this._codigo(m,tipo),cor,20)}${this._mono(n+'—'+t,cor,20)}</div>`
 
   // 01 — CAPA-MANIFESTO
   _cCapa(photoUrl,m,tk){
-    const C=this.C,v=this._variante(m),tint=tk.text||C.vermelho;
+    const C=this.C,v=this._variante(m),tint=tk.accent||tk.text||C.vermelho;
+    // Na variação B a capa é um bloco vermelho: o texto inverte para creme.
+    const ink=tk.headline||C.tinta;
     const size=this._fit(m.heading,[[28,124],[44,104],[62,88],[84,74],[999,62]]);
-    return`<div style="position:absolute;inset:0;background:${tk.bg||C.papel};z-index:0;"></div>${this._paper()}
+    return`<div style="position:absolute;inset:0;background:${tk.bg||C.papel};z-index:0;"></div>${this._paper(tk.headline?.22:.5)}
 ${this._artefato(photoUrl,{pos:v.lado?'top:-40px;right:-56px;':'top:-40px;left:-56px;',w:'44%',h:'25%',rot:v.rot(v.lado?4:-4,1),z:3,estilo:'pagina'})}
 ${this._fita({pos:v.lado?'top:120px;right:5%;':'top:120px;left:5%;',w:150,h:42,rot:v.rot(v.lado?-13:13,2),z:5,...v.fita1})}
 ${this._artefato(null,{pos:v.lado?'bottom:-34px;left:-46px;':'bottom:-34px;right:-46px;',w:'24%',h:'15%',rot:v.rot(-7,3),z:2,estilo:'rasgado',fallback:C.papelQuente})}
-${this._cabecalho(m,'CAPA',C.cinza)}
+${this._cabecalho(m,'CAPA',tk.headline?tk.headline:C.cinza)}
 <div style="position:absolute;top:392px;left:${this.MX}px;right:${this.MX+16}px;z-index:6;">
-${this._serif(this._destaque(m.heading,tint),size,C.tinta,700)}
+${this._serif(this._destaque(m.heading,tint),size,ink,700)}
 ${m.body?`<div style="margin-top:52px;">${this._anotacao(m.body,tint,44)}</div>`:''}
 </div>
 ${this._selo('ARRASTA →',tint,`bottom:${this.MY+40}px;right:${this.MX}px;`,-3)}
-${this._rodape(m,C.cinza)}`;
+${this._rodape(m,tk.headline?tk.headline:C.cinza)}`;
   },
 
   // 02 — ARTEFATO CENTRAL: a evidência domina
@@ -1767,7 +1688,7 @@ async function generateCarouselImages(autoPublishConfig=null){
                 const blob=await proxyRes.blob();
                 const reader=new FileReader();
                 const photoB64=await new Promise(resolve=>{reader.onload=e=>resolve(e.target.result.split(',')[1]);reader.readAsDataURL(blob);});
-                const slideRes=await fetch('/api/image/carousel-slide',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({heading:s.heading||'',body:s.body||'',slideNumber:i+1,totalSlides:slides.length,funcao,topic,profile:currentProfile,contentId,imagePromptHint:s.imagePrompt||'',designStyleHint:getCarouselDesignStyleHint(),quality:getSelectedQuality(),engine,referenceImageB64:photoB64})});
+                const slideRes=await fetch('/api/image/carousel-slide',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({heading:s.heading||'',body:s.body||'',slideNumber:i+1,totalSlides:slides.length,funcao,topic,profile:currentProfile,contentId,imagePromptHint:s.imagePrompt||'',designStyleHint:getCarouselDesignStyleHint(),feedVariacao:currentCarouselData?.feedVariacao||null,quality:qualidadeDoSlide(i,funcao),engine,referenceImageB64:photoB64})});
                 const slideData=await slideRes.json();
                 if(!slideData.error){
                   // Fundo gerado a partir da foto real; a tipografia da marca
@@ -1799,7 +1720,7 @@ async function generateCarouselImages(autoPublishConfig=null){
       // gera nada por IA — só se pede o designMeta para manter a composição.
       const anexo=carouselCustomImages[i];
       if(anexo&&!finalUrl){
-        const metaRes=await fetch('/api/image/carousel-slide',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({heading:s.heading||'',body:s.body||'',slideNumber:i+1,totalSlides:slides.length,funcao,topic,profile:currentProfile,contentId,designStyleHint:getCarouselDesignStyleHint(),engine,skipImage:true})});
+        const metaRes=await fetch('/api/image/carousel-slide',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({heading:s.heading||'',body:s.body||'',slideNumber:i+1,totalSlides:slides.length,funcao,topic,profile:currentProfile,contentId,designStyleHint:getCarouselDesignStyleHint(),feedVariacao:currentCarouselData?.feedVariacao||null,engine,skipImage:true})});
         const metaData=await metaRes.json().catch(()=>({}));
         const meta={...(metaData.designMeta||{}),heading:s.heading||'',body:s.body||'',slideNumber:i+1,totalSlides:slides.length,funcao};
         if(s.anotacao)meta.overlayTokens={...(meta.overlayTokens||{}),nota:s.anotacao};
@@ -1811,7 +1732,7 @@ async function generateCarouselImages(autoPublishConfig=null){
       }
 
       if(engine==='gpt'&&!finalUrl){
-        const slideRes=await fetch('/api/image/carousel-slide',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({heading:s.heading||'',body:s.body||'',slideNumber:i+1,totalSlides:slides.length,funcao,topic,profile:currentProfile,contentId,imagePromptHint:s.imagePrompt||'',designStyleHint:getCarouselDesignStyleHint(),quality:getSelectedQuality(),engine})});
+        const slideRes=await fetch('/api/image/carousel-slide',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({heading:s.heading||'',body:s.body||'',slideNumber:i+1,totalSlides:slides.length,funcao,topic,profile:currentProfile,contentId,imagePromptHint:s.imagePrompt||'',designStyleHint:getCarouselDesignStyleHint(),feedVariacao:currentCarouselData?.feedVariacao||null,quality:qualidadeDoSlide(i,funcao),engine})});
         const slideData=await slideRes.json();
         if(slideData.error)throw new Error(slideData.error);
         // O gpt-image gera SÓ o fundo (o prompt proíbe texto). A tipografia da
@@ -2516,7 +2437,7 @@ async function publishCarouselDirect(){if(!currentCarouselData)return toast('Ger
 async function _autoPublishAfterImages({action,scheduledAt,caption,contentId}){const allImgs=(currentCarouselImages||[]).filter(Boolean);if(!allImgs.length)return;const imageUrls=[];for(let i=0;i<allImgs.length;i++){const u=allImgs[i];if(u.startsWith('data:')){try{const b64=u.split(',')[1];const sv=await fetch('/api/image/save-b64',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({b64,contentId:contentId||`tmp_${Date.now()}`,slideIndex:i})});const svd=await sv.json();imageUrls.push(svd.url||u);}catch(e){imageUrls.push(u);}}else{imageUrls.push(u);}}try{if(action==='schedule'&&scheduledAt){await fetch('/api/instagram/schedule',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({contentId,scheduledAt,profile:currentProfile,type:'carrossel',caption,imageUrls})});toast('Agendado automaticamente!','success');}else if(action==='now'){await fetch('/api/instagram/carousel',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({contentId,imageUrls,caption,profile:currentProfile})});toast('Publicado automaticamente! 🎉','success');}}catch(e){toast('Erro ao auto-publicar: '+e.message,'error');}document.getElementById('publishPanel').classList.add('visible');}
 
 /* ── FEED ── */
-async function generateFeedPost(){const prompt=document.getElementById('feedPrompt').value.trim();const caption=document.getElementById('feedCaption').value.trim();const engine=document.getElementById('feedEngine').value;if(!prompt)return toast('Descreve o post','error');const btn=document.querySelector('[onclick="generateFeedPost()"]');if(btn){btn.disabled=true;btn.textContent='⏳ A gerar...';}try{let imageUrl=null;if(engine==='gemini')return toast('Gerador Gemini não disponível. Usa GPT Image-1.','error');const r=await fetch('/api/image/carousel-slide',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({heading:prompt,body:caption,slideNumber:1,totalSlides:1,funcao:'CAPA',topic:prompt,profile:currentProfile,quality:getSelectedQuality()})});const d=await r.json();if(d.error)throw new Error(d.error);imageUrl=d.url||(d.b64?`data:image/png;base64,${d.b64}`:null);if(!imageUrl)throw new Error('Nenhuma imagem retornada');currentFeedImageUrl=imageUrl;const item={id:'cnt_'+Date.now(),createdAt:new Date().toISOString(),status:'pendente',type:'feed',profile:currentProfile,topic:prompt,caption:caption||prompt,imageUrls:imageUrl.startsWith('data:')?[]:[imageUrl]};const sv=await fetch('/api/content/save',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(item)});const svd=await sv.json();currentFeedContentId=svd.item?.id||item.id;document.getElementById('feedPreviewImg').src=imageUrl;document.getElementById('feedGeneratedCaption').value=caption||prompt;document.getElementById('feedPreviewCard').style.display='block';document.getElementById('feedPublishPanel').style.display='block';toast('Imagem gerada!','success');}catch(e){toast('Erro: '+e.message,'error');}finally{if(btn){btn.disabled=false;btn.textContent='✨ Gerar imagem';}}}
+async function generateFeedPost(){const prompt=document.getElementById('feedPrompt').value.trim();const caption=document.getElementById('feedCaption').value.trim();const engine=document.getElementById('feedEngine').value;if(!prompt)return toast('Descreve o post','error');const btn=document.querySelector('[onclick="generateFeedPost()"]');if(btn){btn.disabled=true;btn.textContent='⏳ A gerar...';}try{let imageUrl=null;if(engine==='gemini')return toast('Gerador Gemini não disponível. Usa GPT Image-1.','error');const r=await fetch('/api/image/carousel-slide',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({heading:prompt,body:caption,slideNumber:1,totalSlides:1,funcao:'CAPA',topic:prompt,profile:currentProfile,quality:qualidadeDoSlide(i,funcao)})});const d=await r.json();if(d.error)throw new Error(d.error);imageUrl=d.url||(d.b64?`data:image/png;base64,${d.b64}`:null);if(!imageUrl)throw new Error('Nenhuma imagem retornada');currentFeedImageUrl=imageUrl;const item={id:'cnt_'+Date.now(),createdAt:new Date().toISOString(),status:'pendente',type:'feed',profile:currentProfile,topic:prompt,caption:caption||prompt,imageUrls:imageUrl.startsWith('data:')?[]:[imageUrl]};const sv=await fetch('/api/content/save',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(item)});const svd=await sv.json();currentFeedContentId=svd.item?.id||item.id;document.getElementById('feedPreviewImg').src=imageUrl;document.getElementById('feedGeneratedCaption').value=caption||prompt;document.getElementById('feedPreviewCard').style.display='block';document.getElementById('feedPublishPanel').style.display='block';toast('Imagem gerada!','success');}catch(e){toast('Erro: '+e.message,'error');}finally{if(btn){btn.disabled=false;btn.textContent='✨ Gerar imagem';}}}
 
 function toggleFeedScheduleTime(){document.getElementById('feedScheduleTimeGroup').style.display=document.getElementById('feedPublishAction').value==='schedule'?'block':'none';}
 
