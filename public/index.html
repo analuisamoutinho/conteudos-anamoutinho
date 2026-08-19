@@ -142,6 +142,10 @@ body{font-family:var(--font-body);background:var(--pale);color:var(--dark);min-h
 /* Slide já renderizado com a tipografia da marca: nada por cima. */
 .slide-card.has-img::before{display:none;}
 .slide-card.has-img .slide-img{object-fit:contain;background:#F1F1EC;}
+.slide-anexo-btn{position:absolute;top:8px;left:8px;z-index:5;background:rgba(255,255,255,.94);border:1px solid var(--light);border-radius:8px;padding:4px 8px;font-size:.68rem;font-weight:600;color:var(--dark);cursor:pointer;display:flex;align-items:center;gap:4px;box-shadow:0 2px 6px rgba(0,0,0,.12);}
+.slide-anexo-btn:hover{border-color:var(--magenta);color:var(--magenta);}
+.slide-anexo-btn.tem{background:#A92E1D;color:#fff;border-color:#A92E1D;}
+.slide-anexo-thumb{position:absolute;bottom:8px;right:8px;width:46px;height:46px;object-fit:cover;border:2px solid #fff;border-radius:6px;box-shadow:0 3px 10px rgba(0,0,0,.24);z-index:5;}
 .slide-card.has-img .slide-number{background:rgba(41,39,37,.72);color:#F7F3EA;padding:3px 8px;border-radius:99px;display:inline-block;}
 .slide-card .slide-img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;border-radius:var(--radius);z-index:0;}
 .slide-card-content{position:relative;z-index:2;}
@@ -1084,6 +1088,7 @@ async function gerarImagensDoModal() {
   closeModal('contentModal');
   // Carregar o carrossel na tela de geração
   currentCarouselData = { ...item.carouselData, imageUrls: [] };
+  carouselCustomImages = {};
   currentCarouselContentId = item.id;
   currentCarouselImages = [];
   lbCommentStore = {};
@@ -1110,7 +1115,7 @@ function enterCarouselPreviewMode(){document.getElementById('carouselGrid').clas
 function resetCarouselToConfig(){document.getElementById('carouselGrid').classList.remove('preview-mode');document.getElementById('carouselPreviewCard').style.display='none';document.getElementById('publishPanel').classList.remove('visible');}
 let carouselMode='blocks';
 function setCarouselMode(mode){carouselMode=mode;document.getElementById('modeBtnBlocks').classList.toggle('active',mode==='blocks');document.getElementById('modeBtnTopic').classList.toggle('active',mode==='topic');document.getElementById('modeBlocks').style.display=mode==='blocks'?'block':'none';document.getElementById('modeTopic').style.display=mode==='topic'?'block':'none';}
-async function generateCarousel(){let body={};if(carouselMode==='blocks'){const blocks=document.getElementById('carouselBlocks').value.trim();if(!blocks)return toast('Cola os blocos de texto','error');body={blocks,profile:currentProfile,caption:document.getElementById('carouselCaption').value};}else{const topic=document.getElementById('carouselTopic').value.trim();if(!topic)return toast('Escreve o tema','error');body={topic,profile:currentProfile,caption:document.getElementById('carouselCaption').value};}const btn=document.getElementById('btnGenCarousel');btn.disabled=true;btn.textContent='⏳ A gerar...';try{const r=await fetch('/api/carousel/generate-and-save',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});const d=await r.json();if(d.error)throw new Error(d.error);currentCarouselData={...d,imageUrls:[]};currentCarouselContentId=d.contentId;currentCarouselImages=[];lbCommentStore={};lbStatusStore={};renderSlidesPreview(d.slides);document.getElementById('carouselSlideCount').textContent=`${d.slides.length} slides gerados pela IA`;document.getElementById('carouselGeneratedCaption').value=`${d.caption}\n\n${d.hashtags}`;document.getElementById('carouselPreviewTitle').textContent=d.title||'Pré-visualização';document.getElementById('carouselPreviewCard').style.display='block';document.getElementById('publishPanel').classList.add('visible');enterCarouselPreviewMode();if(currentProfile==='pessoal')toast(`Carrossel com ${d.slides.length} slides gerado!`,'success');}catch(e){toast('Erro: '+e.message,'error');}finally{btn.disabled=false;btn.textContent='✨ Gerar carrossel';}}
+async function generateCarousel(){let body={};if(carouselMode==='blocks'){const blocks=document.getElementById('carouselBlocks').value.trim();if(!blocks)return toast('Cola os blocos de texto','error');body={blocks,profile:currentProfile,caption:document.getElementById('carouselCaption').value};}else{const topic=document.getElementById('carouselTopic').value.trim();if(!topic)return toast('Escreve o tema','error');body={topic,profile:currentProfile,caption:document.getElementById('carouselCaption').value};}const btn=document.getElementById('btnGenCarousel');btn.disabled=true;btn.textContent='⏳ A gerar...';try{const r=await fetch('/api/carousel/generate-and-save',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});const d=await r.json();if(d.error)throw new Error(d.error);currentCarouselData={...d,imageUrls:[]};carouselCustomImages={};currentCarouselContentId=d.contentId;currentCarouselImages=[];lbCommentStore={};lbStatusStore={};renderSlidesPreview(d.slides);document.getElementById('carouselSlideCount').textContent=`${d.slides.length} slides gerados pela IA`;document.getElementById('carouselGeneratedCaption').value=`${d.caption}\n\n${d.hashtags}`;document.getElementById('carouselPreviewTitle').textContent=d.title||'Pré-visualização';document.getElementById('carouselPreviewCard').style.display='block';document.getElementById('publishPanel').classList.add('visible');enterCarouselPreviewMode();if(currentProfile==='pessoal')toast(`Carrossel com ${d.slides.length} slides gerado!`,'success');}catch(e){toast('Erro: '+e.message,'error');}finally{btn.disabled=false;btn.textContent='✨ Gerar carrossel';}}
 
 /* ── RENDER SLIDES PREVIEW (com textos editáveis) ── */
 function renderSlidesPreview(slides){
@@ -1123,8 +1128,11 @@ function renderSlidesPreview(slides){
     const img=imgs[i];
     const h=(s.heading||'').replace(/"/g,'&quot;');
     const b=(s.body||'').replace(/</g,'&lt;');
+    const anexo=carouselCustomImages[i];
     return`<div class="slide-card${img?' has-img':''}" id="slideCard_${i}" onclick="openLightbox(${i})" title="Clica para ver em detalhe">
       ${img?`<img class="slide-img" src="${img}" />`:''}
+      <button class="slide-anexo-btn${anexo?' tem':''}" onclick="event.stopPropagation();${anexo?`removerImagemSlide(${i})`:`anexarImagemSlide(${i})`}" title="${anexo?'Remover a imagem anexada':'Usar uma imagem minha neste slide'}">${anexo?'✓ minha imagem':'📎 anexar'}</button>
+      ${anexo&&!img?`<img class="slide-anexo-thumb" src="${anexo.dataUrl}" title="${anexo.nome}" />`:''}
       ${status!=='pendente'?`<div class="slide-status-badge ${status}">${status==='aprovado'?'✓ OK':'✎ Alterar'}</div>`:''}
       ${comments.length?`<div class="slide-comment-dot">${comments.length}</div>`:''}
       ${img?`<div class="slide-card-content">
@@ -1140,6 +1148,30 @@ function renderSlidesPreview(slides){
       </div>`}
     </div>`;
   }).join('');
+}
+
+// ── Imagens próprias por slide (opcional) ────────────────────────────────
+// Se a utilizadora anexar uma imagem a um slide, ela entra como o artefato
+// daquela composição e a geração por IA é dispensada só para esse slide.
+let carouselCustomImages = {};
+
+function anexarImagemSlide(idx){
+  const input=document.createElement('input');
+  input.type='file';input.accept='image/*';
+  input.onchange=async e=>{
+    const file=e.target.files[0];if(!file)return;
+    if(file.size>12*1024*1024)return toast('Imagem acima de 12MB — usa uma menor','error');
+    const dataUrl=await new Promise(res=>{const fr=new FileReader();fr.onload=ev=>res(ev.target.result);fr.readAsDataURL(file);});
+    carouselCustomImages[idx]={dataUrl,nome:file.name};
+    renderSlidesPreview(currentCarouselData?.slides||lbSlides||[]);
+    toast(`Imagem anexada ao slide ${idx+1}. Gera as imagens para aplicar.`,'success');
+  };
+  input.click();
+}
+function removerImagemSlide(idx){
+  delete carouselCustomImages[idx];
+  renderSlidesPreview(currentCarouselData?.slides||lbSlides||[]);
+  toast(`Imagem do slide ${idx+1} removida`,'info');
 }
 
 function updateSlideText(idx, field, value) {
@@ -1763,6 +1795,21 @@ async function generateCarouselImages(autoPublishConfig=null){
         }catch(gpErr){console.warn('[gphotos slide '+i+']',gpErr.message);}
       }
 
+      // Slide com imagem anexada pela utilizadora: ela é o artefato e não se
+      // gera nada por IA — só se pede o designMeta para manter a composição.
+      const anexo=carouselCustomImages[i];
+      if(anexo&&!finalUrl){
+        const metaRes=await fetch('/api/image/carousel-slide',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({heading:s.heading||'',body:s.body||'',slideNumber:i+1,totalSlides:slides.length,funcao,topic,profile:currentProfile,contentId,designStyleHint:getCarouselDesignStyleHint(),engine,skipImage:true})});
+        const metaData=await metaRes.json().catch(()=>({}));
+        const meta={...(metaData.designMeta||{}),heading:s.heading||'',body:s.body||'',slideNumber:i+1,totalSlides:slides.length,funcao};
+        if(s.anotacao)meta.overlayTokens={...(meta.overlayTokens||{}),nota:s.anotacao};
+        const rendered=await SlideRenderer.renderSlide(anexo.dataUrl,meta);
+        if(rendered){
+          try{const sv=await fetch('/api/image/save-b64',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({b64:rendered,contentId:contentId||`tmp_${Date.now()}`,slideIndex:i})});const svd=await sv.json();if(svd.url)finalUrl=svd.url;}catch(e){}
+          finalUrl=finalUrl||`data:image/png;base64,${rendered}`;
+        }
+      }
+
       if(engine==='gpt'&&!finalUrl){
         const slideRes=await fetch('/api/image/carousel-slide',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({heading:s.heading||'',body:s.body||'',slideNumber:i+1,totalSlides:slides.length,funcao,topic,profile:currentProfile,contentId,imagePromptHint:s.imagePrompt||'',designStyleHint:getCarouselDesignStyleHint(),quality:getSelectedQuality(),engine})});
         const slideData=await slideRes.json();
@@ -1987,6 +2034,7 @@ function enviarCriarParaCarrossel() {
   lbCommentStore = {};
   lbStatusStore = {};
   currentCarouselData = { slides, caption: '', hashtags: '' };
+  carouselCustomImages = {};
   currentCarouselContentId = null;
   // Navega para o carrossel e mostra preview
   resetCarouselToConfig();
