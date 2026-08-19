@@ -26,4 +26,16 @@ function saveUserSettings(settings) {
   } catch(e) { console.error('saveUserSettings:', e.message); return settings; }
 }
 
-module.exports = { loadUserSettings, saveUserSettings, VALID_QUALITIES, DEFAULT_QUALITY, resolveQuality };
+// ── Ritmo do feed ─────────────────────────────────────────────────────────
+// Os posts alternam entre duas variações da MESMA identidade, para o grid do
+// perfil formar um xadrez: um post abre em papel claro, o seguinte abre em
+// bloco vermelho. O contador vive nas definições para sobreviver entre posts.
+const VARIACOES_FEED = ['A', 'B'];
+function proximaVariacaoFeed() {
+  const s = loadUserSettings();
+  const i = Number.isInteger(s.feedVariacaoIndex) ? s.feedVariacaoIndex : 0;
+  saveUserSettings({ feedVariacaoIndex: (i + 1) % VARIACOES_FEED.length });
+  return VARIACOES_FEED[i % VARIACOES_FEED.length];
+}
+
+module.exports = { loadUserSettings, saveUserSettings, VALID_QUALITIES, DEFAULT_QUALITY, resolveQuality, VARIACOES_FEED, proximaVariacaoFeed };
