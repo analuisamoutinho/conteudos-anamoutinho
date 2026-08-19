@@ -306,7 +306,7 @@ body{font-family:var(--font-body);background:var(--pale);color:var(--dark);min-h
 .ds-btn.active{border-color:var(--magenta);background:rgba(228,0,124,.05);box-shadow:0 0 0 2px rgba(228,0,124,.15);}
 .ds-btn-name{font-size:.8rem;font-weight:700;color:var(--dark);display:flex;align-items:center;gap:6px;}
 .ds-btn-sub{font-size:.67rem;color:var(--mid);margin-top:2px;line-height:1.3;}
-.sr-slide-wrapper{position:relative;width:1024px;height:1536px;overflow:hidden;font-family:'Plus Jakarta Sans',sans-serif;flex-shrink:0;}
+.sr-slide-wrapper{position:relative;width:1080px;height:1350px;overflow:hidden;font-family:'Plus Jakarta Sans',sans-serif;flex-shrink:0;}
 .sr-bg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:0;}
 .sr-photo{position:absolute;object-fit:cover;}
 .sr-overlay{position:absolute;inset:0;z-index:1;}
@@ -325,7 +325,7 @@ body{font-family:var(--font-body);background:var(--pale);color:var(--dark);min-h
 .sr-body-dark{color:rgba(17,17,17,.72);}
 .sr-bottom-bar{position:absolute;bottom:0;left:0;right:0;height:6px;z-index:3;}
 .sr-slide-num{position:absolute;top:56px;right:80px;font-size:20px;font-weight:600;letter-spacing:.06em;opacity:.45;z-index:3;}
-#sr-render-container{position:fixed;top:-9999px;left:-9999px;width:1024px;height:1536px;z-index:-1;pointer-events:none;}
+#sr-render-container{position:fixed;top:-9999px;left:-9999px;width:1080px;height:1350px;z-index:-1;pointer-events:none;}
 /* Roteiro de vídeo */
 .roteiro-wrapper{display:flex;flex-direction:column;gap:0;}
 .roteiro-gancho-box{background:rgba(228,0,124,.07);border:1.5px solid rgba(228,0,124,.25);border-radius:var(--radius);padding:14px 18px;margin:16px 0 8px;}
@@ -1252,6 +1252,11 @@ const SlideRenderer={
      terracota:'#B32616',terracotaEsc:'#811F16',vinho:'#811F16',
      bege:'#F1F1EC',kraft:'#E9E5DA',creme:'#FAF9F4',realce:'#E8B8B2',salvia:'#7C8A6E'},
 
+  // FORMATO OBRIGATÓRIO: 1080×1350 (4:5) nativo. Nunca gerar noutra
+  // proporção e cortar depois. Margens de segurança: 80px laterais,
+  // 100px topo e base — nada essencial encosta nas extremidades.
+  W:1080,H:1350,MX:80,MY:100,
+
   _esc(t){return String(t==null?'':t).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');},
   _palavras(t){return String(t||'').trim().split(/\s+/).filter(Boolean).length;},
 
@@ -1355,7 +1360,7 @@ const SlideRenderer={
   // bottom/right ou percentagem, o elemento existe no DOM mas sai em branco
   // no PNG. Este helper converte para top/left antes de desenhar.
   _svgPos(style,w,h){
-    const S=1024,A=1536;
+    const S=this.W,A=this.H;
     const num=(re)=>{const m=String(style).match(re);return m?parseFloat(m[1]):null;};
     const bottom=num(/bottom:\s*(-?[\d.]+)px/), right=num(/right:\s*(-?[\d.]+)px/);
     let out=String(style).replace(/bottom:\s*-?[\d.]+px;?/,'').replace(/right:\s*-?[\d.]+px;?/,'');
@@ -1389,118 +1394,7 @@ const SlideRenderer={
     return`<div style="position:absolute;${style}z-index:6;transform:rotate(${rot==null?-4:rot}deg);font-family:'Courier Prime',monospace;font-size:20px;font-weight:700;letter-spacing:.16em;color:${cor};border:1.5px solid ${cor};padding:7px 16px;opacity:.9;">${this._esc(txt)}</div>`;
   },
 
-  // ═══ BIBLIOTECA DE COMPOSIÇÕES (V2 §10) ═══════════════════════════════
-  // Cada composição tem estrutura própria. Densidade alvo 55-80% em slides
-  // de desenvolvimento; nenhuma área vazia contínua acima de ~30%.
-
-  // 01 — CAPA-MANIFESTO: headline dominante, artefato saindo da margem,
-  // anotação curta, sem subtítulo longo.
-  _cCapa(photoUrl,m,tk){
-    const C=this.C,v=this._variante(m),tint=tk.text||C.vermelho;
-    const size=this._fit(m.heading,[[28,140],[44,118],[62,98],[84,84],[999,70]]);
-    return`<div style="position:absolute;inset:0;background:${tk.bg||C.papel};z-index:0;"></div>${this._paper()}
-${this._artefato(photoUrl,{pos:v.lado?'top:-56px;right:-70px;':'top:-56px;left:-70px;',w:'46%',h:'27%',rot:v.rot(v.lado?4:-4,1),z:3,estilo:'pagina'})}
-${this._fita({pos:v.lado?'top:112px;right:6%;':'top:112px;left:6%;',w:160,h:44,rot:v.rot(v.lado?-13:13,2),z:5,...v.fita1})}
-${this._artefato(null,{pos:v.lado?'bottom:-40px;left:-52px;':'bottom:-40px;right:-52px;',w:'26%',h:'17%',rot:v.rot(-7,3),z:2,estilo:'rasgado',fallback:C.papelQuente})}
-<div style="position:absolute;top:290px;bottom:200px;left:92px;right:96px;z-index:6;display:flex;flex-direction:column;justify-content:flex-start;">
-${this._serif(this._destaque(m.heading,tint),size,C.tinta,700)}
-${m.body?`<div style="margin-top:64px;align-self:flex-start;"><div style="position:relative;display:inline-block;padding:10px 26px;">${this._circulo(tint)}${this._anotacao(m.body,tint,46)}</div></div>`:''}
-</div>
-${this._selo('ARRASTA →',tint,'bottom:150px;right:96px;',-3)}
-${this._assinatura(m,C.cinza)}`;
-  },
-
-  // 02 — ARTEFATO CENTRAL: a evidência ocupa 45-65%, título pequeno acima,
-  // seta apontando um detalhe, comentário curto abaixo.
-  _cArtefato(photoUrl,m,tk){
-    const C=this.C,v=this._variante(m),tint=tk.accent||C.vermelho;
-    const size=this._fit(m.heading,[[34,58],[56,50],[999,42]]);
-    return`<div style="position:absolute;inset:0;background:${tk.bg||C.papel};z-index:0;"></div>${this._paper()}
-${this._classificacao(tk.classificacao||('EVIDÊNCIA '+String(m.slideNumber||1).padStart(2,'0')),C.cinza)}
-<div style="position:absolute;top:150px;left:92px;right:200px;z-index:6;">
-${this._serif(this._destaque(m.heading,tint),size,C.tinta,600)}
-</div>
-${this._artefato(photoUrl,{pos:'top:300px;left:96px;',w:'62%',h:'46%',rot:v.rot(v.lado?-2:2,1),z:3,estilo:v.lado?'polaroid':'pagina'})}
-${this._fita({pos:v.lado?'top:282px;left:20%;':'top:282px;left:52%;',w:170,h:48,rot:v.rot(v.lado?-10:9,2),z:5,...v.fita1})}
-${this._setaNota(tint,tk.nota||'olha esse detalhe',{setaPos:'top:560px;right:110px;',dir:v.lado?'dir':'esq',notaPos:'top:700px;right:96px;text-align:right;',notaW:280})}
-${m.body?`<div style="position:absolute;bottom:150px;left:96px;right:300px;z-index:6;">${this._sans(m.body,29,C.cinza)}</div>`:''}
-${this._assinatura(m,C.cinza)}`;
-  },
-
-  // 03 — FRASE BRUTAL: duas escalas tipográficas, uma palavra vermelha,
-  // microtexto lateral. Sem fotografia obrigatória.
-  _cFrase(photoUrl,m,tk){
-    const C=this.C,v=this._variante(m),tint=tk.accent||C.vermelho;
-    const size=this._fit(m.heading,[[24,156],[40,128],[58,104],[80,86],[999,70]]);
-    return`<div style="position:absolute;inset:0;background:${tk.bg||C.papel};z-index:0;"></div>${this._paper()}
-${this._classificacao(tk.classificacao||('NOTA '+String(m.slideNumber||1).padStart(2,'0')),C.cinza)}
-<div style="position:absolute;top:0;bottom:0;left:92px;right:150px;z-index:6;display:flex;flex-direction:column;justify-content:center;">
-${this._serif(this._destaque(m.heading,tint),size,C.tinta,700)}
-${m.body?`<div style="margin-top:44px;max-width:620px;${v.lado?'':'align-self:flex-end;text-align:right;'}">${this._sans(m.body,30,C.cinza)}</div>`:''}
-</div>
-<div style="position:absolute;top:50%;right:52px;transform:rotate(90deg) translateY(-50%);transform-origin:right center;z-index:6;">${this._mono(tk.lateral||'PENSE NISSO ANTES DA PRÓXIMA DECISÃO',C.cinza,19)}</div>
-<div style="position:absolute;bottom:120px;left:92px;width:180px;height:4px;background:${tint};z-index:6;"></div>
-${this._assinatura(m,C.cinza)}`;
-  },
-
-  // 04 — PÁGINA ANALISADA: artefato inclinado + 2-3 marcações + conclusão sans
-  _cAnalise(photoUrl,m,tk){
-    const C=this.C,v=this._variante(m),tint=tk.accent||C.vermelho;
-    const size=this._fit(m.heading,[[30,56],[52,48],[999,40]]);
-    return`<div style="position:absolute;inset:0;background:${tk.bg||C.papel};z-index:0;"></div>${this._paper()}
-${this._classificacao(tk.classificacao||'PÁGINA ANALISADA',C.cinza)}
-<div style="position:absolute;top:150px;left:92px;right:${v.lado?'260px':'92px'};z-index:6;">
-${this._serif(this._destaque(m.heading,tint),size,C.tinta,600)}
-${m.body?`<div style="margin-top:26px;max-width:660px;">${this._sans(m.body,28,C.cinza)}</div>`:''}
-</div>
-${this._artefato(photoUrl,{pos:v.lado?'bottom:150px;left:70px;':'bottom:150px;right:70px;',w:'60%',h:'44%',rot:v.rot(v.lado?-3.5:3.5,1),z:3,estilo:'pagina'})}
-${this._fita({pos:v.lado?'bottom:610px;left:9%;':'bottom:610px;right:9%;',w:186,h:50,rot:v.rot(v.lado?-12:12,2),z:5,...v.fita1})}
-${this._selo(tk.selo||'IMPORTANTE',tint,v.lado?'bottom:520px;right:88px;':'bottom:520px;left:88px;',v.lado?5:-5)}
-${this._setaNota(tint,tk.nota||'o detalhe está aqui',{setaPos:v.lado?'bottom:300px;right:120px;':'bottom:300px;left:120px;',dir:v.lado?'dir':'esq',setaW:96,setaH:110,notaPos:v.lado?'bottom:210px;right:80px;text-align:right;':'bottom:210px;left:80px;',notaW:250})}
-${this._assinatura(m,C.cinza)}`;
-  },
-
-  // 05 — LISTA EDITORIAL: número enorme, itens curtos, elemento pela borda
-  _cLista(photoUrl,m,tk){
-    const C=this.C,v=this._variante(m),tint=tk.accent||C.vermelho;
-    const num=String(m.slideNumber||1).padStart(2,'0');
-    const size=this._fit(m.heading,[[34,72],[56,62],[80,52],[999,44]]);
-    return`<div style="position:absolute;inset:0;background:${tk.bg||C.papel};z-index:0;"></div>${this._paper()}
-${this._artefato(photoUrl,{pos:v.lado?'bottom:-60px;right:-80px;':'top:-60px;right:-80px;',w:'34%',h:'26%',rot:v.rot(v.lado?6:-6,1),z:2,estilo:'cru'})}
-<div style="position:absolute;top:118px;left:88px;z-index:6;font-family:'Playfair Display',serif;font-weight:700;font-size:210px;line-height:.82;color:${tint};">${num}</div>
-<div style="position:absolute;top:340px;left:92px;right:300px;z-index:6;">
-${this._serif(this._destaque(m.heading,tint),size,C.tinta,600)}
-</div>
-${m.body?`<div style="position:absolute;top:${340+Math.round(size*2.2)}px;left:92px;right:320px;z-index:6;">${this._sans(m.body,29,C.cinza)}</div>`:''}
-<div style="position:absolute;top:300px;left:92px;width:120px;height:3px;background:${tint};z-index:6;"></div>
-${this._assinatura(m,C.cinza)}`;
-  },
-
-  // 06 — DOCUMENTO FUNCIONAL: ficha com conteúdo suficiente para justificar
-  // o papel (nunca documento quase vazio), selo e marcação.
-  _cDocumento(photoUrl,m,tk){
-    const C=this.C,v=this._variante(m),tint=tk.accent||C.vermelho;
-    const size=this._fit(m.heading,[[32,52],[56,44],[999,38]]);
-    const corpo=m.body||'';
-    return`<div style="position:absolute;inset:0;background:${tk.bg||C.papel};z-index:0;"></div>${this._paper()}
-${this._classificacao(tk.classificacao||('DOC / '+String(m.slideNumber||1).padStart(2,'0')),C.cinza)}
-<div style="position:absolute;top:180px;left:88px;right:88px;${(tk.itens&&tk.itens.length)||this._itensDoCorpo(corpo).length?'bottom:170px;':''}z-index:3;background:${C.recorte};border:1px solid rgba(36,35,33,.18);box-shadow:0 16px 40px rgba(36,35,33,.14);transform:rotate(${v.lado?.5:-.5}deg);">
-<div style="padding:44px 52px;border-bottom:1px solid rgba(36,35,33,.12);display:flex;justify-content:space-between;align-items:center;">
-${this._mono(tk.docLabel||'NOTAS DE TRABALHO',C.cinza,21)}
-${this._mono(String(m.slideNumber||1).padStart(2,'0'),tint,21)}
-</div>
-<div style="padding:40px 52px;">
-${this._serif(this._destaque(m.heading,tint),size,tint,600,'line-height:1.16;')}
-${corpo?`<div style="margin-top:30px;">${this._sans(corpo,28,C.tinta,'line-height:1.72;')}</div>`:''}
-${(tk.itens&&tk.itens.length?tk.itens:this._itensDoCorpo(corpo)).length?`<div style="margin-top:34px;border-top:1px solid rgba(36,35,33,.10);padding-top:26px;">${(tk.itens&&tk.itens.length?tk.itens:this._itensDoCorpo(corpo)).map((it,i)=>`<div style="display:flex;gap:18px;margin-bottom:18px;align-items:baseline;">${this._mono(String(i+1).padStart(2,'0'),tint,20)}<span style="flex:1;">${this._sans(it,26,C.tinta)}</span></div>`).join('')}</div>`:''}
-</div>
-</div>
-${this._fita({pos:v.lado?'top:158px;left:34%;':'top:158px;right:14%;',w:176,h:48,rot:v.rot(v.lado?-5:7,2),z:5,...v.fita1})}
-${this._selo(tk.selo||'NÃO PULE',tint,v.lado?'bottom:96px;right:96px;':'bottom:96px;left:96px;',v.lado?-4:4)}
-${(tk.itens&&tk.itens.length)||this._itensDoCorpo(corpo).length?'':this._artefato(photoUrl,{pos:v.lado?'bottom:-70px;left:-60px;':'bottom:-70px;right:-60px;',w:'40%',h:'26%',rot:v.rot(v.lado?-6:6,3),z:2,estilo:'cru'})}
-${this._assinatura(m,C.cinza)}`;
-  },
-
+  // ═══ BIBLIOTECA DE COMPOSIÇÕES — 1080×1350 (4:5) ═════════════════════
   // Um documento não pode nascer quase vazio (V2 §10): sem itens definidos,
   // o corpo vira linhas de ficha para justificar o papel.
   _itensDoCorpo(txt){
@@ -1509,78 +1403,207 @@ ${this._assinatura(m,C.cinza)}`;
     return partes.length>=2?partes.slice(0,4):[];
   },
 
-  // 07 — COMPARAÇÃO: dois recortes em tensão + anotação da diferença
-  _cComparacao(photoUrl,m,tk){
-    const C=this.C,v=this._variante(m),tint=tk.accent||C.vermelho;
-    const size=this._fit(m.heading,[[34,56],[56,48],[999,40]]);
+
+  // ── Código editorial único (§9 da revisão) ──────────────────────────────
+  // ARCHIVE nnn / TIPO  ·  nn—nn  ·  ANA MOUTINHO
+  _codigo(m,tipo){
+    const arq=String(100+((m.totalSlides||8)*1)).slice(-3);
+    return`ARCHIVE ${arq} / ${tipo}`;
+  },
+  _cabecalho(m,tipo,cor){
+    const n=String(m.slideNumber||1).padStart(2,'0'),t=String(m.totalSlides||1).padStart(2,'0');
+    return`<div style="position:absolute;top:${this.MY-32}px;left:${this.MX}px;right:${this.MX}px;z-index:7;display:flex;justify-content:space-between;align-items:baseline;">
+${this._mono(this._codigo(m,tipo),cor,20)}${this._mono(n+'—'+t,cor,20)}</div>`;
+  },
+  _rodape(m,cor){
+    return`<div style="position:absolute;bottom:${this.MY-46}px;left:${this.MX}px;z-index:7;">${this._mono('ANA MOUTINHO',cor,19)}</div>`;
+  },
+
+  // ═══ COMPOSIÇÕES em 1080×1350 ═════════════════════════════════════════
+
+  // 01 — CAPA-MANIFESTO
+  _cCapa(photoUrl,m,tk){
+    const C=this.C,v=this._variante(m),tint=tk.text||C.vermelho;
+    const size=this._fit(m.heading,[[28,124],[44,104],[62,88],[84,74],[999,62]]);
     return`<div style="position:absolute;inset:0;background:${tk.bg||C.papel};z-index:0;"></div>${this._paper()}
-${this._classificacao(tk.classificacao||'ANTES / DEPOIS',C.cinza)}
-<div style="position:absolute;top:150px;left:92px;right:150px;z-index:6;">
+${this._artefato(photoUrl,{pos:v.lado?'top:-40px;right:-56px;':'top:-40px;left:-56px;',w:'44%',h:'25%',rot:v.rot(v.lado?4:-4,1),z:3,estilo:'pagina'})}
+${this._fita({pos:v.lado?'top:120px;right:5%;':'top:120px;left:5%;',w:150,h:42,rot:v.rot(v.lado?-13:13,2),z:5,...v.fita1})}
+${this._artefato(null,{pos:v.lado?'bottom:-34px;left:-46px;':'bottom:-34px;right:-46px;',w:'24%',h:'15%',rot:v.rot(-7,3),z:2,estilo:'rasgado',fallback:C.papelQuente})}
+${this._cabecalho(m,'CAPA',C.cinza)}
+<div style="position:absolute;top:392px;left:${this.MX}px;right:${this.MX+16}px;z-index:6;">
+${this._serif(this._destaque(m.heading,tint),size,C.tinta,700)}
+${m.body?`<div style="margin-top:52px;">${this._anotacao(m.body,tint,44)}</div>`:''}
+</div>
+${this._selo('ARRASTA →',tint,`bottom:${this.MY+40}px;right:${this.MX}px;`,-3)}
+${this._rodape(m,C.cinza)}`;
+  },
+
+  // 02 — ARTEFATO CENTRAL: a evidência domina
+  _cArtefato(photoUrl,m,tk){
+    const C=this.C,v=this._variante(m),tint=tk.accent||C.vermelho;
+    const size=this._fit(m.heading,[[34,54],[56,46],[999,40]]);
+    return`<div style="position:absolute;inset:0;background:${tk.bg||C.papel};z-index:0;"></div>${this._paper()}
+${this._cabecalho(m,'EVIDÊNCIA',C.cinza)}
+<div style="position:absolute;top:150px;left:${this.MX}px;right:${this.MX}px;z-index:6;">
 ${this._serif(this._destaque(m.heading,tint),size,C.tinta,600)}
 </div>
-${this._artefato(photoUrl,{pos:'top:340px;left:80px;',w:'40%',h:'32%',rot:v.rot(-4,1),z:3,estilo:'polaroid'})}
-${this._artefato(null,{pos:'top:430px;right:80px;',w:'40%',h:'32%',rot:v.rot(5,2),z:4,estilo:'rasgado',fallback:C.papelQuente})}
-${this._fita({pos:'top:322px;left:16%;',w:150,h:44,rot:v.rot(-11,3),z:5,...v.fita1})}
-${this._fita({pos:'top:412px;right:16%;',w:150,h:44,rot:v.rot(10,4),z:5,...v.fita2})}
-<div style="position:absolute;top:690px;left:50%;transform:translateX(-50%);z-index:7;font-family:'Playfair Display',serif;font-size:76px;color:${tint};">×</div>
-${m.body?`<div style="position:absolute;bottom:140px;left:92px;right:120px;z-index:6;">${this._sans(m.body,29,C.cinza)}</div>`:''}
-${this._assinatura(m,C.cinza)}`;
+${this._artefato(photoUrl,{pos:`top:340px;left:${this.MX}px;`,w:'64%',h:'44%',rot:v.rot(v.lado?-2:2,1),z:3,estilo:v.lado?'polaroid':'pagina'})}
+${this._fita({pos:v.lado?'top:322px;left:18%;':'top:322px;left:48%;',w:164,h:44,rot:v.rot(v.lado?-10:9,2),z:5,...v.fita1})}
+${tk.nota?this._setaNota(tint,tk.nota,{setaPos:'top:560px;right:96px;',dir:v.lado?'dir':'esq',setaW:92,setaH:104,notaPos:'top:684px;right:'+this.MX+'px;text-align:right;',notaW:250}):''}
+${m.body?`<div style="position:absolute;bottom:${this.MY+18}px;left:${this.MX}px;right:${this.MX+140}px;z-index:6;">${this._sans(m.body,27,C.cinza)}</div>`:''}
+${this._rodape(m,C.cinza)}`;
   },
 
-  // 08 — FOTOGRAFIA DOCUMENTAL: corte expressivo + legenda editorial
+  // 03 — FRASE BRUTAL
+  _cFrase(photoUrl,m,tk){
+    const C=this.C,v=this._variante(m),tint=tk.accent||C.vermelho;
+    const size=this._fit(m.heading,[[24,142],[40,118],[58,96],[80,80],[999,66]]);
+    return`<div style="position:absolute;inset:0;background:${tk.bg||C.papel};z-index:0;"></div>${this._paper()}
+${this._cabecalho(m,'NOTA',C.cinza)}
+<div style="position:absolute;top:0;bottom:0;left:${this.MX}px;right:${this.MX+56}px;z-index:6;display:flex;flex-direction:column;justify-content:center;">
+${this._serif(this._destaque(m.heading,tint),size,C.tinta,700)}
+${m.body?`<div style="margin-top:40px;max-width:620px;${v.lado?'':'align-self:flex-end;text-align:right;'}">${this._sans(m.body,28,C.cinza)}</div>`:''}
+</div>
+<div style="position:absolute;top:50%;right:36px;transform:rotate(90deg) translateY(-50%);transform-origin:right center;z-index:6;">${this._mono(tk.lateral||'ANA MOUTINHO / ARQUIVO',C.cinza,18)}</div>
+<div style="position:absolute;bottom:${this.MY+188}px;left:${this.MX}px;width:170px;height:5px;background:${tint};z-index:6;"></div>
+${this._artefato(photoUrl,{pos:`bottom:${this.MY-40}px;right:-44px;`,w:'40%',h:'17%',rot:v.rot(v.lado?4:-4,1),z:2,estilo:'cru'})}
+${this._fita({pos:'bottom:270px;right:22%;',w:126,h:38,rot:v.rot(v.lado?-9:9,2),z:5,...v.fita1})}
+<div style="position:absolute;bottom:${this.MY+96}px;left:${this.MX}px;right:${this.MX+430}px;z-index:6;">${this._mono(tk.fonte||'FONTE: OPERAÇÃO REAL',C.cinza,19)}</div>
+${this._rodape(m,C.cinza)}`;
+  },
+
+  // 04 — PÁGINA ANALISADA
+  _cAnalise(photoUrl,m,tk){
+    const C=this.C,v=this._variante(m),tint=tk.accent||C.vermelho;
+    const size=this._fit(m.heading,[[30,52],[52,44],[999,38]]);
+    return`<div style="position:absolute;inset:0;background:${tk.bg||C.papel};z-index:0;"></div>${this._paper()}
+${this._cabecalho(m,'ANÁLISE',C.cinza)}
+<div style="position:absolute;top:148px;left:${this.MX}px;right:${v.lado?this.MX+180:this.MX}px;z-index:6;">
+${this._serif(this._destaque(m.heading,tint),size,C.tinta,600)}
+${m.body?`<div style="margin-top:22px;max-width:640px;">${this._sans(m.body,27,C.cinza)}</div>`:''}
+</div>
+${this._artefato(photoUrl,{pos:`bottom:${this.MY+30}px;${v.lado?'left:'+this.MX+'px;':'right:'+this.MX+'px;'}`,w:'62%',h:'42%',rot:v.rot(v.lado?-3:3,1),z:3,estilo:'pagina'})}
+${this._fita({pos:v.lado?'top:566px;left:9%;':'top:566px;right:9%;',w:176,h:46,rot:v.rot(v.lado?-12:12,2),z:5,...v.fita1})}
+${this._selo(tk.selo||'ATENÇÃO',tint,v.lado?`top:640px;right:${this.MX}px;`:`top:640px;left:${this.MX}px;`,v.lado?5:-5)}
+${tk.nota?this._setaNota(tint,tk.nota,{setaPos:v.lado?'top:800px;right:110px;':'top:800px;left:110px;',dir:v.lado?'dir':'esq',setaW:88,setaH:100,notaPos:v.lado?`top:918px;right:${this.MX}px;text-align:right;`:`top:918px;left:${this.MX}px;`,notaW:240}):''}
+${this._rodape(m,C.cinza)}`;
+  },
+
+  // 05 — LISTA / CHECKLIST EDITORIAL
+  _cLista(photoUrl,m,tk){
+    const C=this.C,v=this._variante(m),tint=tk.accent||C.vermelho;
+    const num=String(m.slideNumber||1).padStart(2,'0');
+    const size=this._fit(m.heading,[[34,64],[56,54],[80,46],[999,40]]);
+    const itens=(tk.itens&&tk.itens.length?tk.itens:this._itensDoCorpo(m.body||''));
+    return`<div style="position:absolute;inset:0;background:${tk.bg||C.papel};z-index:0;"></div>${this._paper()}
+${this._cabecalho(m,'CHECKLIST',C.cinza)}
+${this._artefato(photoUrl,{pos:v.lado?'bottom:-50px;right:-70px;':'top:-50px;right:-70px;',w:'32%',h:'22%',rot:v.rot(v.lado?6:-6,1),z:2,estilo:'cru'})}
+<div style="position:absolute;top:150px;left:${this.MX}px;z-index:6;font-family:'Playfair Display',serif;font-weight:700;font-size:176px;line-height:.82;color:${tint};">${num}</div>
+<div style="position:absolute;top:342px;left:${this.MX}px;width:110px;height:4px;background:${tint};z-index:6;"></div>
+<div style="position:absolute;top:380px;left:${this.MX}px;right:${this.MX+150}px;z-index:6;">
+${this._serif(this._destaque(m.heading,tint),size,C.tinta,600)}
+${itens.length?`<div style="margin-top:36px;">${itens.map((it,i)=>`<div style="display:flex;gap:18px;margin-bottom:20px;align-items:baseline;border-bottom:1px solid rgba(36,35,33,.10);padding-bottom:16px;">${this._mono(String(i+1).padStart(2,'0'),tint,20)}<span style="flex:1;">${this._sans(it,26,C.tinta)}</span></div>`).join('')}</div>`
+: (m.body?`<div style="margin-top:28px;">${this._sans(m.body,28,C.cinza)}</div>`:'')}
+</div>
+${this._rodape(m,C.cinza)}`;
+  },
+
+  // 06 — DOCUMENTO FUNCIONAL
+  _cDocumento(photoUrl,m,tk){
+    const C=this.C,v=this._variante(m),tint=tk.accent||C.vermelho;
+    const size=this._fit(m.heading,[[32,46],[56,40],[999,34]]);
+    const corpo=m.body||'';
+    const itens=(tk.itens&&tk.itens.length?tk.itens:this._itensDoCorpo(corpo));
+    return`<div style="position:absolute;inset:0;background:${tk.bg||C.papel};z-index:0;"></div>${this._paper()}
+${this._cabecalho(m,'DOCUMENTO',C.cinza)}
+<div style="position:absolute;top:${itens.length?'214px':'300px'};left:${this.MX}px;right:${this.MX}px;z-index:3;background:${C.recorte};border:1px solid rgba(36,35,33,.18);box-shadow:0 16px 40px rgba(36,35,33,.14);transform:rotate(${v.lado?.4:-.4}deg);">
+<div style="padding:34px 44px;border-bottom:1px solid rgba(36,35,33,.12);display:flex;justify-content:space-between;align-items:center;">
+${this._mono(tk.docLabel||'NOTAS DE TRABALHO',C.cinza,20)}${this._mono(String(m.slideNumber||1).padStart(2,'0'),tint,20)}
+</div>
+<div style="padding:34px 44px;">
+${this._serif(this._destaque(m.heading,tint),size,tint,600,'line-height:1.16;')}
+${corpo&&!itens.length?`<div style="margin-top:24px;">${this._sans(corpo,26,C.tinta,'line-height:1.7;')}</div>`:''}
+${itens.length?`<div style="margin-top:28px;">${itens.map((it,i)=>`<div style="display:flex;gap:16px;margin-bottom:16px;align-items:baseline;">${this._mono(String(i+1).padStart(2,'0'),tint,19)}<span style="flex:1;">${this._sans(it,25,C.tinta)}</span></div>`).join('')}</div>`:''}
+</div>
+</div>
+${this._fita({pos:v.lado?'top:168px;left:32%;':'top:168px;right:12%;',w:168,h:44,rot:v.rot(v.lado?-5:7,2),z:5,...v.fita1})}
+${this._selo(tk.selo||'NÃO PULE',tint,`bottom:${this.MY-4}px;right:${this.MX}px;`,-4)}
+${this._artefato(photoUrl,{pos:v.lado?'bottom:-56px;left:-50px;':'bottom:-56px;right:-50px;',w:'38%',h:'22%',rot:v.rot(v.lado?-6:6,3),z:2,estilo:'cru'})}
+${this._rodape(m,C.cinza)}`;
+  },
+
+  // 07 — COMPARAÇÃO
+  _cComparacao(photoUrl,m,tk){
+    const C=this.C,v=this._variante(m),tint=tk.accent||C.vermelho;
+    const size=this._fit(m.heading,[[34,50],[56,44],[999,38]]);
+    return`<div style="position:absolute;inset:0;background:${tk.bg||C.papel};z-index:0;"></div>${this._paper()}
+${this._cabecalho(m,'COMPARAÇÃO',C.cinza)}
+<div style="position:absolute;top:148px;left:${this.MX}px;right:${this.MX+90}px;z-index:6;">
+${this._serif(this._destaque(m.heading,tint),size,C.tinta,600)}
+</div>
+${this._artefato(photoUrl,{pos:`top:330px;left:${this.MX-18}px;`,w:'42%',h:'30%',rot:v.rot(-4,1),z:3,estilo:'polaroid'})}
+${this._artefato(null,{pos:`top:432px;right:${this.MX-18}px;`,w:'42%',h:'30%',rot:v.rot(5,2),z:4,estilo:'rasgado',fallback:C.papelQuente})}
+${this._fita({pos:'top:314px;left:16%;',w:140,h:40,rot:v.rot(-11,3),z:5,...v.fita1})}
+${this._fita({pos:'top:416px;right:16%;',w:140,h:40,rot:v.rot(10,4),z:5,...v.fita2})}
+<div style="position:absolute;top:660px;left:50%;transform:translateX(-50%);z-index:7;font-family:'Playfair Display',serif;font-size:64px;color:${tint};">×</div>
+${m.body?`<div style="position:absolute;bottom:${this.MY+16}px;left:${this.MX}px;right:${this.MX+60}px;z-index:6;">${this._sans(m.body,27,C.cinza)}</div>`:''}
+${this._rodape(m,C.cinza)}`;
+  },
+
+  // 08 — FOTOGRAFIA DOCUMENTAL
   _cFoto(photoUrl,m,tk){
     const C=this.C,v=this._variante(m),tint=tk.accent||C.vermelho;
-    const size=this._fit(m.heading,[[34,60],[56,52],[999,44]]);
+    const size=this._fit(m.heading,[[34,54],[56,46],[999,40]]);
     return`<div style="position:absolute;inset:0;background:${tk.bg||C.papel};z-index:0;"></div>${this._paper()}
-${this._artefato(photoUrl,{pos:v.lado?'top:0;left:0;':'top:0;right:0;',w:'72%',h:'54%',rot:0,z:2,estilo:'cru'})}
-<div style="position:absolute;top:${Math.round(1536*.54)+38}px;left:92px;right:120px;z-index:6;">
-${this._mono(tk.legenda||('FIG. '+String(m.slideNumber||1).padStart(2,'0')),tint,21)}
-<div style="margin-top:22px;">${this._serif(this._destaque(m.heading,tint),size,C.tinta,600,'line-height:1.14;')}</div>
-${m.body?`<div style="margin-top:26px;max-width:760px;">${this._sans(m.body,28,C.cinza)}</div>`:''}
+${this._artefato(photoUrl,{pos:v.lado?'top:0;left:0;':'top:0;right:0;',w:'74%',h:'50%',rot:0,z:2,estilo:'cru'})}
+<div style="position:absolute;top:${Math.round(this.H*.50)+30}px;left:${this.MX}px;right:${this.MX}px;z-index:6;">
+${this._mono(tk.legenda||('FIG. '+String(m.slideNumber||1).padStart(2,'0')),tint,20)}
+<div style="margin-top:18px;">${this._serif(this._destaque(m.heading,tint),size,C.tinta,600,'line-height:1.14;')}</div>
+${m.body?`<div style="margin-top:22px;max-width:800px;">${this._sans(m.body,27,C.cinza)}</div>`:''}
 </div>
-${this._selo(tk.selo||'ARQUIVO',tint,v.lado?'top:640px;right:92px;':'top:640px;left:92px;',v.lado?4:-4)}
-${this._assinatura(m,C.cinza)}`;
+${this._selo(tk.selo||'ARQUIVO',tint,v.lado?`top:592px;right:${this.MX}px;`:`top:592px;left:${this.MX}px;`,v.lado?4:-4)}
+${this._rodape(m,C.cinza)}`;
   },
 
-  // 10 — DADO OU DESCOBERTA: número grande, contexto sans, círculo, mini artefato
+  // 10 — DADO / DESCOBERTA
   _cDado(photoUrl,m,tk){
     const C=this.C,v=this._variante(m),tint=tk.accent||C.vermelho;
-    const dado=tk.dado||(m.heading.match(/\d+[%xX]?|\d+\.\d+/)||['?'])[0];
-    const size=this._fit(m.heading,[[40,54],[64,46],[999,40]]);
+    const dado=tk.dado||(String(m.heading).match(/\d+[%xX]?|\d+\.\d+/)||['?'])[0];
+    const size=this._fit(m.heading,[[40,48],[64,42],[999,36]]);
     return`<div style="position:absolute;inset:0;background:${tk.bg||C.papel};z-index:0;"></div>${this._paper()}
-${this._classificacao(tk.classificacao||'DESCOBERTA',C.cinza)}
-<div style="position:absolute;top:230px;left:92px;z-index:6;">
-<div style="position:relative;display:inline-block;padding:10px 30px;">
+${this._cabecalho(m,'DESCOBERTA',C.cinza)}
+<div style="position:absolute;top:212px;left:${this.MX}px;z-index:6;">
+<div style="position:relative;display:inline-block;padding:8px 26px;">
 ${this._circulo(tint)}
-<span style="font-family:'Playfair Display',serif;font-weight:700;font-size:248px;line-height:.85;color:${tint};">${this._esc(dado)}</span>
+<span style="font-family:'Playfair Display',serif;font-weight:700;font-size:212px;line-height:.85;color:${tint};">${this._esc(dado)}</span>
 </div>
 </div>
-<div style="position:absolute;top:600px;left:92px;right:230px;z-index:6;">
+<div style="position:absolute;top:520px;left:${this.MX}px;right:${this.MX+140}px;z-index:6;">
 ${this._serif(this._destaque(m.heading,tint),size,C.tinta,600,'line-height:1.15;')}
-${m.body?`<div style="margin-top:28px;">${this._sans(m.body,29,C.cinza)}</div>`:''}
+${m.body?`<div style="margin-top:24px;">${this._sans(m.body,27,C.cinza)}</div>`:''}
 </div>
-${this._artefato(photoUrl,{pos:'bottom:120px;right:-40px;',w:'32%',h:'22%',rot:v.rot(5,1),z:3,estilo:'pagina'})}
-${this._fita({pos:'bottom:300px;right:14%;',w:140,h:42,rot:v.rot(-9,2),z:5,...v.fita1})}
-${this._assinatura(m,C.cinza)}`;
+${this._artefato(photoUrl,{pos:`bottom:${this.MY}px;right:-36px;`,w:'34%',h:'22%',rot:v.rot(5,1),z:3,estilo:'pagina'})}
+${this._fita({pos:'bottom:434px;right:13%;',w:132,h:40,rot:v.rot(-9,2),z:5,...v.fita1})}
+${this._rodape(m,C.cinza)}`;
   },
 
-  // 12 — CTA EDITORIAL: conclusão + ação específica + nota curta
+  // 12 — CTA EDITORIAL
   _cCta(photoUrl,m,tk){
     const C=this.C,v=this._variante(m),tint=tk.accent||C.vermelho;
-    const size=this._fit(m.heading,[[30,104],[50,86],[72,72],[999,60]]);
+    const size=this._fit(m.heading,[[30,96],[50,80],[72,66],[999,56]]);
     return`<div style="position:absolute;inset:0;background:${tk.bg||C.papel};z-index:0;"></div>${this._paper()}
-${this._artefato(photoUrl,{pos:v.lado?'top:-50px;right:-64px;':'top:-50px;left:-64px;',w:'34%',h:'22%',rot:v.rot(v.lado?5:-5,1),z:2,estilo:'pagina'})}
-${this._fita({pos:v.lado?'top:110px;right:8%;':'top:110px;left:8%;',w:150,h:44,rot:v.rot(v.lado?-12:12,2),z:5,...v.fita1})}
-<div style="position:absolute;top:400px;left:92px;right:110px;z-index:6;">
+${this._artefato(photoUrl,{pos:v.lado?'top:-44px;right:-58px;':'top:-44px;left:-58px;',w:'32%',h:'20%',rot:v.rot(v.lado?5:-5,1),z:2,estilo:'pagina'})}
+${this._fita({pos:v.lado?'top:112px;right:7%;':'top:112px;left:7%;',w:142,h:42,rot:v.rot(v.lado?-12:12,2),z:5,...v.fita1})}
+${this._cabecalho(m,'CONCLUSÃO',C.cinza)}
+<div style="position:absolute;top:378px;left:${this.MX}px;right:${this.MX+20}px;z-index:6;">
 ${this._serif(this._destaque(m.heading,tint),size,C.tinta,700)}
 </div>
-<div style="position:absolute;bottom:230px;left:92px;right:110px;z-index:6;">
-${m.body?`<div style="position:relative;display:inline-block;">${this._anotacao(m.body,tint,50)}${this._palavras(m.body)<=this.LIMITE_MANUSCRITA?this._sublinhado(tint):''}</div>`:''}
+<div style="position:absolute;bottom:${this.MY+96}px;left:${this.MX}px;right:${this.MX+20}px;z-index:6;">
+${m.body?`<div style="position:relative;display:inline-block;">${this._anotacao(m.body,tint,48)}${this._palavras(m.body)<=this.LIMITE_MANUSCRITA?this._sublinhado(tint):''}</div>`:''}
 </div>
-${this._selo(tk.selo||'FIM / ARCHIVE',tint,'bottom:150px;right:96px;',-3)}
-${this._assinatura(m,C.cinza)}`;
+${this._selo(tk.selo||'FIM',tint,`bottom:${this.MY-4}px;right:${this.MX}px;`,-3)}
+${this._rodape(m,C.cinza)}`;
   },
-
   // ── Roteador: ritmo editorial (V2 §11) ──────────────────────────────────
   // Nunca repetir a mesma composição em slides consecutivos. A tabela do
   // design system define a função de cada posição no carrossel de oito.
@@ -1633,12 +1656,19 @@ ${this._assinatura(m,C.cinza)}`;
     try{
       const tk=designMeta.overlayTokens||{};
       const canvas=await html2canvas(slideEl,{
-        width:1024,height:1536,scale:2,
+        width:this.W,height:this.H,scale:2,
         useCORS:true,allowTaint:false,
         backgroundColor:tk.bg||SlideRenderer.C.papel,
         logging:false,imageTimeout:10000,
       });
-      const pngB64=canvas.toDataURL('image/png',1.0).split(',')[1];
+      // Renderiza em 2x para nitidez e reduz para a dimensão exata exigida.
+      const out=document.createElement('canvas');
+      out.width=this.W;out.height=this.H;
+      const ctx=out.getContext('2d');
+      ctx.imageSmoothingEnabled=true;ctx.imageSmoothingQuality='high';
+      ctx.drawImage(canvas,0,0,this.W,this.H);
+      if(out.width!==1080||out.height!==1350){container.innerHTML='';throw new Error('Slide fora do formato 1080x1350: '+out.width+'x'+out.height);}
+      const pngB64=out.toDataURL('image/png',1.0).split(',')[1];
       container.innerHTML='';
       return pngB64;
     }catch(err){container.innerHTML='';console.error('html2canvas error:',err);return null;}
@@ -1713,6 +1743,7 @@ async function generateCarouselImages(autoPublishConfig=null){
                   const photoUrl=slideData.url||(slideData.b64?`data:image/png;base64,${slideData.b64}`:null);
                   if(photoUrl){
                     const meta={...(slideData.designMeta||{}),heading:s.heading||'',body:s.body||'',slideNumber:i+1,totalSlides:slides.length,funcao};
+          if(s.anotacao)meta.overlayTokens={...(meta.overlayTokens||{}),nota:s.anotacao};
                     const rendered=await SlideRenderer.renderSlide(photoUrl,meta);
                     const outB64=rendered||slideData.b64;
                     if(outB64){try{const sv=await fetch('/api/image/save-b64',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({b64:outB64,contentId:contentId||`tmp_${Date.now()}`,slideIndex:i})});const svd=await sv.json();if(svd.url)finalUrl=svd.url;}catch(e){}}
@@ -1741,6 +1772,7 @@ async function generateCarouselImages(autoPublishConfig=null){
         const photoUrl=slideData.url||(slideData.b64?`data:image/png;base64,${slideData.b64}`:null);
         if(photoUrl){
           const meta={...(slideData.designMeta||{}),heading:s.heading||'',body:s.body||'',slideNumber:i+1,totalSlides:slides.length,funcao};
+          if(s.anotacao)meta.overlayTokens={...(meta.overlayTokens||{}),nota:s.anotacao};
           const rendered=await SlideRenderer.renderSlide(photoUrl,meta);
           const outB64=rendered||slideData.b64;
           if(outB64){try{const saveRes=await fetch('/api/image/save-b64',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({b64:outB64,contentId:contentId||`tmp_${Date.now()}`,slideIndex:i})});const saveData=await saveRes.json();if(saveData.url)finalUrl=saveData.url;}catch(e){}}

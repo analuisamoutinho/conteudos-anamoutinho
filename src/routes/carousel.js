@@ -32,7 +32,7 @@ Converte estes blocos em slides de carrossel. Para cada bloco, gera um heading c
 BLOCOS:
 ${blocks}
 
-JSON: {"title":"título do carrossel","slideCount":N,"slides":[{"slideNumber":1,"funcao":"CAPA","heading":"título curto e impactante","body":"2-3 frases que desenvolvem o conceito com substância real. Inclui dado, explicação ou consequência concreta.","imagePrompt":"visual scene in english"}],"caption":"legenda completa com emojis e CTA","hashtags":"máximo 4 hashtags específicas"}`;
+JSON: {"title":"título do carrossel","slideCount":N,"slides":[{"slideNumber":1,"funcao":"CAPA","anotacao":"observação específica de até 12 palavras que comenta a evidência do slide, ou null","heading":"título curto e impactante","body":"2-3 frases que desenvolvem o conceito com substância real. Inclui dado, explicação ou consequência concreta.","imagePrompt":"visual scene in english"}],"caption":"legenda completa com emojis e CTA","hashtags":"máximo 4 hashtags específicas"}`;
     } else {
       prompt = `Perfil: ${account.name} (${account.handle})
 Tema: "${topic}"
@@ -41,7 +41,7 @@ ESTRUTURA RR: Slide 1 (gancho que nomeia dor/desejo real, com 1-2 concordes) →
 
 REGRA CRÍTICA: cada slide DEVE ter body com 2-3 frases de conteúdo real — dado concreto, explicação do conceito, exemplo prático ou consequência. NUNCA body vazio ou com menos de 2 frases.
 
-JSON: {"title":"título do carrossel","slideCount":8,"slides":[{"slideNumber":1,"funcao":"CAPA","heading":"gancho de 14-18 palavras","body":"2-3 frases que desenvolvem o gancho com substância. Dado concreto, padrão de mercado real ou consequência.","imagePrompt":"visual scene in english"},{"slideNumber":2,"funcao":"DESENVOLVIMENTO","heading":"título do conceito","body":"2-3 frases explicando o conceito com dado ou exemplo concreto. O leitor deve aprender algo real neste slide.","imagePrompt":"visual scene in english"}],"caption":"legenda completa com emojis e CTA","hashtags":"máximo 4 hashtags específicas ao nicho"}`;
+JSON: {"title":"título do carrossel","slideCount":8,"slides":[{"slideNumber":1,"funcao":"CAPA","anotacao":"observação específica de até 12 palavras que comenta a evidência do slide, ou null","heading":"gancho de 14-18 palavras","body":"2-3 frases que desenvolvem o gancho com substância. Dado concreto, padrão de mercado real ou consequência.","imagePrompt":"visual scene in english"},{"slideNumber":2,"funcao":"DESENVOLVIMENTO","heading":"título do conceito","body":"2-3 frases explicando o conceito com dado ou exemplo concreto. O leitor deve aprender algo real neste slide.","imagePrompt":"visual scene in english"}],"caption":"legenda completa com emojis e CTA","hashtags":"máximo 4 hashtags específicas ao nicho"}`;
     }
     const text = await askOpenAI({ prompt, system: systemPrompt, model: MODEL_SMART, maxTokens: 8192, json: true });
     const carouselData = extractJSON(text);

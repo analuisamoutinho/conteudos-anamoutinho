@@ -43,7 +43,13 @@ O QUE A IMAGEM DEVE SER (ordem de preferência):
 5. Imagem de arquivo incomum
 A imagem entra como artefato colado na composição — recorte, página impressa, print, fragmento — nunca como fundo decorativo full-bleed.
 
-PROIBIDO NA IMAGEM: pessoas sorrindo em reunião genérica, escritório terracota, aperto de mão, grupo corporativo artificial, pessoa olhando notebook, fotografia aspiracional sem função, tratamento cinematográfico uniforme, sépia, qualquer imagem criada apenas para preencher espaço.
+REGRA DE SUBSTITUIÇÃO: não usar fotografia de pessoas quando um documento, número, processo
+ou artefato explicar melhor o argumento. Para conteúdo de operação e decisão, preferir:
+planilha de fluxo de caixa, organograma, mapa com dois endereços, agenda sobrecarregada,
+checklist marcado, demonstrativo financeiro, quadro comparativo, painel de indicadores.
+
+PROIBIDO NA IMAGEM: pessoas sorrindo em reunião genérica, executivo olhando pela janela,
+calendário decorativo, gráfico genérico sem dado real, escritório terracota, aperto de mão, grupo corporativo artificial, pessoa olhando notebook, fotografia aspiracional sem função, tratamento cinematográfico uniforme, sépia, qualquer imagem criada apenas para preencher espaço.
 
 TRATAMENTO: flash direto, grão, contraste de impressão, preto e branco ocasional, recorte brusco, enquadramento imperfeito, textura de impressão offset. A fotografia pode ser pequena — não precisa ser hero.
 
