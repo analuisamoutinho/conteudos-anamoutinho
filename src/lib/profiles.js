@@ -56,7 +56,7 @@ O QUE ELE DIZ: "Preciso vender mais." · "Meu tráfego não está funcionando." 
 O QUE ELE NÃO DIZ (território mais forte para o conteúdo): "Não sei se estou tomando as decisões certas." · "Minha empresa fatura, mas eu não sinto segurança." · "Tenho vergonha de admitir que não entendo todos os números." · "Se eu parar de trabalhar, muita coisa para." · "Criei um negócio para ter liberdade e criei um trabalho que me persegue." · "Não sei se o problema é o marketing, minha equipe, minha oferta ou eu." · "Tenho medo de investir mais e descobrir que o problema é maior do que imaginava." · "Já fui enganado por prestador." · "Não confio que as pessoas vão fazer como eu faria." · "Estou cansado de decidir sozinho." · "Tenho medo de que o crescimento esteja aumentando o caos." · "Não quero chegar daqui a cinco anos com uma empresa maior e uma vida pior."`,
     cta: 'Se você se reconheceu, me conta nos comentários como isso aparece na sua empresa. Salva para revisitar na próxima decisão.',
     referencias: ['Editorial + humano + espontâneo + inteligente + brasileiro', 'Fotos reais de reunião, mesa de trabalho, caderno e tela do computador', 'Prints e anotações à mão', 'Tipografia com personalidade e textos grandes', 'Texturas — nada de mockup 3D ou apresentação corporativa'],
-    tiposConteudo: ['cultural', 'tese', 'autoral', 'oferta', 'frase', 'lofi', 'video_curto', 'video_medio'],
+    tiposConteudo: ['tendencia', 'case', 'educativo', 'comparacao', 'lista', 'prova_social', 'oferta', 'frase', 'lofi', 'video_curto', 'video_medio'],
     observacoes: `IDEIA CENTRAL DA MARCA: "Como construir empresas maiores sem construir uma vida menor."
 FRASE-NORTE: "Você já construiu alguma coisa. Agora precisa aprender a fazê-la crescer sem deixar que ela consuma você."
 
@@ -116,7 +116,7 @@ function getProfileManualContext(profileId) {
   const p = profiles[profileId];
   if (!p) return '';
   return [
-    `TIPO DE MARCA: Marca Pessoal (Metodologia RR)`,
+    `TIPO DE MARCA: Marca Pessoal (metodologia BrandsDecoded)`,
     p.niche        ? `NICHO: ${p.niche}`                      : '',
     p.publicoAlvo  ? `PÚBLICO-ALVO: ${p.publicoAlvo}`        : '',
     p.tom          ? `TOM DE VOZ: ${p.tom}`                   : '',
