@@ -57,7 +57,7 @@ JSON: {"title":"título do carrossel","slideCount":8,"slides":[{"slideNumber":1,
 // Aceita referenceImageB64 (base64 sem prefixo) para usar a foto real do Google Fotos como base
 router.post('/api/image/carousel-slide', async (req, res) => {
   try {
-    const { heading, body, slideNumber, totalSlides, funcao, topic, profile, contentId, imagePromptHint, designStyleHint, templateId, quality: rawQuality, referenceImageB64, engine } = req.body;
+    const { heading, body, slideNumber, totalSlides, funcao, topic, profile, contentId, imagePromptHint, designStyleHint, templateId, quality: rawQuality, referenceImageB64, engine, skipImage } = req.body;
     if (engine === 'none') return res.json({ success: true, b64: null, url: null, designMeta: {}, quality: 'none' });
     const quality = resolveQuality(rawQuality);
     const brand = BRAND_IDENTITIES[profile] || BRAND_IDENTITIES.pessoal;
@@ -99,6 +99,10 @@ router.post('/api/image/carousel-slide', async (req, res) => {
     const overlayStyle  = matchedTemplate?.overlayStyle  || 'lista';
     const overlayTokens = matchedTemplate?.overlayTokens || fallbackOverlayTokens;
     const designMeta = { heading: heading||'', body: body||'', accent: brand.accent||'#C8A020', bgDark: brand.bgDark||'#0A0A0A', bgLight: brand.bgLight||'#F5F4F0', handle: brand.handle||account.handle, overlayStyle, overlayTokens, slideNumber, totalSlides, funcao: funcao||(slideNumber===1?'CAPA':slideNumber===totalSlides?'ASSINATURA':'CONTEUDO'), templateId: matchedTemplate?.id || null, templateName: matchedTemplate?.name || null };
+
+    // A utilizadora anexou a própria imagem para este slide: devolvemos só o
+    // designMeta (template casado, estilo, tokens) e poupamos a geração.
+    if (skipImage) return res.json({ success: true, b64: null, url: null, designMeta, quality: 'propria' });
 
     let imageData;
 
